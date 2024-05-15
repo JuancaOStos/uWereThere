@@ -1,0 +1,27 @@
+{
+  "name": "uwtapi",
+  "version": "1.0.0",
+  "description": "Server-side project to manage all interactions with the database",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/JuancaOStos/uWereThere.git"
+  },
+  "keywords": [
+    "requests",
+    "responses",
+    "users",
+    "publications",
+    "comments",
+    "locations"
+  ],
+  "author": "Juan Carlos Ostos Molina",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JuancaOStos/uWereThere/issues"
+  },
+  "homepage": "https://github.com/JuancaOStos/uWereThere#readme"
+}
