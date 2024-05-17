@@ -1,9 +1,16 @@
 const express = require('express')
+const cors = require('cors')
+const bodyParser = require('body-parser')
 const { getAllUsers,
         getUserById,
-        getUserByEmail } = require('./dbHelper.js')
+        getUserByEmail,
+        validateAccount } = require('./dbHelper.js')
 
 const app = express()
+
+app.use(cors())
+
+app.use(express.json())
 
 app.get('/', (req, res) => {
     res.json({ message: 'Welcome home!'})
@@ -27,6 +34,17 @@ app.get('/users/id/:id', async (req, res) => {
         .catch((err) => {
             console.error('An error has occurred:\n' + err)
             res.status(404).json({ message: 'An error has occurred' })
+        })
+})
+
+app.post('/login', async (req, res) => {
+    const { email, password } = req.body
+    console.log('Lo muestro', email, password)
+    validateAccount(email, password)
+        .then(data => res.json({ message: data} ))
+        .catch((err) => {
+            console.error('An error has occurred:\n' + err)
+            res.status(404).json({ message: 'An errorrr has occurred' })
         })
 })
 
