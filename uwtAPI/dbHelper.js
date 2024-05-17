@@ -35,12 +35,26 @@ async function getUserByEmail(email) {
     await connectToDB()
         .then(async () => data = await User.find({ email: email }))
         .catch(err => console.error('An error has occurred:\n' + err))
+    console.log(data)
     return data
+}
+
+async function validateAccount(email, password) {
+    let user
+    await connectToDB()
+        .then(async () => {
+            user = await User.findOne({ email: email, password: password })
+        })
+        .catch(err => console.error('An error has occurred:\n' + err))
+    console.log(user)
+    if (user) return user.email + '|' + user.password
+    else return 'User not found'
 }
 
 module.exports = {
     connectToDB,
     getAllUsers,
     getUserById,
-    getUserByEmail
+    getUserByEmail,
+    validateAccount
 }
