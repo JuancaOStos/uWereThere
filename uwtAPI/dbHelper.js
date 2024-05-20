@@ -47,7 +47,7 @@ async function validateAccount(email, password) {
         })
         .catch(err => console.error('An error has occurred:\n' + err))
     console.log(user)
-    if (user) return user.email + '|' + user.password
+    if (user) return user._id
     else return 'User not found'
 }
 
