@@ -7,6 +7,21 @@ const { getAllUsers,
         validateAccount } = require('./dbHelper.js')
 
 const app = express()
+const mongoose = require('mongoose')
+const { User } = require('./dbModels.js')
+
+const DATABASE = 'uwtDevDB'
+const USERNAME = 'jcostosmolina'
+const PASSWORD = 'Kyaromir-9'
+const URI = `mongodb+srv://${USERNAME}:${PASSWORD}@uwtcluster.8fbaqsw.mongodb.net/${DATABASE}?retryWrites=true&w=majority&appName=uwtCluster`
+
+mongoose.connect(URI)
+    .then(() => {
+        console.log('Database connected')
+    })
+    .catch(err => {
+        console.error('An error has occurred connecting MongoDB:\n' + err)
+    })
 
 app.use(cors())
 
@@ -17,14 +32,25 @@ app.get('/', (req, res) => {
 })
 
 app.get('/users', async (req, res) => {
-    getAllUsers()
-        .then(data => res.json(data))
+    const users = await User.find()
+    if (users.length === 0) {
+         return res.json({
+            status: 'Bad',
+            result: null
+        })
+    }
+    res.json({
+        status: 'Ok',
+        result: users
+    })
+
 })
 
 app.get('/users/email/:email', async (req, res) => {
     const { email } = req.params
     getUserByEmail(email)
         .then(data => res.json(data))
+    
 })
 
 app.get('/users/id/:id', async (req, res) => {
@@ -40,11 +66,19 @@ app.get('/users/id/:id', async (req, res) => {
 app.post('/login', async (req, res) => {
     const { email, password } = req.body
     console.log('Lo muestro', email, password)
-    validateAccount(email, password)
-        .then(data => res.json({ message: data} ))
-        .catch((err) => {
-            console.error('An error has occurred:\n' + err)
-            res.status(404).json({ message: 'An errorrr has occurred' })
+    const existingUser = await User.findOne({
+        email: email,
+        password: password
+    })
+        .then(data => {
+            res.send({
+                result: data._id
+            })
+        })
+        .catch(() => {
+            res.send({
+                result: null
+            })
         })
 })
 
