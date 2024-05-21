@@ -1,11 +1,13 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { StyleSheet, Text, TextInput, Button, View } from 'react-native';
 import axios from 'axios';
+import { AppContext } from '../../AppContext';
 
-export default function Login({ auth, handleAuth }) {
+export default function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
+  const { handleAuth } = useContext(AppContext)
 
   const [userEmail, setUserEmail] = useState('')
   const [userPassword, setUserPassword] = useState('')
@@ -22,12 +24,15 @@ export default function Login({ auth, handleAuth }) {
       password: password
     })
       .then(res => {
-        console.log(res.data)
         const data = res.data
-        setUserEmail(data.result)
-        if (data.result) setErrorMessage('')
+        setUserEmail(data.token)
+        if (data.token) {
+          setErrorMessage('')
+          console.log(data.token)
+          handleAuth(data.token)
+        }
         else setErrorMessage('Invalid user')
-        handleAuth(data.result)
+        // handleAuth(data.result)
       })
       .catch(err => {
         console.error('An error has occurred:', err)

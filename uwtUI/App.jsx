@@ -1,21 +1,22 @@
 import React from 'react';
 import { useState } from 'react';
-import { StyleSheet, View, Text, Button, TurboModuleRegistry } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import Main from './components/Main/Main';
 import Access from './components/Access/Access';
-import SignUpNavigation from './components/Access/SignUp/SignUpNavigation';
+import AppProvider from './components/AppContext';
 
 export default function App() {
-  const [auth, setAuth] = useState('')
+  const [auth, setAuth] = useState(null)
   const handleAuth = (value) => setAuth(value)
   const authComponent = (auth)
     ? <Main />
-    : <Access auth={auth} handleAuth={handleAuth}/>
+    : <Access />
 
   return (
     <NavigationContainer>
-      {authComponent}
+      <AppProvider handleAuth={handleAuth}>
+        {authComponent}
+      </AppProvider>
     </NavigationContainer>
   );
 }

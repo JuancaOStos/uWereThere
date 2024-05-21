@@ -19,3 +19,12 @@ Accept: application/json
     "email": "ejemplo@email.com",
     "password": "password123"
 }
+
+### Checking existing user
+POST http://localhost:3000/users/userByEmail
+Content-Type: application/json
+Accept: application/json
+
+{
+    "email": "usuario1@example.com"
+}
