@@ -1,14 +1,15 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { View, Text, Button, StyleSheet } from "react-native";
 import Login from "./Login/Login";
 import SignUp from "./SignUp/SignUp";
+import { AppContext } from "../AppContext";
 
-export default function Access({ auth, handleAuth }) {
-    const [loginView, setLoginView] = useState(true)
+export default function Access() {
+    const { loginView, setLoginView } = useContext(AppContext)
     const testHandleLoginView = () => setLoginView(!loginView)
     const authComponent = (loginView)
-        ? <Login auth={auth} handleAuth={handleAuth}/>
+        ? <Login/>
         : <SignUp />
 
     return (
