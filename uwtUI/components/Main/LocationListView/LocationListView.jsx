@@ -5,7 +5,6 @@ export default function LocationListView() {
     return(
         <>
             <View style={{ flex: 1 }}>
-                <Text>Location List View</Text>
             </View>
         </>
     )

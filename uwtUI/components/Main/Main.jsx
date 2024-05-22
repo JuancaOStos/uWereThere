@@ -5,6 +5,7 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
 
 import LocationListView from "./LocationListView/LocationListView";
+import UserListView from "./UserListView/UserListView";
 import NewLocation from "./NewLocation/NewLocation";
 import UserProfileView from "./UserProfileView/UserProfileView";
 
@@ -13,15 +14,36 @@ const Tab = createBottomTabNavigator()
 export default function Main() {
 
     return(
-        <Tab.Navigator>
+        <Tab.Navigator
+            screenOptions={{
+              tabBarStyle: { height: 65 },
+              tabBarActiveTintColor: 'green'
+            }}
+        >
             <Tab.Screen 
                 name="LocationListView"
                 component={LocationListView}
                 options={{
                   tabBarLabel: 'Ubicaciones',
+                  tabBarLabelStyle: {
+                    fontSize: 15
+                  },
                   tabBarIcon: ({ color, size }) => (
                     <FontAwesome5 name="search-location" size={30} color="black" />
-                  )
+                  ),
+                }}
+            />
+            <Tab.Screen
+                name="UserListView"
+                component={UserListView}
+                options={{
+                  tabBarLabel: 'Usuarios',
+                  tabBarLabelStyle: {
+                    fontSize: 15
+                  },
+                  tabBarIcon: ({ color, size }) => (
+                    <FontAwesome5 name="users" size={24} color="black" />
+                  ),
                 }}
             />
             <Tab.Screen
@@ -29,9 +51,12 @@ export default function Main() {
                 component={NewLocation}
                 options={{
                   tabBarLabel: 'Nueva Ubicación',
+                  tabBarLabelStyle: {
+                    fontSize: 12
+                  },
                   tabBarIcon: ({ color, size }) => (
                     <MaterialIcons name="add-location" size={30} color="black" />
-                  )
+                  ),
                 }}
             />
             <Tab.Screen
@@ -39,9 +64,12 @@ export default function Main() {
                 component={UserProfileView}
                 options={{
                   tabBarLabel: 'Mi Perfil',
+                  tabBarLabelStyle: {
+                    fontSize: 15
+                  },
                   tabBarIcon: ({ color, size }) => (
                     <FontAwesome5 name="user-circle" size={30} color="black" />
-                  )
+                  ),
                 }}
             />
         </Tab.Navigator>

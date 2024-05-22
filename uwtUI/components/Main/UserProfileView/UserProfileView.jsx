@@ -5,7 +5,6 @@ export default function UserProfileView() {
     return(
         <>
             <View style={{ flex: 1 }}>
-                <Text>User Profile View</Text>
             </View>
         </>
     )
