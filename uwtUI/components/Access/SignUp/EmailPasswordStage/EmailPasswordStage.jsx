@@ -12,7 +12,7 @@ export default function EmailPasswordStage() {
     const navigation = useNavigation()
 
     const checkExistingUser = () => {
-        axios.post('http://192.168.1.26:3000/users/userByEmail', {
+        axios.post('http://192.168.1.26:3000/users/existingEmail', {
             email: email
         })
             .then(res => {

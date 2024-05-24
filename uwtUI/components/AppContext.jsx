@@ -1,13 +1,26 @@
-import react, { createContext, useContext, useState } from "react";
+import react, { createContext, useState, useEffect } from "react";
+import axios from "axios";
+import { jwtDecode } from 'jwt-decode'
 
 export const AppContext = createContext()
 
-export default function AppProvider({ children, handleAuth }) {
+export default function AppProvider({ children, auth, handleAuth }) {
     const [loginView, setLoginView] = useState(true)
+    const [userData, setUserData] = useState(null)
+    const [userPublications, setUserPublications] = useState(null)
+    useEffect(() => {
+        if (auth) {
+            const tokenPayload = jwtDecode(auth)
+            console.log(tokenPayload.email)
+            setUserData(tokenPayload)
+        }
+    }, [auth])
+    
     return (
         <AppContext.Provider value={{
             loginView,
             setLoginView,
+            userData,
             handleAuth
         }}>
             {children}

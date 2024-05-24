@@ -10,7 +10,7 @@ const { getAllUsers,
 
 const app = express()
 const mongoose = require('mongoose')
-const { User } = require('./dbModels.js')
+const { User, Publication } = require('./dbModels.js')
 
 const DATABASE = 'uwtDevDB'
 const USERNAME = 'jcostosmolina'
@@ -18,7 +18,7 @@ const PASSWORD = 'Kyaromir-9'
 const URI = `mongodb+srv://${USERNAME}:${PASSWORD}@uwtcluster.8fbaqsw.mongodb.net/${DATABASE}?retryWrites=true&w=majority&appName=uwtCluster`
 
 const SALT = 10
-const SWORD = 'tSZEMEBNRsVWMYt2dnyjqaoiFS5VhOXI'
+const SWORD = "hvdvay6ert72839289()aiyg8t87qt72393293883uhefiuh78ttq3ifi78272jdsds039[]]pou89ywe"
 
 const DAY_IN_SEC = 86400
 
@@ -80,21 +80,55 @@ app.post('/login', async (req, res) => {
                 token: null
             })
         })
-    
-    const match = await bcrypt.compare(password, existingUser.password)
+    console.log(existingUser)
+    if (existingUser) {
+        const match = await bcrypt.compare(password, existingUser.password)
 
-    if (match) {
-        const token = jwt.sign({
-            email: existingUser.email,
-            nickname: existingUser.nickname,
-            avatar: existingUser.avatar,
-            exp: new Date().getDate() + DAY_IN_SEC
+        if (match) {
+            const token = jwt.sign({
+                _id: existingUser._id,
+                email: existingUser.email,
+                nickname: existingUser.nickname,
+                avatar: existingUser.avatar,
+                exp: new Date().getDate() + DAY_IN_SEC
 
-        }, SWORD)
+            }, SWORD)
+            res.send({
+                token: token
+            })
+        } else {
+            res.send({
+                result: null
+            })
+        }
+    } else {
         res.send({
-            token: token
+            result: null
         })
     }
+    
+})
+
+app.post('/users/existingEmail', async (req, res) => {
+    const { email } = req.body
+    
+    await User.findOne({ email: email })
+        .then(data => {
+            if(data) {
+                res.send({
+                    result: 'The user already exist'
+                })
+            } else {
+                res.send({
+                    result: null
+                })
+            }
+        })
+        .catch(err => {
+            res.send({
+                result: 'An error has occurred finding document:\n' + err
+            })
+        })
 })
 
 app.post('/users/userByEmail', async (req, res) => {
@@ -104,7 +138,7 @@ app.post('/users/userByEmail', async (req, res) => {
         .then(data => {
             if(data) {
                 res.send({
-                    result: 'The user already exist'
+                    result: data
                 })
             } else {
                 res.send({
@@ -133,7 +167,9 @@ app.post('/signup', async (req, res) => {
         email: email,
         password: encryptedPassword,
         nickname: nickname,
-        avatar: avatar
+        rate: 0,
+        publications: [],
+        friends: []
     })
         .then(() => {
             res.send({
@@ -147,6 +183,47 @@ app.post('/signup', async (req, res) => {
                 result: 'An error has occurred during signup:\n' + err
             })
         })
+})
+
+app.post('/addNewPublication', async (req, res) => {
+    const { location, title, description, author } = req.body
+    console.log(
+        location,
+        title,
+        description,
+        author
+    )
+    await Publication.create({
+        location: location,
+        title: title,
+        description: description,
+        author: author,
+        rates: [],
+        comments: []
+    })
+    .then(async (newPublication) => {
+        await User.findByIdAndUpdate(author, {
+            $push: {
+                publications: newPublication._id
+            }
+        })
+            .then(() => {
+                console.log('User publications updated succesfully')
+            })
+            .catch(err => {
+                console.error('An error has occurred during user publications updating:\n' + err)
+            })
+        res.send({
+            status: 'ok',
+            result: 'Publication created with success'
+        })
+    })
+    .catch(err => {
+        res.send({
+            status: 'error',
+            result: 'An error has occurred during publication creation:\n' + err
+        })
+    })
 })
 
 app.use((req, res) => {

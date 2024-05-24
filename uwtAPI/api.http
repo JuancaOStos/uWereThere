@@ -16,15 +16,32 @@ Content-Type: application/json
 Accept: application/json
 
 {
-    "email": "ejemplo@email.com",
-    "password": "password123"
+    "email": "paquitorremolinos@jotmeil.com",
+    "password": "warakazumba"
 }
 
 ### Checking existing user
-POST http://localhost:3000/users/userByEmail
+POST http://localhost:3000/users/existingEmail
 Content-Type: application/json
 Accept: application/json
 
 {
     "email": "usuario1@example.com"
+}
+
+### New publication
+POST http://localhost:3000/addNewPublication
+Content-Type: application/json
+Accept: application/json
+
+{
+    "location": {
+        "latitude": 0,
+        "longitude": 0
+    },
+    "title": "Bancos de madera de la Laguna",
+    "description": "Un sitio muy tranquilo donde pararse a descansar del día a día",
+    "author": 9283749238749823,
+    "rates": [],
+    "comments": []
 }

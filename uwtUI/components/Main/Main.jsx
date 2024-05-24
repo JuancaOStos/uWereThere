@@ -3,11 +3,13 @@ import { View, Text, StyleSheet } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { FontAwesome5 } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons';
 
 import LocationListView from "./LocationListView/LocationListView";
 import UserListView from "./UserListView/UserListView";
 import NewLocation from "./NewLocation/NewLocation";
 import UserProfileView from "./UserProfileView/UserProfileView";
+import ProfileSettingsView from "./ProfileSettingsView/ProfileSettingsView";
 
 const Tab = createBottomTabNavigator()
 
@@ -21,7 +23,7 @@ export default function Main() {
             }}
         >
             <Tab.Screen 
-                name="LocationListView"
+                name="Publicaciones"
                 component={LocationListView}
                 options={{
                   tabBarLabel: 'Ubicaciones',
@@ -34,7 +36,7 @@ export default function Main() {
                 }}
             />
             <Tab.Screen
-                name="UserListView"
+                name="Usuarios"
                 component={UserListView}
                 options={{
                   tabBarLabel: 'Usuarios',
@@ -47,7 +49,7 @@ export default function Main() {
                 }}
             />
             <Tab.Screen
-                name="NewLocation"
+                name="Nueva localización"
                 component={NewLocation}
                 options={{
                   tabBarLabel: 'Nueva Ubicación',
@@ -60,7 +62,7 @@ export default function Main() {
                 }}
             />
             <Tab.Screen
-                name="UserProfileView"
+                name="Perfil de usuario"
                 component={UserProfileView}
                 options={{
                   tabBarLabel: 'Mi Perfil',
@@ -69,6 +71,19 @@ export default function Main() {
                   },
                   tabBarIcon: ({ color, size }) => (
                     <FontAwesome5 name="user-circle" size={30} color="black" />
+                  ),
+                }}
+            />
+            <Tab.Screen
+                name="Configuraciones"
+                component={ProfileSettingsView}
+                options={{
+                  tabBarLabel: 'Configuraciones',
+                  tabBarLabelStyle: {
+                    fontSize: 15
+                  },
+                  tabBarIcon: ({ color, size }) => (
+                    <Feather name="settings" size={24} color="black" />
                   ),
                 }}
             />

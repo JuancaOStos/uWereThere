@@ -11,10 +11,9 @@ export default function App() {
   const authComponent = (auth)
     ? <Main />
     : <Access />
-
   return (
     <NavigationContainer>
-      <AppProvider handleAuth={handleAuth}>
+      <AppProvider auth={auth} handleAuth={handleAuth}>
         {authComponent}
       </AppProvider>
     </NavigationContainer>
