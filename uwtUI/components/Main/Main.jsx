@@ -7,8 +7,9 @@ import { Feather } from '@expo/vector-icons';
 
 import LocationListView from "./LocationListView/LocationListView";
 import UserListView from "./UserListView/UserListView";
+import UserListStack from "./UserListView/UserListStack";
 import NewLocation from "./NewLocation/NewLocation";
-import UserProfileView from "./UserProfileView/UserProfileView";
+import AuthProfileView from "./AuthProfileView/AuthProfileView";
 import ProfileSettingsView from "./ProfileSettingsView/ProfileSettingsView";
 
 const Tab = createBottomTabNavigator()
@@ -37,7 +38,7 @@ export default function Main() {
             />
             <Tab.Screen
                 name="Usuarios"
-                component={UserListView}
+                component={UserListStack}
                 options={{
                   tabBarLabel: 'Usuarios',
                   tabBarLabelStyle: {
@@ -63,7 +64,7 @@ export default function Main() {
             />
             <Tab.Screen
                 name="Perfil de usuario"
-                component={UserProfileView}
+                component={AuthProfileView}
                 options={{
                   tabBarLabel: 'Mi Perfil',
                   tabBarLabelStyle: {

@@ -3,6 +3,7 @@ import axios from "axios";
 import { View, Text, Button, StyleSheet, TextInput } from 'react-native'
 import { useNavigation } from "@react-navigation/native";
 import { AppContext } from "../../../AppContext";
+import { URL } from "../../../../constants";
 
 export default function ConfirmationStage({ route, navigation }) {
     const { loginView, setLoginView } = useContext(AppContext)
@@ -16,7 +17,7 @@ export default function ConfirmationStage({ route, navigation }) {
     const [resultMessge, setResultMessage] = useState('')
 
     const newUserSignUp = () => {
-        axios.post('http://192.168.1.26:3000/signup', {
+        axios.post(`${URL}/signup`, {
             email: email,
             password: password,
             nickname: nickname,

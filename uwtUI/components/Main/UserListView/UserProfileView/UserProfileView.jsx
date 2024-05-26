@@ -1,11 +1,10 @@
 import react, { useContext } from "react";
 import { View, Text, Button, FlatList } from "react-native";
 import { AntDesign } from '@expo/vector-icons';
-import { AppContext } from "../../AppContext";
 
-export default function UserProfileView() {
-    const { userData } = useContext(AppContext)
-    console.log(userData.nickname)
+export default function UserProfileView({ route }) {
+    const { userItem } = route.params
+
     return(
         <>
             <View style={{
@@ -35,8 +34,8 @@ export default function UserProfileView() {
                 alignItems: 'center',
                 marginBottom: 20
             }}>
-                <Text style={{fontSize: 25}}>{userData.nickname}</Text>
-                <Text style={{fontSize: 15}}>{userData.email}</Text>
+                <Text style={{fontSize: 25}}>{userItem.nickname}</Text>
+                <Text style={{fontSize: 15}}>{userItem.email}</Text>
             </View>
             <View style={{
                 flexDirection: 'row'

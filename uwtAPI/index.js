@@ -153,6 +153,46 @@ app.post('/users/userByEmail', async (req, res) => {
         })
 })
 
+app.get('/getAllUsers', async (req, res) => {
+    await User.find({}, { password: 0 })
+        .then(data => {
+            if(data) {
+                res.send({
+                    result: data
+                })
+            } else {
+                res.send({
+                    result: null
+                })
+            }
+        })
+        .catch(err => {
+            res.send({
+                result: 'An error has occurred finding documents:\n' + err
+            })
+        })
+})
+
+app.get('/getAllLocations', async (req, res) => {
+    await Publication.find({})
+        .then(data => {
+            if(data) {
+                res.send({
+                    result: data
+                })
+            } else {
+                res.send({
+                    result: null
+                })
+            }
+        })
+        .catch(err => {
+            res.send({
+                result: 'An error has occurred finding documenst:\n' + err
+            })
+        })
+})
+
 app.post('/signup', async (req, res) => {
     const { email, password, nickname, avatar } = req.body
     const encryptedPassword = await bcrypt.hash(password, SALT)

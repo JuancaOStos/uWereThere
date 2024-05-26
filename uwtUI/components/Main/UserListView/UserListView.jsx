@@ -1,11 +1,31 @@
-import react, { useState } from "react";
-import { View, Text, TextInput, ScrollView, FlatList } from "react-native";
+import react, { useState, useEffect } from "react";
+import { View, TextInput, Button, FlatList } from "react-native";
+import axios from "axios";
+import { URL } from '../../../constants.js'
 import UserItem from "./UserItem/UserItem";
-import users from '../../../usersForDev.json'
 
-export default function UserListView() {
+export default function UserListView({ navigation }) {
     const [searchName, setSearchName] = useState('')
+    const [users, setUsers] = useState(null)
+
     const handleSearchName = (value) => setSearchName(value)
+    const handleUsers = (value) => setUsers(value)
+    const handleNavigation = (userItem) => {
+        console.log('ENSEÑANDO EL USERITEM', userItem)
+        navigation.navigate('UserProfileView', { userItem })
+    }
+    
+    const getAllUsers = async() => {
+        const usersData = await axios.get(`${URL}/getAllUsers`)
+            .then(res => res.data.result)
+        console.log('Users data', usersData)
+        console.log(usersData)
+        setUsers(usersData)
+    }
+    
+    useEffect(() => {
+        getAllUsers()
+    }, [])
 
     return(
         <>
@@ -27,13 +47,14 @@ export default function UserListView() {
                     renderItem={({ item: user }) => (
                         <UserItem
                             searchName={searchName}
-                            avatar={user.avatar}
-                            nickname={user.nickname}
-                            rate={user.rate}
-                            publicationCount={user.publications.length}
-                            friendsCount={user.friends.length}
+                            userItem={user}
+                            handleNavigation={handleNavigation}
                         />
                     )}
+                />
+                <Button
+                    title="Reload view"
+                    onPress={getAllUsers}
                 />
             </View>
         </>

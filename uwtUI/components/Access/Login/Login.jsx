@@ -2,6 +2,7 @@ import { useState, useContext } from 'react';
 import { StyleSheet, Text, TextInput, Button, View } from 'react-native';
 import axios from 'axios';
 import { AppContext } from '../../AppContext';
+import { URL } from '../../../constants';
 
 export default function Login() {
   const [email, setEmail] = useState('')
@@ -19,7 +20,7 @@ export default function Login() {
   const handlePassword = (value) => setPassword(value)
 
   const handleLogin = () => {
-    axios.post('http://192.168.1.26:3000/login', {
+    axios.post(`${URL}/login`, {
       email: email,
       password: password
     })
@@ -35,6 +36,7 @@ export default function Login() {
         // handleAuth(data.result)
       })
       .catch(err => {
+        alert('An error has occurred:\n' + err)
         console.error('An error has occurred:', err)
       })
   }

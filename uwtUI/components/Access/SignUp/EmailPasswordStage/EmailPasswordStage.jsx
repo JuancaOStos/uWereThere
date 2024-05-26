@@ -2,6 +2,7 @@ import react, { useState } from "react";
 import axios from "axios";
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native'
 import { useNavigation } from "@react-navigation/native";
+import { URL } from "../../../../constants";
 
 export default function EmailPasswordStage() {
     const [email, setEmail] = useState('')
@@ -12,7 +13,7 @@ export default function EmailPasswordStage() {
     const navigation = useNavigation()
 
     const checkExistingUser = () => {
-        axios.post('http://192.168.1.26:3000/users/existingEmail', {
+        axios.post(`${URL}/users/existingEmail`, {
             email: email
         })
             .then(res => {
@@ -28,6 +29,7 @@ export default function EmailPasswordStage() {
                 }
             })
             .catch(err => {
+                alert('An error has occurred:\n' + err)
                 console.error('An error has occurred. The server could not be available:\n' + err)
             })
     }

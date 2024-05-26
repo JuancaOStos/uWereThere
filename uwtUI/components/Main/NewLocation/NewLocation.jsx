@@ -4,6 +4,7 @@ import MapView, { Marker } from 'react-native-maps';
 import axios from "axios";
 import * as Location from 'expo-location'
 import { AppContext } from "../../AppContext";
+import { URL } from "../../../constants";
 
 
 export default function NewLocation() {
@@ -29,7 +30,7 @@ export default function NewLocation() {
             description: description,
             author: userData._id,
         }
-        axios.post('http://192.168.1.26:3000/addNewPublication', newLocation)
+        axios.post(`${URL}/addNewPublication`, newLocation)
             .then(data => {
                 console.log(data.data)
             })
@@ -70,7 +71,7 @@ export default function NewLocation() {
                         longitudeDelta: 0.04
                     }}
                     scrollEnabled={false}
-                    zoomControlEnabled={false}
+                    zoomEnabled={false}
                 >
                     <Marker 
                         coordinate={{

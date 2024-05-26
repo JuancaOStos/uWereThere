@@ -6,7 +6,7 @@ export const AppContext = createContext()
 
 export default function AppProvider({ children, auth, handleAuth }) {
     const [loginView, setLoginView] = useState(true)
-    const [userData, setUserData] = useState(null)
+    const [authData, setUserData] = useState(null)
     const [userPublications, setUserPublications] = useState(null)
     useEffect(() => {
         if (auth) {
@@ -20,7 +20,7 @@ export default function AppProvider({ children, auth, handleAuth }) {
         <AppContext.Provider value={{
             loginView,
             setLoginView,
-            userData,
+            authData,
             handleAuth
         }}>
             {children}

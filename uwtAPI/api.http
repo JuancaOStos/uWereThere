@@ -10,6 +10,12 @@ GET http://localhost:3000/users/id/664367e4b68c9c666ab35167
 ### Get user by email
 GET http://localhost:3000/users/email/correo@test.com
 
+### Get all users without password
+GET http://localhost:3000/getAllUsers
+
+### Get all locations
+GET http://localhost:3000/getAllLocations
+
 ### Login by email and password
 POSt http://localhost:3000/login
 Content-Type: application/json

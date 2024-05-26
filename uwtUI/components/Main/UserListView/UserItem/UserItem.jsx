@@ -4,13 +4,16 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 
-export default function UserItem({ searchName, avatar, nickname, rate, publicationCount, friendsCount }) {
-        if (nickname.toLowerCase().includes(searchName.toLowerCase())) {
+export default function UserItem({ searchName, userItem, handleNavigation }) {
+        if (userItem.nickname.toLowerCase().includes(searchName.toLowerCase())) {
+            console.log('EL QUE LLEGA', userItem)
             return(
                 <TouchableHighlight
-                activeOpacity={0.6}
-                underlayColor="#DDDDDD"
-                onPress={() => {}}
+                    activeOpacity={0.6}
+                    underlayColor="#DDDDDD"
+                    onPress={() => {
+                        handleNavigation(userItem)
+                    }}
             >
                 <View style={{
                     backgroundColor: 'lightgreen',
@@ -36,7 +39,7 @@ export default function UserItem({ searchName, avatar, nickname, rate, publicati
                             <Text style={{
                                 fontSize: 15,
                                 marginStart: 15
-                            }}>{nickname}</Text>
+                            }}>{userItem.nickname}</Text>
                         </View>
                     </View>
                     <View style={{
@@ -48,19 +51,19 @@ export default function UserItem({ searchName, avatar, nickname, rate, publicati
                             alignItems: 'center'
                         }}>
                             <AntDesign name="star" size={24} color="black" />
-                            <Text>{rate}</Text>
+                            <Text>{userItem.rate}</Text>
                         </View>
                         <View style={{
                             alignItems: 'center'
                         }}>
                             <Ionicons name="location-sharp" size={24} color="black" />
-                            <Text>{publicationCount}</Text>
+                            <Text>{userItem.publications.length}</Text>
                         </View>
                         <View style={{
                             alignItems: 'center'
                         }}>
                             <FontAwesome5 name="user-friends" size={24} color="black" />
-                            <Text>{friendsCount}</Text>
+                            <Text>{userItem.friends.length}</Text>
                         </View>
                     </View>
                 </View>
