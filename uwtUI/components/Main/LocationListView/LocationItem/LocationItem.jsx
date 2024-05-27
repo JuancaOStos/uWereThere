@@ -1,21 +1,20 @@
-import react from "react";
-import { View, Text, TouchableHighlight, Modal } from "react-native";
+import react, {useState} from "react";
+import { View, Text, TouchableHighlight } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import { AntDesign } from '@expo/vector-icons';
 
-export default function LocationItem({ searchTitle, author, authorAvatar, location, title, rates, distance  }) {
-    const parsedRate = (rates) ? 0 : null
+export default function LocationItem({ searchTitle, locationItem, handleNavigation  }) {
+    const authorNickname = (locationItem.author)
+        ? locationItem.author.nickname
+        : '-nickname-'
+    const parsedRate = (locationItem.rates) ? 0 : null
 
-    if (title.toLowerCase().includes(searchTitle.toLowerCase())) {
+    if (locationItem.title.toLowerCase().includes(searchTitle.toLowerCase())) {
         return(
             <TouchableHighlight
                 activeOpacity={0.6}
                 underlayColor={'#DDDDDD'}
-                onPress={() => (
-                    <Modal>
-                        <Text>Hola</Text>
-                    </Modal>
-                )}
+                onPress={() => handleNavigation(locationItem)}
             >
                 <View style={{
                     backgroundColor: 'lightgreen',
@@ -31,7 +30,7 @@ export default function LocationItem({ searchTitle, author, authorAvatar, locati
                         alignSelf: 'flex-end',
                         alignItems: 'center',
                     }}>
-                        <Text style={{ marginEnd: 10 }} >{author}</Text>
+                        <Text style={{ marginEnd: 10 }} >{authorNickname}</Text>
                         <View style={{
                             backgroundColor: 'red',
                             width: 30,
@@ -46,8 +45,8 @@ export default function LocationItem({ searchTitle, author, authorAvatar, locati
                                 height: 80
                             }}
                             region={{
-                                latitude: location.latitude,
-                                longitude: location.longitude,
+                                latitude: locationItem.location.latitude,
+                                longitude: locationItem.location.longitude,
                                 latitudeDelta: 0.09,
                                 longitudeDelta: 0.04
                             }}
@@ -56,15 +55,15 @@ export default function LocationItem({ searchTitle, author, authorAvatar, locati
                         >
                             <Marker
                                 coordinate={{
-                                    latitude: location.latitude,
-                                    longitude: location.longitude,
+                                    latitude: locationItem.location.latitude,
+                                    longitude: locationItem.location.longitude,
                                     latitudeDelta: 0.09,
                                     longitudeDelta: 0.04
                                 }}
                             />
                         </MapView>
                         <View style={{ marginStart: 25 }}>
-                            <Text>{title}</Text>
+                            <Text>{locationItem.title}</Text>
                             <Text>distance</Text>
                             <View style={{
                                 flexDirection: 'row',

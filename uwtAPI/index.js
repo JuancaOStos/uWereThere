@@ -174,7 +174,7 @@ app.get('/getAllUsers', async (req, res) => {
 })
 
 app.get('/getAllLocations', async (req, res) => {
-    await Publication.find({})
+    await Publication.find({}).populate('author')
         .then(data => {
             if(data) {
                 res.send({

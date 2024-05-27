@@ -11,7 +11,6 @@ export default function UserListView({ navigation }) {
     const handleSearchName = (value) => setSearchName(value)
     const handleUsers = (value) => setUsers(value)
     const handleNavigation = (userItem) => {
-        console.log('ENSEÑANDO EL USERITEM', userItem)
         navigation.navigate('UserProfileView', { userItem })
     }
     

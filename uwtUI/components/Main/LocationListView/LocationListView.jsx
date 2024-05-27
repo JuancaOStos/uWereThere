@@ -4,12 +4,15 @@ import axios from "axios";
 import LocationItem from "./LocationItem/LocationItem";
 import { URL } from '../../../constants.js'
 
-export default function LocationListView() {
+export default function LocationListView({ navigation }) {
     const [searchTitle, setSearchTitle] = useState('')
     const [locations, setLocations] = useState(null)
 
     const handleSearchTitle = (value) => setSearchTitle(value)
     const handleLocations = (value) => setLocations(value)
+    const handleNavigation = (locationItem) => {
+        navigation.navigate('LocationDetails', { locationItem })
+    }
 
     const getAllLocations = async() => {
         const locationsData = await axios.get(`${URL}/getAllLocations`)
@@ -48,12 +51,8 @@ export default function LocationListView() {
                     renderItem={({ item: location }) => (
                         <LocationItem
                             searchTitle={searchTitle}
-                            author={location.author}
-                            authorAvatar={null}
-                            location={location.location}
-                            title={location.title}
-                            rates={location.rates}
-                            distance={null}
+                            locationItem={location}
+                            handleNavigation={handleNavigation}
                         />
                     )}
                 />

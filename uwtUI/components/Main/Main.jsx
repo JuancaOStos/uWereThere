@@ -8,6 +8,7 @@ import { Feather } from '@expo/vector-icons';
 import LocationListView from "./LocationListView/LocationListView";
 import UserListView from "./UserListView/UserListView";
 import UserListStack from "./UserListView/UserListStack";
+import LocationListStack from "./LocationListView/LocationListStack";
 import NewLocation from "./NewLocation/NewLocation";
 import AuthProfileView from "./AuthProfileView/AuthProfileView";
 import ProfileSettingsView from "./ProfileSettingsView/ProfileSettingsView";
@@ -25,7 +26,7 @@ export default function Main() {
         >
             <Tab.Screen 
                 name="Publicaciones"
-                component={LocationListView}
+                component={LocationListStack}
                 options={{
                   tabBarLabel: 'Ubicaciones',
                   tabBarLabelStyle: {
