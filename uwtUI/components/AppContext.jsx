@@ -6,13 +6,13 @@ export const AppContext = createContext()
 
 export default function AppProvider({ children, auth, handleAuth }) {
     const [loginView, setLoginView] = useState(true)
-    const [authData, setUserData] = useState(null)
+    const [authData, setAuthData] = useState(null)
     const [userPublications, setUserPublications] = useState(null)
     useEffect(() => {
         if (auth) {
             const tokenPayload = jwtDecode(auth)
             console.log(tokenPayload.email)
-            setUserData(tokenPayload)
+            setAuthData(tokenPayload)
         }
     }, [auth])
     

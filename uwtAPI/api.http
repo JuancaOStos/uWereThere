@@ -16,13 +16,43 @@ GET http://localhost:3000/getAllUsers
 ### Get all locations
 GET http://localhost:3000/getAllLocations
 
+### Check friend by id
+POST http://localhost:3000/checkFriendById
+Content-Type: application/json
+Accept: application/json
+
+{
+    "authId": "664fa7682cf06e67d4e300f7",
+    "friendId": "6653114ab712bba1113071fb"
+}
+
+### Follow a friend by id
+PUT  http://localhost:3000/followUser
+Content-Type: application/json
+Accept: application/json
+
+{
+    "authId": "664fa7682cf06e67d4e300f7",
+    "friendId": "6653114ab712bba1113071fb"
+}
+
+### Follow a friend by id
+PUT  http://localhost:3000/unFollowUser
+Content-Type: application/json
+Accept: application/json
+
+{
+    "authId": "664fa7682cf06e67d4e300f7",
+    "friendId": "6653114ab712bba1113071fb"
+}
+
 ### Login by email and password
 POSt http://localhost:3000/login
 Content-Type: application/json
 Accept: application/json
 
 {
-    "email": "paquitorremolinos@jotmeil.com",
+    "email": "jcostosmolina@gmail.com",
     "password": "warakazumba"
 }
 

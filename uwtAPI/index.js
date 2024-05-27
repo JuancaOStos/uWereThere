@@ -193,6 +193,79 @@ app.get('/getAllLocations', async (req, res) => {
         })
 })
 
+app.post('/checkFriendById', async (req, res) => {
+    const { authId, friendId } = req.body
+    let authFriends
+    if (authId) {
+        await User.findById(authId, 'friends')
+            .then(data => {
+                authFriends = data.friends
+                const isFriend = (authFriends.includes(friendId))
+                    ? true
+                    : false
+                res.send({
+                    result: isFriend
+                })
+            })
+            .catch(err => {
+                res.send({
+                    result: 'An error has occurred finding documenst:\n' + err
+                })
+            })
+        
+    } else {
+        res.send({
+            result: "'_id' param not provided"
+        })
+    }
+})
+
+app.put('/followUser', async (req, res) => {
+    const { authId, friendId } = req.body
+    
+    await User.findByIdAndUpdate(authId, {
+        $push: {
+            friends: friendId
+        }
+    })
+        .then(() => {
+            console.log('User friends updated succesfully')
+            res.send({
+                result: 'New friend added'
+            })
+        })
+        .catch(err => {
+            console.error('An error has occurred during user friends updating:\n' + err)
+            res.send({
+                result: 'An error has occurred during user friends updating:\n' + err
+            })
+        })
+
+})
+
+app.put('/unFollowUser', async (req, res) => {
+    const { authId, friendId } = req.body
+    
+    await User.findByIdAndUpdate(authId, {
+        $pull: {
+            friends: friendId
+        }
+    })
+        .then(() => {
+            console.log('User friends updated succesfully')
+            res.send({
+                result: 'Friend unfollowed'
+            })
+        })
+        .catch(err => {
+            console.error('An error has occurred during user friends updating:\n' + err)
+            res.send({
+                result: 'An error has occurred during user friends updating:\n' + err
+            })
+        })
+
+})
+
 app.post('/signup', async (req, res) => {
     const { email, password, nickname, avatar } = req.body
     const encryptedPassword = await bcrypt.hash(password, SALT)
