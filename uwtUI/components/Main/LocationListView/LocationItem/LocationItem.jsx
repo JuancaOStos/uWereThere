@@ -3,18 +3,19 @@ import { View, Text, TouchableHighlight } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import { AntDesign } from '@expo/vector-icons';
 
-export default function LocationItem({ searchTitle, locationItem, handleNavigation  }) {
+export default function LocationItem({ searchName, locationItem, handleNavigation, navigationDisabled  }) {
     const authorNickname = (locationItem.author)
         ? locationItem.author.nickname
         : '-nickname-'
     const parsedRate = (locationItem.rates) ? 0 : null
 
-    if (locationItem.title.toLowerCase().includes(searchTitle.toLowerCase())) {
+    if (locationItem.title.toLowerCase().includes(searchName.toLowerCase())) {
         return(
             <TouchableHighlight
                 activeOpacity={0.6}
                 underlayColor={'#DDDDDD'}
                 onPress={() => handleNavigation(locationItem)}
+                disabled={navigationDisabled}
             >
                 <View style={{
                     backgroundColor: 'lightgreen',

@@ -40,7 +40,17 @@ const userSchema = new mongoose.Schema({
     }
 })
 
-
+const commentSchema = new mongoose.Schema({
+    author: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
+    comment: {
+        type: String,
+        required: true
+    }
+}, { timestamps: true })
 
 const publiSchema = new mongoose.Schema({
     location: {
@@ -83,20 +93,15 @@ const publiSchema = new mongoose.Schema({
         required: true,
     },
     comments: [{
-        author: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'User',
-            required: true
-        },
-        comment: {
-            type: String,
-            required: true
-        }
-    }]
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Comment'
+    }],
 })
 
 const User = mongoose.model('User', userSchema)
 
 const Publication = mongoose.model('Publication', publiSchema)
 
-module.exports = { User, Publication }
+const Comment = mongoose.model('Comment', commentSchema)
+
+module.exports = { User, Publication, Comment }

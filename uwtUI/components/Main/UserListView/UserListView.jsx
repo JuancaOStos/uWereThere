@@ -47,6 +47,7 @@ export default function UserListView({ navigation }) {
                         <UserItem
                             searchName={searchName}
                             userItem={user}
+                            navigationDisabled={false}
                             handleNavigation={handleNavigation}
                         />
                     )}

@@ -5,7 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import { AppContext } from "../../../AppContext";
 
-export default function UserItem({ searchName, userItem, handleNavigation }) {
+export default function UserItem({ searchName, userItem, handleNavigation, navigationDisabled }) {
     const { authData } = useContext(AppContext)
     console.log(authData.nickname + ' vs ' + userItem.nickname)
 
@@ -18,7 +18,8 @@ export default function UserItem({ searchName, userItem, handleNavigation }) {
                 onPress={() => {
                     handleNavigation(userItem)
                 }}
-        >
+                disabled={navigationDisabled}
+            >
             <View style={{
                 backgroundColor: 'lightgreen',
                 marginVertical: 5,

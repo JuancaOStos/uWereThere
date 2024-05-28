@@ -10,7 +10,7 @@ const { getAllUsers,
 
 const app = express()
 const mongoose = require('mongoose')
-const { User, Publication } = require('./dbModels.js')
+const { User, Publication, Comment } = require('./dbModels.js')
 
 const DATABASE = 'uwtDevDB'
 const USERNAME = 'jcostosmolina'
@@ -218,6 +218,106 @@ app.post('/checkFriendById', async (req, res) => {
             result: "'_id' param not provided"
         })
     }
+})
+
+app.post('/getPublicationsById', async (req, res) => {
+    const { authId } = req.body
+
+    await User.findById(authId, 'publications').populate('publications')
+        .then(data => {
+            res.send({
+                result: data
+            })
+        })
+        .catch(err => {
+            res.send({
+                result: 'An error has occurred:\n' + err
+            })
+        })
+})
+
+app.post('/getFriendsById', async (req, res) => {
+    const { authId } = req.body
+
+    await User.findById(authId, 'friends').populate({
+        path: 'friends',
+        select: '-password'
+    })
+        .then(data => {
+            res.send({
+                result: data
+            })
+        })
+        .catch(err => {
+            res.send({
+                result: 'An error has occurred:\n' + err
+            })
+        })
+})
+
+app.post('/getCommentsById', async (req, res) => {
+    const { publicationId } = req.body
+
+    await Publication.findById(publicationId, 'comments').populate({
+        path: 'comments',
+        options: {
+            sort: { 'createdAt': -1 }
+        },
+        populate: {
+            path: 'author',
+            select: 'nickname avatar'
+        }
+    })
+    // .sort({ 'comments.createdAt': -1 })
+    .then(data => {
+            res.send({
+                result: data
+            })
+        })
+        .catch(err => {
+            res.send({
+                result: 'An error has occurred:\n' + err
+            })
+        })
+})
+
+app.put('/addNewComment', async (req, res) => {
+    const { publicationId, authId, comment } = req.body
+
+    const newComment = {
+        author: authId,
+        comment: comment
+    }
+
+    await Comment.create({
+        author: authId,
+        comment: comment
+    })
+        .then(async newComment => {
+            await Publication.findByIdAndUpdate(publicationId, {
+                $push: {
+                    comments: newComment._id
+                }
+            })
+                .then(() => {
+                    console.log('Publication comments updated with success')
+                })
+                .catch(err => {
+                    console.error('An error has occurred during publication updating')
+                })
+        })
+        .then(() => {
+            console.log('Comment created with success')
+            res.send({
+                result: 'Comment created with success'
+            })
+        })
+        .catch(err => {
+            console.error('An error has occurred creating new comment:\n' + err)
+            res.send({
+                result: 'An error has occurred creating new comment:\n' + err
+            })
+        })
 })
 
 app.put('/followUser', async (req, res) => {

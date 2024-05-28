@@ -3,14 +3,50 @@ import { View, Text, Button, FlatList } from "react-native";
 import axios from "axios";
 import { URL } from '../../../../constants.js'
 import { AppContext } from "../../../AppContext";
+import LocationItem from "../../LocationListView/LocationItem/LocationItem.jsx";
+import UserItem from "../UserItem/UserItem.jsx";
 import { AntDesign } from '@expo/vector-icons';
 
 export default function UserProfileView({ route }) {
+    const [searchName, setSearchName] = useState('')
+    const [publications, setPublications] = useState(null)
+    const [friends, setFriends] = useState(null)
+    const [listView, setListView] = useState('publications')
     const { authData } = useContext(AppContext)
     const { userItem } = route.params
     const [authFriend, setAuthFriend] = useState(false)
     console.log(userItem)
     console.log(authData._id)
+
+    const handleSearchName = (value) => setSearchName(value)
+
+    const getPublisAndFriends = async () => {
+        await axios.post(`${URL}/getPublicationsById`, {
+            authId: userItem._id
+        })
+            .then(res => {
+                console.log(res.data.result)
+                setPublications(res.data.result.publications)
+            })
+            .catch(err => {
+                console.error('An error has occurred getting publications of auth user:\n' + err)
+            })
+        
+        await axios.post(`${URL}/getFriendsById`, {
+            authId: userItem._id
+        })
+            .then(res => {
+                console.log(res.data.result)
+                setFriends(res.data.result.friends)
+            })
+            .catch(err => {
+                console.error('An error has occurred getting friends of auth user:\n' + err)
+            })
+    }
+
+    useEffect(() => {
+        getPublisAndFriends()
+    }, [])
 
     useEffect(() => {
         checkFriendById()
@@ -27,6 +63,18 @@ export default function UserProfileView({ route }) {
             })
     }
 
+    const handlePublicationListButton = async () => {
+        await getPublisAndFriends()
+        setListView('publications')
+        console.log(publications)
+    }
+
+    const handleFriendListButton = async() => {
+        await getPublisAndFriends()
+        setListView('friends')
+        console.log(friends)
+    }
+
     const handleFollow = async () => {
         await axios.put(`${URL}/followUser`, {
             authId: authData._id,
@@ -37,6 +85,32 @@ export default function UserProfileView({ route }) {
             })
         checkFriendById()
     }
+
+    const listToShow = (listView === 'publications')
+        ? (
+            <FlatList
+                data={publications}
+                renderItem={({ item: location }) => (
+                    <LocationItem
+                        searchName={searchName}
+                        locationItem={location}
+                        navigationDisabled={true}
+                    />
+                )}
+            />
+        )
+        : (
+            <FlatList
+                data={friends}
+                renderItem={({ item: friends }) => (
+                    <UserItem
+                        searchName={searchName}
+                        userItem={friends}
+                        navigationDisabled={true}
+                    />
+                )}
+            />
+        )
 
     const handleUnFollow = async () => {
         await axios.put(`${URL}/unFollowUser`, {
@@ -100,14 +174,14 @@ export default function UserProfileView({ route }) {
             }}>
                 <Button
                     title="n publications"
+                    onPress={handlePublicationListButton}
                 />
                 <Button
                     title="n friends"
+                    onPress={handleFriendListButton}
                 />
             </View>
-            <View>
-                <FlatList />
-            </View>
+            {listToShow}
         </View>
         </>
     )

@@ -5,10 +5,10 @@ import LocationItem from "./LocationItem/LocationItem";
 import { URL } from '../../../constants.js'
 
 export default function LocationListView({ navigation }) {
-    const [searchTitle, setSearchTitle] = useState('')
+    const [searchName, setSearchName] = useState('')
     const [locations, setLocations] = useState(null)
 
-    const handleSearchTitle = (value) => setSearchTitle(value)
+    const handleSearchName = (value) => setSearchName(value)
     const handleLocations = (value) => setLocations(value)
     const handleNavigation = (locationItem) => {
         navigation.navigate('LocationDetails', { locationItem })
@@ -44,15 +44,16 @@ export default function LocationListView({ navigation }) {
                     <TextInput style={{
                         paddingVertical: 5,
                         paddingStart: 10
-                    }} placeholder="search" onChangeText={handleSearchTitle}></TextInput>
+                    }} placeholder="search" onChangeText={handleSearchName}></TextInput>
                 </View>
                 <FlatList
                     data={locations}
                     renderItem={({ item: location }) => (
                         <LocationItem
-                            searchTitle={searchTitle}
+                            searchName={searchName}
                             locationItem={location}
                             handleNavigation={handleNavigation}
+                            navigationDisabled={false}
                         />
                     )}
                 />
