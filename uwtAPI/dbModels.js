@@ -72,9 +72,8 @@ const publiSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    pics: {
-        type: String,
-        default: null
+    pic: {
+        type: String
     },
     rates: [{
         author: {

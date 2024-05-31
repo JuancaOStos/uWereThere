@@ -2,6 +2,7 @@ const express = require('express')
 const cors = require('cors')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
+const path = require('path')
 const bodyParser = require('body-parser')
 const { getAllUsers,
         getUserById,
@@ -11,6 +12,37 @@ const { getAllUsers,
 const app = express()
 const mongoose = require('mongoose')
 const { User, Publication, Comment } = require('./dbModels.js')
+const multer = require('multer')
+const { URL } = require('../uwtUI/constants.js')
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        return cb(null, './public/images')
+    },
+    filename: (req, file, cb) => {
+        return cb(null, `${Date.now()}_${file.originalname}`)
+    }
+})
+
+const upload = multer({ storage: storage })
+
+app.post('/upload', upload.single('file'), (req, res) => {
+    console.log(req.file)
+    const fileUrl = `${URL}/public/images/${req.file.filename}`
+    res.send({
+        url: fileUrl
+    })
+    // if (req.file) {
+    //     console.log(req.file)
+    //     res.send({
+    //         result: 'Image uploaded successfully', file: req.file
+    //     })
+    // } else {
+    //     res.status(400).send({
+    //         result: 'No file uploaded'
+    //     })
+    // }
+})
 
 const DATABASE = 'uwtDevDB'
 const USERNAME = 'jcostosmolina'
@@ -380,6 +412,7 @@ app.post('/signup', async (req, res) => {
         email: email,
         password: encryptedPassword,
         nickname: nickname,
+        avatar: avatar,
         rate: 0,
         publications: [],
         friends: []
@@ -399,17 +432,19 @@ app.post('/signup', async (req, res) => {
 })
 
 app.post('/addNewPublication', async (req, res) => {
-    const { location, title, description, author } = req.body
+    const { location, pic, title, description, author } = req.body
     console.log(
         location,
         title,
         description,
+        pic,
         author
     )
     await Publication.create({
         location: location,
         title: title,
         description: description,
+        pic: pic,
         author: author,
         rates: [],
         comments: []
@@ -438,6 +473,8 @@ app.post('/addNewPublication', async (req, res) => {
         })
     })
 })
+
+app.use('/public/images', express.static(path.join(__dirname, 'public', 'images')))
 
 app.use((req, res) => {
     res.status(404).json({ message: '404: Not found' })

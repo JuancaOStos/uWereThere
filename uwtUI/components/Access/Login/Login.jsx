@@ -1,5 +1,5 @@
 import { useState, useContext } from 'react';
-import { StyleSheet, Text, TextInput, Button, View } from 'react-native';
+import { StyleSheet, Text, TextInput, Button, View, Image } from 'react-native';
 import axios from 'axios';
 import { AppContext } from '../../AppContext';
 import { URL } from '../../../constants';
@@ -40,7 +40,7 @@ export default function Login() {
         console.error('An error has occurred:', err)
       })
   }
-
+"/1717003028872_fe04d5fe-41d0-4aa9-8314-eefec0273ffa.jpeg"
   return (
     <View style={styles.container}>
       <Text>Welcome home!</Text>

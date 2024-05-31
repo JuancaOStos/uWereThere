@@ -1,6 +1,6 @@
 import react, { useContext, useEffect, useState } from "react";
 import axios from "axios";
-import { View, Text, Button, FlatList, TextInput } from "react-native";
+import { View, Text, Button, FlatList, TextInput, Image } from "react-native";
 import LocationItem from '../LocationListView/LocationItem/LocationItem.jsx'
 import UserItem from '../UserListView/UserItem/UserItem.jsx'
 import { AntDesign } from '@expo/vector-icons';
@@ -13,7 +13,7 @@ export default function AuthProfileView() {
     const [friends, setFriends] = useState(null)
     const [listView, setListView] = useState('publications')
     const { authData } = useContext(AppContext)
-    console.log(authData.nickname)
+    console.log(authData.avatar)
 
     const handleSearchName = (value) => setSearchName(value)
 
@@ -93,12 +93,11 @@ export default function AuthProfileView() {
                 flexDirection: 'row',
                 marginBottom: 20
             }}>
-                <View style={{
-                    backgroundColor: 'red',
-                    width: 100,
-                    height: 100,
-                    borderRadius: 50
-                }}></View>
+                <Image source={{ uri: authData.avatar }} style={{
+                    width: 150,
+                    height: 150,
+                    borderRadius: 100
+                }}/>
                 <View style={{
                     flexDirection: 'row',
                     alignItems: 'center',

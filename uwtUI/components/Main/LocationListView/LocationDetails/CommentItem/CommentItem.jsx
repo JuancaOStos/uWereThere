@@ -1,8 +1,12 @@
-import react from "react";
-import { View, Text } from "react-native";
+import react, { useContext } from "react";
+import { View, Text, Image } from "react-native";
+import { AppContext } from "../../../../AppContext.jsx";
 
 export default function CommentItem({ commentItem }) {
-    
+    const { authData } = useContext(AppContext)
+    const avatar = (commentItem.author.avatar)
+     ? commentItem.author.avatar
+     : 'https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png'
     return (
         <View style={{
             backgroundColor: 'lightgreen',
@@ -16,13 +20,12 @@ export default function CommentItem({ commentItem }) {
                 flexDirection: 'row',
                 alignItems: 'center'
             }}>
-                <View style={{
-                    backgroundColor: 'red',
+                <Image source={{ uri: avatar }} style={{
                     width: 30,
                     height: 30,
                     borderRadius: 50,
                     marginStart: 10
-                }}></View>
+                }}/>
                 <Text style={{
                     marginStart: 10
                 }}>{commentItem.author.nickname}</Text>

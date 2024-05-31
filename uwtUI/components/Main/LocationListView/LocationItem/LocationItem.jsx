@@ -1,6 +1,5 @@
 import react, {useState} from "react";
-import { View, Text, TouchableHighlight } from "react-native";
-import MapView, { Marker } from "react-native-maps";
+import { View, Text, TouchableHighlight, Image } from "react-native";
 import { AntDesign } from '@expo/vector-icons';
 
 export default function LocationItem({ searchName, locationItem, handleNavigation, navigationDisabled  }) {
@@ -8,6 +7,9 @@ export default function LocationItem({ searchName, locationItem, handleNavigatio
         ? locationItem.author.nickname
         : '-nickname-'
     const parsedRate = (locationItem.rates) ? 0 : null
+    const avatar = (locationItem.author.avatar)
+        ? locationItem.author.avatar
+        : 'https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png'
 
     if (locationItem.title.toLowerCase().includes(searchName.toLowerCase())) {
         return(
@@ -32,40 +34,25 @@ export default function LocationItem({ searchName, locationItem, handleNavigatio
                         alignItems: 'center',
                     }}>
                         <Text style={{ marginEnd: 10 }} >{authorNickname}</Text>
-                        <View style={{
-                            backgroundColor: 'red',
+                        <Image source={{ uri: avatar}} style={{
+                            backgroundColor: 'lightgrey',
                             width: 30,
                             height: 30,
                             borderRadius: 50
-                        }}></View>
+                        }}/>
                     </View>
                     <View style={{ flexDirection: 'row' }}>
-                        <MapView
+                        
+                        <Image
                             style={{
                                 width: 80,
-                                height: 80
+                                height: 80,
+                                borderRadius: 20,
+                                borderColor: 'black'
                             }}
-                            region={{
-                                latitude: locationItem.location.latitude,
-                                longitude: locationItem.location.longitude,
-                                latitudeDelta: 0.09,
-                                longitudeDelta: 0.04
-                            }}
-                            scrollEnabled={false}
-                            zoomEnabled={false}
-                        >
-                            <Marker
-                                coordinate={{
-                                    latitude: locationItem.location.latitude,
-                                    longitude: locationItem.location.longitude,
-                                    latitudeDelta: 0.09,
-                                    longitudeDelta: 0.04
-                                }}
-                            />
-                        </MapView>
+                            source={{ uri: locationItem.pic}}/>
                         <View style={{ marginStart: 25 }}>
                             <Text>{locationItem.title}</Text>
-                            <Text>distance</Text>
                             <View style={{
                                 flexDirection: 'row',
                                 alignItems: 'center'

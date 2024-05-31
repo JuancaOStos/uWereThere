@@ -1,13 +1,18 @@
 import react, { useContext } from "react";
-import { View, Text, TouchableHighlight } from "react-native";
+import { View, Text, TouchableHighlight, Image } from "react-native";
 import { FontAwesome5 } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import { AppContext } from "../../../AppContext";
+import { USER_LOGO } from '../../../../constants'
 
 export default function UserItem({ searchName, userItem, handleNavigation, navigationDisabled }) {
     const { authData } = useContext(AppContext)
     console.log(authData.nickname + ' vs ' + userItem.nickname)
+    console.log(userItem.avatar)
+    const avatar = (userItem.avatar)
+        ? userItem.avatar
+        : USER_LOGO
 
     if (userItem.nickname.toLowerCase().includes(searchName.toLowerCase())
         && userItem.nickname !== authData.nickname) {
@@ -30,13 +35,12 @@ export default function UserItem({ searchName, userItem, handleNavigation, navig
                 borderColor: 'lightblue'
             }}>
                 <View style={{ flexDirection: 'row' }}>
-                    <View style={{
-                        backgroundColor: 'red',
+                    <Image source={{ uri: avatar }}  style={{
                         width: 40,
                         height: 40,
-                        borderRadius: 50
-                    }}>
-                    </View>
+                        borderRadius: 50,
+                        backgroundColor: 'lightgrey'
+                    }}/>
                     <View style={{
                             alignItems: 'center',
                             justifyContent: 'center',

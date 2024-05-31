@@ -1,6 +1,5 @@
 import react, { useContext, useEffect, useState } from "react"
-import { Text, View, FlatList, TextInput, ScrollView, Button} from "react-native"
-import MapView, { Marker } from "react-native-maps"
+import { Text, View, FlatList, TextInput, ScrollView, Button, Image, Linking } from "react-native"
 import { AntDesign } from '@expo/vector-icons';
 import CommentItem from "./CommentItem/CommentItem";
 import { URL } from '../../../../constants.js';
@@ -12,6 +11,10 @@ export default function LocationDetails({ route }) {
     const { locationItem } = route.params
     const [comments, setComments] = useState([])
     const [newComment, setNewComment] = useState('')
+    console.log(locationItem)
+    const avatar = (locationItem.author.avatar)
+        ? locationItem.author.avatar
+        : 'https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png'
 
     const handleNewComment = (value) => setNewComment(value)
 
@@ -67,42 +70,46 @@ export default function LocationDetails({ route }) {
                         alignItems: 'center'
                     }}>
                         <Text>{locationItem.author.nickname}</Text>
-                        <View style={{
-                            backgroundColor: 'red',
+                        <Image source={{ uri: locationItem.author.avatar }}  style={{
                             width: 40,
                             height: 40,
                             borderRadius: 50,
                             marginLeft: 5
-                        }}>
-                        </View>
+                        }}/>
                     </View>
                 </View>
-                    <MapView
-                        style={{
-                            width: '100%',
-                            height: 180
-                        }}
-                        region={{
-                            latitude: locationItem.location.latitude,
-                            longitude: locationItem.location.longitude,
-                            latitudeDelta: 0.09,
-                            longitudeDelta: 0.04
-                        }}
-                        scrollEnabled={false}
-                        zoomEnabled={false}
-                    >
-                        <Marker
-                            coordinate={{
-                                latitude: locationItem.location.latitude,
-                                longitude: locationItem.location.longitude,
-                                latitudeDelta: 0.09,
-                                longitudeDelta: 0.04
-                            }}
-                        />
-                    </MapView>
+                    
+                    <Image
+                    style={{
+                        width: 350,
+                        height: 250,
+                        alignSelf: 'center',
+                        borderRadius: 50,
+                        borderColor: 'black',
+                        borderWidth: 5,
+                        maxWidth: 350,
+                        maxHeight: 250
+                    }}
+                    source={{ uri: locationItem.pic}}/>
                     <Text>{locationItem.title}</Text>
+                    <Text>Description</Text>
                     <Text>{locationItem.description}</Text>
                     <Text>Rate the pub</Text>
+                    <Button 
+                        title="Redirect to Maps"
+                        onPress={() => {
+                            Linking.canOpenURL(`geo:0,0?q=${locationItem.location.latitude},${locationItem.location.longitude}(${locationItem.title})`)
+                                .then((supported) => {
+                                    if (supported) {
+                                        Linking.openURL(`geo:$0,0?q=${locationItem.location.latitude},${locationItem.location.longitude}(${locationItem.title})`)
+                                    } else {
+                                        Alert.alert('Error')
+                                    }
+                                })
+                                .catch(err => Alert.alert('Error'))
+                        }}
+                        disabled={(!locationItem.title)}
+                    />
                     <Text>Comments</Text>
                     <View style={{
                         marginTop: 10,

@@ -1,5 +1,5 @@
 import react, { useState, useEffect } from "react";
-import { View, Text, TextInput, FlatList } from "react-native";
+import { View, Button, Text, TextInput, FlatList } from "react-native";
 import axios from "axios";
 import LocationItem from "./LocationItem/LocationItem";
 import { URL } from '../../../constants.js'
@@ -56,6 +56,10 @@ export default function LocationListView({ navigation }) {
                             navigationDisabled={false}
                         />
                     )}
+                />
+                <Button
+                    title="Reload view"
+                    onPress={getAllLocations}
                 />
             </View>
         </>

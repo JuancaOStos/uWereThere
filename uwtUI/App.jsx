@@ -5,12 +5,15 @@ import Main from './components/Main/Main';
 import Access from './components/Access/Access';
 import AppProvider from './components/AppContext';
 
+// for dev DevCom
+
 export default function App() {
   const [auth, setAuth] = useState(null)
   const handleAuth = (value) => setAuth(value)
   const authComponent = (auth)
     ? <Main />
     : <Access />
+  
   return (
     <NavigationContainer>
       <AppProvider auth={auth} handleAuth={handleAuth}>

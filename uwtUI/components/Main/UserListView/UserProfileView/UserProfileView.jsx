@@ -1,11 +1,12 @@
 import react, { useState, useEffect, useContext } from "react";
-import { View, Text, Button, FlatList } from "react-native";
+import { View, Text, Button, FlatList, Image } from "react-native";
 import axios from "axios";
 import { URL } from '../../../../constants.js'
 import { AppContext } from "../../../AppContext";
 import LocationItem from "../../LocationListView/LocationItem/LocationItem.jsx";
 import UserItem from "../UserItem/UserItem.jsx";
 import { AntDesign } from '@expo/vector-icons';
+import { USER_LOGO } from "../../../../constants.js";
 
 export default function UserProfileView({ route }) {
     const [searchName, setSearchName] = useState('')
@@ -17,6 +18,9 @@ export default function UserProfileView({ route }) {
     const [authFriend, setAuthFriend] = useState(false)
     console.log(userItem)
     console.log(authData._id)
+    const avatar = (userItem.avatar)
+        ? userItem.avatar
+        : USER_LOGO
 
     const handleSearchName = (value) => setSearchName(value)
 
@@ -141,12 +145,12 @@ export default function UserProfileView({ route }) {
                 flexDirection: 'row',
                 marginBottom: 20
             }}>
-                <View style={{
-                    backgroundColor: 'red',
+                <Image source={{ uri: avatar }} style={{
                     width: 100,
                     height: 100,
-                    borderRadius: 50
-                }}></View>
+                    borderRadius: 50,
+                    backgroundColor: 'lightgrey'
+                }} />
                 <View style={{
                     flexDirection: 'row',
                     alignItems: 'center',
