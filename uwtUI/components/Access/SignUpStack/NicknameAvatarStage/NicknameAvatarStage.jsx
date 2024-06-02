@@ -6,7 +6,7 @@ import * as ImagePicker from 'expo-image-picker'
 import { AppContext } from "../../../AppContext";
 import { URL } from "../../../../constants";
 
-export default function ConfirmationStage({ route, navigation }) {
+export default function NicknameAvatarStage({ route, navigation }) {
     const { email, password } = route.params
     const { setLoginView } = useContext(AppContext)
     const [avatar, setAvatar] = useState({

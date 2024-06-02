@@ -5,7 +5,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 
 import EmailPasswordStage from "./EmailPasswordStage/EmailPasswordStage";
 import VerificationStage from "./VerificationStage/VerificationStage";
-import ConfirmationStage from "./ConfirmationStage/ConfirmationStage";
+import NicknameAvatarStage from "./NicknameAvatarStage/NicknameAvatarStage";
 
 const Stack = createStackNavigator()
 
@@ -15,8 +15,8 @@ export default function SignUp() {
     return (
       <Stack.Navigator>
         <Stack.Screen name="EmailPasswordStage" component={EmailPasswordStage} />
+        <Stack.Screen name="ConfirmationStage" component={NicknameAvatarStage} />
         <Stack.Screen name="VerificationStage" component={VerificationStage} />
-        <Stack.Screen name="ConfirmationStage" component={ConfirmationStage} />
       </Stack.Navigator>
     )
 }

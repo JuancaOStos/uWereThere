@@ -1,6 +1,7 @@
 import react, { useContext, useEffect, useState } from "react"
 import { Text, View, FlatList, TextInput, ScrollView, Button, Image, Linking } from "react-native"
 import { AntDesign } from '@expo/vector-icons';
+import RatePanel from "./RatePanel/RatePanel.jsx";
 import CommentItem from "./CommentItem/CommentItem";
 import { URL } from '../../../../constants.js';
 import { AppContext } from "../../../AppContext.jsx";
@@ -18,6 +19,7 @@ export default function LocationDetails({ route }) {
 
     const handleNewComment = (value) => setNewComment(value)
 
+    
     const handleNewCommentButton = async() => {
         await axios.put(`${URL}/addNewComment`, {
             publicationId: locationItem._id,
@@ -27,7 +29,7 @@ export default function LocationDetails({ route }) {
         getAllComments()
         setNewComment('')
     }
-
+    
     const getAllComments = async() => {
         await axios.post(`${URL}/getCommentsById`, {
             publicationId: locationItem._id
@@ -41,12 +43,14 @@ export default function LocationDetails({ route }) {
             })
     }
 
+    console.log(`${locationItem.author._id} vs ${authData._id}`)
+
     useEffect(() => {
         getAllComments()
     }, [])
 
     const parsedRate = (locationItem.rates.length !== 0)
-        ? 'n'
+        ? locationItem.averageRate
         : 'Not rated yet'
 
     return(
@@ -70,11 +74,12 @@ export default function LocationDetails({ route }) {
                         alignItems: 'center'
                     }}>
                         <Text>{locationItem.author.nickname}</Text>
-                        <Image source={{ uri: locationItem.author.avatar }}  style={{
+                        <Image source={{ uri: URL + locationItem.author.avatar }}  style={{
                             width: 40,
                             height: 40,
                             borderRadius: 50,
-                            marginLeft: 5
+                            marginLeft: 5,
+                            backgroundColor: 'lightgrey'
                         }}/>
                     </View>
                 </View>
@@ -90,11 +95,11 @@ export default function LocationDetails({ route }) {
                         maxWidth: 350,
                         maxHeight: 250
                     }}
-                    source={{ uri: locationItem.pic}}/>
+                    source={{ uri: URL + locationItem.pic}}/>
                     <Text>{locationItem.title}</Text>
                     <Text>Description</Text>
                     <Text>{locationItem.description}</Text>
-                    <Text>Rate the pub</Text>
+                    {(locationItem.author._id !== authData._id) && <RatePanel locationItem={locationItem}/>}
                     <Button 
                         title="Redirect to Maps"
                         onPress={() => {

@@ -2,7 +2,7 @@ import React from "react";
 import { useState, useContext } from "react";
 import { View, Text, Button, StyleSheet } from "react-native";
 import Login from "./Login/Login";
-import SignUp from "./SignUp/SignUp";
+import SignUp from "./SignUpStack/SignUpStack";
 import { AppContext } from "../AppContext";
 
 export default function Access() {

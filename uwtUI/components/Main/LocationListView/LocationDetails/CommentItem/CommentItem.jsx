@@ -1,6 +1,7 @@
 import react, { useContext } from "react";
 import { View, Text, Image } from "react-native";
 import { AppContext } from "../../../../AppContext.jsx";
+import { URL } from "../../../../../constants.js";
 
 export default function CommentItem({ commentItem }) {
     const { authData } = useContext(AppContext)
@@ -20,7 +21,7 @@ export default function CommentItem({ commentItem }) {
                 flexDirection: 'row',
                 alignItems: 'center'
             }}>
-                <Image source={{ uri: avatar }} style={{
+                <Image source={{ uri: URL + avatar }} style={{
                     width: 30,
                     height: 30,
                     borderRadius: 50,

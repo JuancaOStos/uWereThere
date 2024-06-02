@@ -8,14 +8,19 @@ import { AppContext } from "../../AppContext";
 import { URL } from '../../../constants.js'
 
 export default function AuthProfileView() {
+    const { authData } = useContext(AppContext)
     const [searchName, setSearchName] = useState('')
+    const [rate, setRate] = useState(authData.averageRate)
     const [publications, setPublications] = useState(null)
     const [friends, setFriends] = useState(null)
     const [listView, setListView] = useState('publications')
-    const { authData } = useContext(AppContext)
     console.log(authData.avatar)
 
     const handleSearchName = (value) => setSearchName(value)
+
+    const rateLabel = (rate > 0)
+        ? rate
+        : 'Not rates yet'
 
     const getPublisAndFriends = async () => {
         await axios.post(`${URL}/getPublicationsById`, {
@@ -93,7 +98,7 @@ export default function AuthProfileView() {
                 flexDirection: 'row',
                 marginBottom: 20
             }}>
-                <Image source={{ uri: authData.avatar }} style={{
+                <Image source={{ uri: URL + authData.avatar }} style={{
                     width: 150,
                     height: 150,
                     borderRadius: 100
@@ -104,7 +109,7 @@ export default function AuthProfileView() {
                     marginStart: 20
                 }}>
                     <AntDesign name="star" size={24} color="black" />
-                    <Text>n</Text>
+                    <Text>{rateLabel}</Text>
                 </View>
             </View>
             <View style={{

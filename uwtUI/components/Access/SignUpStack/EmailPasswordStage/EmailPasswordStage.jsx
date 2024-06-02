@@ -22,7 +22,7 @@ export default function EmailPasswordStage() {
                     console.error(result)
                 } else {
                     console.log('Valid user')
-                    navigation.navigate('ConfirmationStage', {
+                    navigation.navigate('NicknameAvatarStage', {
                         email: email,
                         password: password
                     })

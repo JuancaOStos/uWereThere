@@ -22,7 +22,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: null
     },
-    rate: {
+    averageRate: {
         type: Number,
         required: true
     },
@@ -74,6 +74,10 @@ const publiSchema = new mongoose.Schema({
     },
     pic: {
         type: String
+    },
+    averageRate: {
+        type: Number,
+        default: 0
     },
     rates: [{
         author: {

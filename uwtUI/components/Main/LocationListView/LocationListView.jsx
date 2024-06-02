@@ -16,7 +16,10 @@ export default function LocationListView({ navigation }) {
 
     const getAllLocations = async() => {
         const locationsData = await axios.get(`${URL}/getAllLocations`)
-            .then(res => res.data.result)
+            .then(res => {
+                console.log(res.data.result)
+                return res.data.result
+            })
             .catch(err => {
                 const errorMessage = 'An error has occurred:\n' + err
                 console.error(errorMessage)

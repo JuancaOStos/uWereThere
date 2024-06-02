@@ -1,16 +1,18 @@
 import react, {useState} from "react";
 import { View, Text, TouchableHighlight, Image } from "react-native";
 import { AntDesign } from '@expo/vector-icons';
+import { URL } from "../../../../constants";
 
 export default function LocationItem({ searchName, locationItem, handleNavigation, navigationDisabled  }) {
     const authorNickname = (locationItem.author)
         ? locationItem.author.nickname
         : '-nickname-'
-    const parsedRate = (locationItem.rates) ? 0 : null
+    const parsedRate = (locationItem.averageRate) ? locationItem.averageRate : 'Not rated'
     const avatar = (locationItem.author.avatar)
         ? locationItem.author.avatar
         : 'https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png'
 
+    console.info(locationItem)
     if (locationItem.title.toLowerCase().includes(searchName.toLowerCase())) {
         return(
             <TouchableHighlight
@@ -34,7 +36,7 @@ export default function LocationItem({ searchName, locationItem, handleNavigatio
                         alignItems: 'center',
                     }}>
                         <Text style={{ marginEnd: 10 }} >{authorNickname}</Text>
-                        <Image source={{ uri: avatar}} style={{
+                        <Image source={{ uri: URL + avatar}} style={{
                             backgroundColor: 'lightgrey',
                             width: 30,
                             height: 30,
@@ -50,7 +52,7 @@ export default function LocationItem({ searchName, locationItem, handleNavigatio
                                 borderRadius: 20,
                                 borderColor: 'black'
                             }}
-                            source={{ uri: locationItem.pic}}/>
+                            source={{ uri: URL + locationItem.pic}}/>
                         <View style={{ marginStart: 25 }}>
                             <Text>{locationItem.title}</Text>
                             <View style={{

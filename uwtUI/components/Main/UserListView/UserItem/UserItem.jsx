@@ -4,7 +4,7 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import { AppContext } from "../../../AppContext";
-import { USER_LOGO } from '../../../../constants'
+import { URL, USER_LOGO } from '../../../../constants'
 
 export default function UserItem({ searchName, userItem, handleNavigation, navigationDisabled }) {
     const { authData } = useContext(AppContext)
@@ -35,7 +35,7 @@ export default function UserItem({ searchName, userItem, handleNavigation, navig
                 borderColor: 'lightblue'
             }}>
                 <View style={{ flexDirection: 'row' }}>
-                    <Image source={{ uri: avatar }}  style={{
+                    <Image source={{ uri: URL + avatar }}  style={{
                         width: 40,
                         height: 40,
                         borderRadius: 50,

@@ -16,6 +16,17 @@ GET http://localhost:3000/getAllUsers
 ### Get all locations
 GET http://localhost:3000/getAllLocations
 
+### Add new rate
+POST http://localhost:3000/addRate
+Content-Type: application/json
+Accept: application/json
+
+{
+    "publicationId": "665b666d192a8ab06cd98437",
+    "author": "665b650c65642513fab7d483",
+    "rate": 1
+}
+
 ### Check friend by id
 POST http://localhost:3000/checkFriendById
 Content-Type: application/json

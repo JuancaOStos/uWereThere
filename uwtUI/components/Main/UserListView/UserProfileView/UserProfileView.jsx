@@ -145,7 +145,7 @@ export default function UserProfileView({ route }) {
                 flexDirection: 'row',
                 marginBottom: 20
             }}>
-                <Image source={{ uri: avatar }} style={{
+                <Image source={{ uri: URL + avatar }} style={{
                     width: 100,
                     height: 100,
                     borderRadius: 50,

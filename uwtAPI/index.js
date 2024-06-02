@@ -3,6 +3,7 @@ const cors = require('cors')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const path = require('path')
+const lodash = require('lodash')
 const bodyParser = require('body-parser')
 const { getAllUsers,
         getUserById,
@@ -28,7 +29,7 @@ const upload = multer({ storage: storage })
 
 app.post('/upload', upload.single('file'), (req, res) => {
     console.log(req.file)
-    const fileUrl = `${URL}/public/images/${req.file.filename}`
+    const fileUrl = `/public/images/${req.file.filename}`
     res.send({
         url: fileUrl
     })
@@ -122,6 +123,7 @@ app.post('/login', async (req, res) => {
                 email: existingUser.email,
                 nickname: existingUser.nickname,
                 avatar: existingUser.avatar,
+                averageRate: existingUser.averageRate,
                 exp: new Date().getDate() + DAY_IN_SEC
 
             }, SWORD)
@@ -400,6 +402,10 @@ app.put('/unFollowUser', async (req, res) => {
 
 app.post('/signup', async (req, res) => {
     const { email, password, nickname, avatar } = req.body
+    console.log(email)
+    console.log(password)
+    console.log(nickname)
+    console.log(avatar)
     const encryptedPassword = await bcrypt.hash(password, SALT)
         .catch(err => {
             console.error('An error has occurred during password encrypting\n' + err)
@@ -413,7 +419,7 @@ app.post('/signup', async (req, res) => {
         password: encryptedPassword,
         nickname: nickname,
         avatar: avatar,
-        rate: 0,
+        averageRate: 0,
         publications: [],
         friends: []
     })
@@ -429,6 +435,106 @@ app.post('/signup', async (req, res) => {
                 result: 'An error has occurred during signup:\n' + err
             })
         })
+})
+
+app.post('/addRate', async (req, res) => {
+    const { publicationId, author, rate } = req.body
+
+    const publicationRates = await Publication.findById(publicationId, 'rates')
+    console.log(publicationRates)
+    if (publicationRates.rates) {
+        const authors = publicationRates.rates.map(rateItem => rateItem.author.toString())
+        console.log(authors)
+        console.log(authors.includes(author))
+        if (!authors.includes(author)) {
+            // create
+            console.log('create')
+            const newRate = {
+                author: author,
+                rate: rate
+            }
+            await Publication.findByIdAndUpdate(publicationId, {
+                $push: {
+                    rates: newRate
+                }
+            })
+                .then(() => {
+                    console.log('New rate added')
+                })
+                .catch(err => {
+                    res.send({
+                        result: 'An error has occurred adding new rate:\n' + err
+                    })
+                })
+        } else {
+            // update
+            console.log('update')
+            await Publication.findOneAndUpdate({
+                _id: publicationId,
+                'rates.author': author
+            }, {
+                $set: { 'rates.$.rate': rate }
+            })
+                .then(() => {
+                    console.log('Rate updated')
+                })
+                .catch(err => {
+                    res.send({
+                        result: 'An error as occurred updating the rate\n:' + err
+                    })
+                })
+        }
+        const allRates = await Publication.findById(publicationId, 'rates')
+        console.log('PUNTUACIONES: ' + allRates.rates)
+        const ratePoints = allRates.rates.map(rateItem => rateItem.rate)
+        console.log(ratePoints)
+        const averageRate = Math.round(lodash.mean(ratePoints) * 10) / 10
+        console.log(averageRate)
+        await Publication.findByIdAndUpdate(publicationId, {
+            averageRate: averageRate
+        })
+            .then(async publicationUpdated => {
+                await User.findById(publicationUpdated.author)
+                    .then(async author => {
+                        console.log(author)
+                        const authorPublications = await Publication.find({
+                            author,
+                            averageRate: { $gt: 0 }
+                        }, 'averageRate')
+                        console.log('Publicaciones pobladas del usuario')
+                        console.log(authorPublications)
+                        const publicationRates = authorPublications.map(publication => publication.averageRate)
+                        console.log(publicationRates)
+                        const authorAverageRate = Math.round(lodash.mean(publicationRates) * 10) / 10
+                        console.log(authorAverageRate)
+                        const result = await User.findOneAndUpdate(author._id, {
+                            $set: {
+                                averageRate: authorAverageRate
+                            }
+                        })
+                            .then(() => {
+                                console.log('User averageRate updated with success')
+                            })
+                            .catch(err => {
+                                console.error('An error has occurred updating user averageRate')
+                            })
+                        if (result) {
+                            res.send({
+                                result: 'Publication rated with success'
+                            })
+                        }
+                    })
+            })
+
+        res.send({
+            result: 'Publication rated successfully'
+        })
+    } else {
+        res.send({
+            result: 'Publication not rated'
+        })
+    }
+
 })
 
 app.post('/addNewPublication', async (req, res) => {

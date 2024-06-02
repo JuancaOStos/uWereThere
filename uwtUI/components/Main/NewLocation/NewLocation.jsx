@@ -100,8 +100,8 @@ export default function NewLocation() {
 
         const newLocation = {
             location: {
-                latitude: location.latitude,
-                longitude: location.longitude
+                latitude: location.latitude + 0.5,
+                longitude: location.longitude+ 0.5
             },
             title: title,
             description: description,
@@ -109,8 +109,13 @@ export default function NewLocation() {
             author: authData._id
         }
         axios.post(`${URL}/addNewPublication`, newLocation)
-            .then(data => {
-                console.log(data.data)
+            .then(res => {
+                console.log(res.data)
+                if (res.data.status === 'error') {
+                    alert(res.data.result)
+                } else {
+                    alert(res.data.result)
+                }
             }).
             catch(err => {
                 console.error('An error has occurred:\n' + err)
