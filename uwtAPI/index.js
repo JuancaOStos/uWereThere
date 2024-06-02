@@ -128,7 +128,7 @@ app.post('/login', async (req, res) => {
     if (existingUser) {
         const match = await bcrypt.compare(password, existingUser.password)
 
-        if (match) {
+        if (match && existingUser.verified) {
             const token = jwt.sign({
                 _id: existingUser._id,
                 email: existingUser.email,
@@ -139,12 +139,25 @@ app.post('/login', async (req, res) => {
 
             }, SWORD)
             res.send({
+                status: 'ok',
+                result: 'User logged with success',
                 token: token
             })
         } else {
-            res.send({
-                result: null
-            })
+            if (!match) {
+                console.error('Password doesn\'t match')
+                res.send({
+                    status: 'error',
+                    result: 'Password doesn\'t match'
+                })
+            }
+            if (!existingUser.verified) {
+                console.error('User not verified')
+                res.send({
+                    status: 'error',
+                    result: 'User not verified'
+                })
+            }
         }
     } else {
         res.send({
@@ -176,14 +189,14 @@ app.post('/users/existingEmail', async (req, res) => {
         })
 })
 
-app.post('/users/userByEmail', async (req, res) => {
+app.post('/userByEmail', async (req, res) => {
     const { email } = req.body
     
     await User.findOne({ email: email })
-        .then(data => {
-            if(data) {
+        .then(user => {
+            if(user) {
                 res.send({
-                    result: data
+                    result: user
                 })
             } else {
                 res.send({
@@ -504,11 +517,13 @@ app.post('/verifyCode', async (req, res) => {
                     console.error('Error:', err)
                 })
             res.send({
+                status: 'ok',
                 result: 'User verified with success'
             })
         } else {
             console.error('The code doesn\'t match')
             res.send({
+                status: 'error',
                 result: 'The code doesn\'t match'
             })
         }

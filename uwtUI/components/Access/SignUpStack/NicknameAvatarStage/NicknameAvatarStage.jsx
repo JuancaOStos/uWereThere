@@ -8,7 +8,6 @@ import { URL } from "../../../../constants";
 
 export default function NicknameAvatarStage({ route, navigation }) {
     const { email, password } = route.params
-    const { setLoginView } = useContext(AppContext)
     const [avatar, setAvatar] = useState({
         uri: 'https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png',
         type: '',
@@ -85,8 +84,11 @@ export default function NicknameAvatarStage({ route, navigation }) {
             .then(res => {
                 const data = res.data
                 setResultMessage(data.result)
-                alert('User Registered')
-                setLoginView(true)
+                alert('User Registered\nVerify your account')
+                // setLoginView(true)
+                navigation.navigate('VerificationStage', {
+                    email: email
+                })
             })
             .catch(err => {
                 console.error('An error has occurred. The server could not be available:\n' + err)

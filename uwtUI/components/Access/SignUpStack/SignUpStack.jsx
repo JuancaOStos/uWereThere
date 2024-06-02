@@ -10,7 +10,7 @@ import NicknameAvatarStage from "./NicknameAvatarStage/NicknameAvatarStage";
 const Stack = createStackNavigator()
 
 
-export default function SignUp() {
+export default function SignUpStack() {
 
     return (
       <Stack.Navigator>

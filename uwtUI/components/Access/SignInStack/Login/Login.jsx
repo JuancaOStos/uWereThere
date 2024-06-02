@@ -1,10 +1,10 @@
 import { useState, useContext } from 'react';
 import { StyleSheet, Text, TextInput, Button, View, Image } from 'react-native';
 import axios from 'axios';
-import { AppContext } from '../../AppContext';
-import { URL } from '../../../constants';
+import { AppContext } from '../../../AppContext';
+import { URL } from '../../../../constants';
 
-export default function Login() {
+export default function Login({ navigation }) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
@@ -19,20 +19,43 @@ export default function Login() {
   }
   const handlePassword = (value) => setPassword(value)
 
+  const checkVerifiedAccount = async () => {
+    let verifiedUser = false
+    await axios.post(URL + '/userByEmail', {
+      email: email
+    })
+      .then(res => {
+        verifiedUser = res.data.result.verified
+      })
+      .catch(err => {
+        console.error('Error:', err)
+      })
+    return verifiedUser
+  }
+
   const handleLogin = () => {
     axios.post(`${URL}/login`, {
       email: email,
       password: password
     })
       .then(res => {
-        const data = res.data
-        setUserEmail(data.token)
-        if (data.token) {
+        setUserEmail(res.data.token)
+        if (res.data.status === 'ok') {
           setErrorMessage('')
-          console.log(data.token)
-          handleAuth(data.token)
+          // console.log(res.data.token)
+          handleAuth(res.data.token)
         }
-        else setErrorMessage('Invalid user')
+        else {
+          if (res.data.result === 'Password doesn\'t match') {
+            setErrorMessage(res.data.result)
+          }
+          if (res.data.result === 'User not verified') {
+            // TODO: add navigation to VerificationStage
+            navigation.navigate('VerificationStage', {
+              email: email
+            })
+          }
+        }
         // handleAuth(data.result)
       })
       .catch(err => {
