@@ -26,6 +26,16 @@ const userSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
+    verified: {
+        type: Boolean,
+        required: true,
+        default: false
+    },
+    verificationCode: {
+        type: String,
+        required: true,
+        default: ''
+    },
     publications: {
         type: [{
             type: mongoose.Schema.Types.ObjectId,

@@ -15,7 +15,7 @@ export default function SignUp() {
     return (
       <Stack.Navigator>
         <Stack.Screen name="EmailPasswordStage" component={EmailPasswordStage} />
-        <Stack.Screen name="ConfirmationStage" component={NicknameAvatarStage} />
+        <Stack.Screen name="NicknameAvatarStage" component={NicknameAvatarStage} />
         <Stack.Screen name="VerificationStage" component={VerificationStage} />
       </Stack.Navigator>
     )
