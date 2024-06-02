@@ -85,10 +85,12 @@ export default function NicknameAvatarStage({ route, navigation }) {
             .then(res => {
                 const data = res.data
                 setResultMessage(data.result)
+                alert('User Registered')
                 setLoginView(true)
             })
             .catch(err => {
                 console.error('An error has occurred. The server could not be available:\n' + err)
+                alert('An error has occurred. The server could not be available:\n' + err)
             })
     }
 

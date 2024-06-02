@@ -16,6 +16,25 @@ GET http://localhost:3000/getAllUsers
 ### Get all locations
 GET http://localhost:3000/getAllLocations
 
+### Request a verification code
+POST http://localhost:3000/verificationCode
+Content-Type: application/json
+Accept: application/json
+
+{
+    "email": "woodybarkingbrown@gmail.com"
+}
+
+### Verify email with code
+POST http://localhost:3000/verifyCode
+Content-Type: application/json
+Accept: application/json
+
+{
+    "email": "woodybarkingbrown@gmail.com",
+    "code": "1351"
+}
+
 ### Add new rate
 POST http://localhost:3000/addRate
 Content-Type: application/json

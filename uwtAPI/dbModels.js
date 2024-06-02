@@ -33,7 +33,6 @@ const userSchema = new mongoose.Schema({
     },
     verificationCode: {
         type: String,
-        required: true,
         default: ''
     },
     publications: {

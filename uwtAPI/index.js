@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const path = require('path')
 const lodash = require('lodash')
+const nodemailer = require('nodemailer')
 const bodyParser = require('body-parser')
 const { getAllUsers,
         getUserById,
@@ -14,7 +15,17 @@ const app = express()
 const mongoose = require('mongoose')
 const { User, Publication, Comment } = require('./dbModels.js')
 const multer = require('multer')
-const { URL } = require('../uwtUI/constants.js')
+const { URL, MAILTRAP_USERNAME, MAILTRAP_PASSWORD, APP_PASSWORD } = require('../uwtUI/constants.js')
+
+const transporter = nodemailer.createTransport({
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true, // Use `true` for port 465, `false` for all other ports
+    auth: {
+      user: "jcostosmolina@gmail.com",
+      pass: APP_PASSWORD,
+    },
+  });
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -420,21 +431,88 @@ app.post('/signup', async (req, res) => {
         nickname: nickname,
         avatar: avatar,
         averageRate: 0,
+        verified: false,
+        verificationCode: '',
         publications: [],
         friends: []
     })
         .then(() => {
+            console.log('User created with success')
             res.send({
                 status: 'ok',
                 result: 'User created with success'
             })
         })
         .catch(err => {
+            console.log('An error has occurred during signup:\n' + err)
             res.send({
                 status: 'error',
                 result: 'An error has occurred during signup:\n' + err
             })
         })
+})
+
+app.post('/verificationCode', async (req, res) => {
+    const { email } = req.body
+    const max = 9999
+    const min = 1000
+    const randomCode = (Math.round(Math.random() * (max - min) + min)).toString()
+    console.log(randomCode)
+    const encodedCode = await bcrypt.hash(randomCode, SALT)
+    console.log(await bcrypt.compare(randomCode, encodedCode))
+    transporter.sendMail({
+        from: '"Verify your email" <jcostosmolina@gmail.com>',
+        to: email,
+        subject: 'Verify your email',
+        html: `<h1>Verify your email</h1><p>Your verification code is <b>${randomCode}</b></p>`
+    })
+    const updatedUser = await User.findOneAndUpdate({
+        email: email
+    }, {
+        $set: {
+            verificationCode: encodedCode
+        }
+    })
+    if (updatedUser) {
+        res.send({
+            result: 'Verification code set'
+        })
+    } else {
+        res.send({
+            result: 'Error setting a verification code'
+        })
+    }
+})
+
+app.post('/verifyCode', async (req, res) => {
+    const { email, code } = req.body
+    const user = await User.findOne({
+        email: email
+    })
+    if (user) {
+        const match = await bcrypt.compare(code ,user.verificationCode)
+        if (match) {
+            await User.findByIdAndUpdate(user._id, {
+                $set: {
+                    verified: true
+                }
+            })
+                .then(() => {
+                    console.log('User verify with success')
+                })
+                .catch(err => {
+                    console.error('Error:', err)
+                })
+            res.send({
+                result: 'User verified with success'
+            })
+        } else {
+            console.error('The code doesn\'t match')
+            res.send({
+                result: 'The code doesn\'t match'
+            })
+        }
+    }
 })
 
 app.post('/addRate', async (req, res) => {
