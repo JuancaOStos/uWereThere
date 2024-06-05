@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Text, TouchableHighlight, StyleSheet } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { FontAwesome5 } from '@expo/vector-icons';
@@ -10,9 +10,10 @@ import LocationListStack from "./LocationListView/LocationListStack";
 import NewLocation from "./NewLocation/NewLocation";
 import AuthProfileView from "./AuthProfileView/AuthProfileView";
 import ProfileSettingsView from "./ProfileSettingsView/ProfileSettingsView";
+import { AppContext } from "../AppContext";
 
 const Tab = createBottomTabNavigator()
-
+const { handleAuth } = useContext(AppContext)
 // TODO: estilar
 // TODO: documentar
 export default function Main() {
@@ -24,7 +25,7 @@ export default function Main() {
               tabBarActiveTintColor: 'green',
               headerRight: () => (
                 <TouchableHighlight
-                  onPress={() => {}}
+                  onPress={() => handleAuth(null)}
                   style={styles.logoutButton}
                 >
                   <MaterialIcons name="logout" size={30} color="black" />

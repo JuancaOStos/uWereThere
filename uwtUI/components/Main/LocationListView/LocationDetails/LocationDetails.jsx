@@ -1,8 +1,10 @@
 import { useContext, useEffect, useState } from "react"
-import { Text, View, TextInput, ScrollView, Button, Image, Linking } from "react-native"
+import { Text, View, TextInput, ScrollView, StyleSheet, TouchableOpacity, Button, Image, Linking } from "react-native"
 import { AntDesign } from '@expo/vector-icons';
 import RatePanel from "./RatePanel/RatePanel.jsx";
 import CommentItem from "./CommentItem/CommentItem";
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons';
 import { URL } from '../../../../constants.js';
 import { AppContext } from "../../../AppContext.jsx";
 import axios from 'axios';
@@ -64,6 +66,8 @@ export default function LocationDetails({ route }) {
                 <View style={{
                     flexDirection: 'row',
                     justifyContent: 'space-between',
+                    marginTop: 10,
+                    marginHorizontal: 10,
                     alignItems: 'center'
                 }}>
                     <View style={{
@@ -88,6 +92,7 @@ export default function LocationDetails({ route }) {
                     </View>
                 </View>
                     
+                    <Text style={styles.headerText}>{locationItem.title}</Text>
                     <Image
                     style={{
                         width: 350,
@@ -100,12 +105,12 @@ export default function LocationDetails({ route }) {
                         maxHeight: 250
                     }}
                     source={{ uri: URL + locationItem.pic}}/>
-                    <Text>{locationItem.title}</Text>
-                    <Text>Description</Text>
-                    <Text>{locationItem.description}</Text>
+                    <Text style={styles.bodyText}>{locationItem.description}añlsdkfjañlsdfkjañsdlkfjasñdlfkjasdñfasñldfjañsldkfjasdñlfkjasdñlkfjlkjasdñflkajsdñflk</Text>
                     {(locationItem.author._id !== authData._id) && <RatePanel locationItem={locationItem}/>}
-                    <Button 
-                        title="Redirect to Maps"
+                    <Text style={styles.bodyText}>Link to Maps</Text>
+                    <TouchableOpacity
+                        style={styles.mapsButton}
+
                         onPress={() => {
                             Linking.canOpenURL(`geo:0,0?q=${locationItem.location.latitude},${locationItem.location.longitude}(${locationItem.title})`)
                                 .then((supported) => {
@@ -118,27 +123,43 @@ export default function LocationDetails({ route }) {
                                 .catch(err => Alert.alert('Error'))
                         }}
                         disabled={(!locationItem.title)}
-                    />
-                    <Text>Comments</Text>
+                    >
+                        <View style={{ flexDirection: 'row' }}>
+                            <View style={{ alignSelf: 'center', alignItems: 'flex-start' }}>
+                                <MaterialCommunityIcons name="google-maps" size={40} color="black" />
+                            </View>
+                            <Text style={{ alignSelf: 'center', marginRight: 10 }}>{locationItem.title}</Text>
+                            <View>
+                                <Text>lat:{locationItem.location.latitude}</Text>
+                                <Text>lon:{locationItem.location.longitude}</Text>
+                            </View>
+                        </View>
+                    </TouchableOpacity>
+                    <Text style={styles.bodyText}>Comments ({locationItem.comments.length})</Text>
                     <View style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
                         marginTop: 10,
                         marginHorizontal: '10%',
-                        borderWidth: 1,
-                        borderRadius: 15,
-                        borderColor: 'lightgrey'
                     }}>
                         <TextInput style={{
-                            paddingVertical: 5,
-                            paddingStart: 10
+                            flex: 1,
+                            borderWidth: 1,
+                            borderRadius: 25,
+                            paddingHorizontal: 10,
+                            marginRight: 10,
+                            borderColor: 'lightgrey' 
                         }} placeholder="search"
                         value={newComment}
-                        onChangeText={handleNewComment}></TextInput>
+                        onChangeText={handleNewComment}
+                        multiline
+                        />
+                        <TouchableOpacity
+                            onPress={handleNewCommentButton}
+                        >
+                            <Feather name="send" size={30} color="black" />
+                        </TouchableOpacity>
                     </View>
-                    <Button
-                        title='Send'
-                        onPress={handleNewCommentButton}
-                        disabled={(!newComment)}
-                    />
                     {
                         comments.map(comment => {
                             return (
@@ -154,3 +175,64 @@ export default function LocationDetails({ route }) {
         </>
     )
 }
+
+const styles = StyleSheet.create({
+    filterSection: {
+        flexDirection: 'row',
+        marginHorizontal: 30,
+        justifyContent: 'center',
+        alignItems: 'center',
+        alignSelf: 'center',
+        borderWidth: 2,
+        borderRadius: 20,
+        paddingVertical: 10,
+        paddingHorizontal: 40
+    },
+    filterButton: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignContent: 'center',
+        alignItems: 'center',
+        borderWidth: 1,
+        borderRadius: 10,
+        paddingHorizontal: 5,
+        marginHorizontal: 5,
+        height: 40
+    },
+    updateButton: {
+        borderWidth: 2,
+        borderTopLeftRadius: 100,
+        borderTopRightRadius: 100,
+        width: '100%',
+        alignSelf: 'center',
+        alignItems: 'center'
+    },
+    headerText: {
+        fontSize: 25,
+        marginHorizontal: 10,
+        alignSelf: 'center',
+        fontWeight: 'bold'
+    },
+    bodyText: {
+        fontSize: 20,
+        marginVertical: 15,
+        marginHorizontal: 25
+    },
+    textBox: {
+        margin: 10,
+        padding: 10,
+        height: 40,
+        borderWidth: 2,
+        borderRadius: 10,
+        width: 250
+    },
+    mapsButton: {
+        borderWidth: 1,
+        alignSelf: 'center',
+        paddingVertical: 5,
+        paddingHorizontal: 10,
+        width: 350,
+        borderRadius: 20,
+        backgroundColor: '#8BEF7F'
+    }
+})

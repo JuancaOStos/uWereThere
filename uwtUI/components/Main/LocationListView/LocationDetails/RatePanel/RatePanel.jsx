@@ -41,6 +41,7 @@ export default function RatePanel({ locationItem }) {
             alignItems: 'center',
             paddingHorizontal: 10,
             paddingVertical: 10,
+            marginBottom: 15,
             borderWidth: 1,
             borderRadius: 15
         }}>
@@ -67,7 +68,8 @@ export default function RatePanel({ locationItem }) {
                     backgroundColor: rateButtonColor,
                     paddingHorizontal: 20,
                     paddingVertical: 5,
-                    borderRadius: 10
+                    borderRadius: 10,
+                    marginLeft: 10
 
                 }}>
                     <Text>Rate</Text>
