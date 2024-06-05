@@ -1,3 +1,8 @@
+// TODO: limpiar profundo
+// TODO: quitar endpoints innecesarios
+// TODO: modificar contraseña de la BD
+// TODO: reorganizar y normalizar los endpoints
+// TODO: documentar
 const express = require('express')
 const cors = require('cors')
 const bcrypt = require('bcrypt')

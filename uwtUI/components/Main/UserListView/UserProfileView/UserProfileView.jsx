@@ -1,4 +1,4 @@
-import react, { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext } from "react";
 import { View, Text, Button, FlatList, Image } from "react-native";
 import axios from "axios";
 import { URL } from '../../../../constants.js'
@@ -8,6 +8,15 @@ import UserItem from "../UserItem/UserItem.jsx";
 import { AntDesign } from '@expo/vector-icons';
 import { USER_LOGO } from "../../../../constants.js";
 
+// TODO: estilar
+// TODO: cambiar FlatList por ScrollView
+// TODO: validar caja de búsqueda
+// TODO: listar por más antiguo
+// TODO: listar por actuales
+// TODO: listar por puntuación más alta
+// TODO: listar por puntuación más baja
+// TODO: limpiar
+// TODO: documentar
 export default function UserProfileView({ route }) {
     const [searchName, setSearchName] = useState('')
     const [publications, setPublications] = useState(null)

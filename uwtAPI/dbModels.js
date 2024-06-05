@@ -1,3 +1,4 @@
+// TODO: documentar
 const mongoose = require('mongoose')
 
 

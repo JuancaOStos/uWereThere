@@ -1,4 +1,4 @@
-import react, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { View, Text, Button, FlatList, TextInput, Image } from "react-native";
 import LocationItem from '../LocationListView/LocationItem/LocationItem.jsx'
@@ -7,6 +7,14 @@ import { AntDesign } from '@expo/vector-icons';
 import { AppContext } from "../../AppContext";
 import { URL } from '../../../constants.js'
 
+// TODO: estilar
+// TODO: listar por más antiguos
+// TODO: listar por más nuevos
+// TODO: listar por mayor puntuación
+// TODO: listar por menor puntuación
+// TODO: cambiar FlatList por ScrollView
+// TODO: validar caja de búsqueda
+// TODO: documentar
 export default function AuthProfileView() {
     const { authData } = useContext(AppContext)
     const [searchName, setSearchName] = useState('')

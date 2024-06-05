@@ -1,3 +1,4 @@
+// TODO: considerar eliminación del archivo
 const mongoose = require('mongoose')
 const { User } = require('./dbModels.js')
 

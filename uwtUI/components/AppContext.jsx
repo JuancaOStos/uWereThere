@@ -1,8 +1,10 @@
-import react, { createContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect } from "react";
 import { jwtDecode } from 'jwt-decode'
 
 export const AppContext = createContext()
 
+// TODO: estilar
+// TODO: documentar
 export default function AppProvider({ children, auth, handleAuth }) {
     const [loginView, setLoginView] = useState(true)
     const [authData, setAuthData] = useState(null)

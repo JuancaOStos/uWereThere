@@ -4,6 +4,7 @@ import LocationDetails from "./LocationDetails/LocationDetails";
 
 const Stack = createNativeStackNavigator()
 
+// TODO: documentar
 export default function LocationListStack() {
     return (
         <Stack.Navigator

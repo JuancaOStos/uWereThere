@@ -1,8 +1,12 @@
-import react, {useState} from "react";
 import { View, Text, TouchableHighlight, Image } from "react-native";
 import { AntDesign } from '@expo/vector-icons';
+import { Foundation } from '@expo/vector-icons';
 import { URL } from "../../../../constants";
 
+// TODO: estilar
+// TODO: mostrar total de comentarios
+// TODO: limpiar
+// TODO: documentar
 export default function LocationItem({ searchName, locationItem, handleNavigation, navigationDisabled  }) {
     const authorNickname = (locationItem.author)
         ? locationItem.author.nickname
@@ -35,16 +39,16 @@ export default function LocationItem({ searchName, locationItem, handleNavigatio
                         alignSelf: 'flex-end',
                         alignItems: 'center',
                     }}>
-                        <Text style={{ marginEnd: 10 }} >{authorNickname}</Text>
                         <Image source={{ uri: URL + avatar}} style={{
                             backgroundColor: 'lightgrey',
                             width: 30,
                             height: 30,
-                            borderRadius: 50
+                            borderRadius: 50,
+                            marginRight: 10
                         }}/>
+                        <Text>{authorNickname}</Text>
                     </View>
                     <View style={{ flexDirection: 'row' }}>
-                        
                         <Image
                             style={{
                                 width: 80,
@@ -59,8 +63,15 @@ export default function LocationItem({ searchName, locationItem, handleNavigatio
                                 flexDirection: 'row',
                                 alignItems: 'center'
                             }}>
-                                <AntDesign name="star" size={24} color="black" />
+                                <AntDesign style={{ marginRight: 5 }} name="star" size={24} color="black" />
                                 <Text>{parsedRate}</Text>
+                            </View>
+                            <View style={{
+                                flexDirection: 'row',
+                                alignItems: 'center'
+                            }}>
+                                <Foundation style={{ marginRight: 5 }} name="comments" size={24} color="black" />
+                                <Text>{locationItem.comments.length}</Text>
                             </View>
                         </View>
                     </View>

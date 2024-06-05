@@ -1,10 +1,11 @@
 import React from "react";
-import { useState, useContext } from "react";
-import { View, Text, Button, StyleSheet } from "react-native";
+import { useContext } from "react";
+import { Text, Button, StyleSheet } from "react-native";
 import SignInStack from "./SignInStack/SignInStack";
 import SignUpStack from "./SignUpStack/SignUpStack";
 import { AppContext } from "../AppContext";
 
+// TODO: documentar
 export default function Access() {
     const { loginView, setLoginView } = useContext(AppContext)
     const testHandleLoginView = () => setLoginView(!loginView)

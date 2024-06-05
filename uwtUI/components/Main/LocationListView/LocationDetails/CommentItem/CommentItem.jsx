@@ -1,10 +1,12 @@
-import react, { useContext } from "react";
 import { View, Text, Image } from "react-native";
+// import { useContext } from "react";
 import { AppContext } from "../../../../AppContext.jsx";
 import { URL } from "../../../../../constants.js";
 
+// TODO: estilar
+// TODO: documentar
 export default function CommentItem({ commentItem }) {
-    const { authData } = useContext(AppContext)
+    // const { authData } = useContext(AppContext) -> podría servirme para estilar si el comentario es del autenticado
     const avatar = (commentItem.author.avatar)
      ? commentItem.author.avatar
      : 'https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png'

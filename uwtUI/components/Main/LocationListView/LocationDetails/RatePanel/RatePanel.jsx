@@ -5,6 +5,8 @@ import { URL } from "../../../../../constants";
 import { AntDesign } from '@expo/vector-icons';
 import { AppContext } from "../../../../AppContext";
 
+// TODO: estilar
+// TODO: documentar
 export default function RatePanel({ locationItem }) {
     const { authData } = useContext(AppContext)
     const [rate, setRate] = useState(0)

@@ -1,12 +1,10 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { Text, TouchableHighlight, StyleSheet } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { FontAwesome5 } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Feather } from '@expo/vector-icons';
 
-import LocationListView from "./LocationListView/LocationListView";
-import UserListView from "./UserListView/UserListView";
 import UserListStack from "./UserListView/UserListStack";
 import LocationListStack from "./LocationListView/LocationListStack";
 import NewLocation from "./NewLocation/NewLocation";
@@ -15,13 +13,23 @@ import ProfileSettingsView from "./ProfileSettingsView/ProfileSettingsView";
 
 const Tab = createBottomTabNavigator()
 
+// TODO: estilar
+// TODO: documentar
 export default function Main() {
 
     return(
         <Tab.Navigator
             screenOptions={{
               tabBarStyle: { height: 65 },
-              tabBarActiveTintColor: 'green'
+              tabBarActiveTintColor: 'green',
+              headerRight: () => (
+                <TouchableHighlight
+                  onPress={() => {}}
+                  style={styles.logoutButton}
+                >
+                  <MaterialIcons name="logout" size={30} color="black" />
+                </TouchableHighlight>
+              )
             }}
         >
             <Tab.Screen 
@@ -34,7 +42,7 @@ export default function Main() {
                   },
                   tabBarIcon: ({ color, size }) => (
                     <FontAwesome5 name="search-location" size={30} color="black" />
-                  ),
+                  )
                 }}
             />
             <Tab.Screen
@@ -107,5 +115,8 @@ const styles = StyleSheet.create({
       borderWidth: 2,
       borderRadius: 10,
       width: 250
+    },
+    logoutButton: {
+      marginRight: 20
     }
   });

@@ -1,4 +1,4 @@
-import react, { useContext } from "react";
+import { useContext } from "react";
 import { View, Text, TouchableHighlight, Image } from "react-native";
 import { FontAwesome5 } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
@@ -6,6 +6,8 @@ import { AntDesign } from '@expo/vector-icons';
 import { AppContext } from "../../../AppContext";
 import { URL, USER_LOGO } from '../../../../constants'
 
+// TODO: estilar
+// TODO: documentar
 export default function UserItem({ searchName, userItem, handleNavigation, navigationDisabled }) {
     const { authData } = useContext(AppContext)
     console.log(authData.nickname + ' vs ' + userItem.nickname)

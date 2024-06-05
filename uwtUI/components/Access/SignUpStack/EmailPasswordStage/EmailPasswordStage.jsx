@@ -1,9 +1,12 @@
-import react, { useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native'
 import { useNavigation } from "@react-navigation/native";
 import { URL } from "../../../../constants";
 
+// TODO: estilar
+// TODO: validar
+// TODO: documentar
 export default function EmailPasswordStage() {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
@@ -40,10 +43,9 @@ export default function EmailPasswordStage() {
 
     return (
         <View style={styles.container}>
-            <Text>Email Password Stage</Text>
-            <Text>Introduce an email and password</Text>
-            <TextInput placeholder="email" onChangeText={handleEmail}/>
-            <TextInput placeholder="password" onChangeText={handlePassword}/>
+            <Text style={styles.headerText}>Introduce an email and password</Text>
+            <TextInput placeholder="email" onChangeText={handleEmail} style={styles.textBox}/>
+            <TextInput placeholder="password" onChangeText={handlePassword} style={styles.textBox}/>
             <Button
                 onPress={checkExistingUser}
                 title="Next"
@@ -56,7 +58,21 @@ export default function EmailPasswordStage() {
 const styles = StyleSheet.create({
     container: {
         fontSize: 30,
+        alignItems: 'center',
         textAlign: 'center',
         marginTop: "20%"
+    },
+    headerText: {
+        fontSize: 25,
+        marginHorizontal: 10,
+        fontWeight: 'bold'
+    },
+    textBox: {
+        margin: 10,
+        padding: 10,
+        height: 40,
+        borderWidth: 2,
+        borderRadius: 10,
+        width: 250
     }
 })

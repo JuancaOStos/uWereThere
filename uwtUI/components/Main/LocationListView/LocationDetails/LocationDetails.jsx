@@ -1,5 +1,5 @@
-import react, { useContext, useEffect, useState } from "react"
-import { Text, View, FlatList, TextInput, ScrollView, Button, Image, Linking } from "react-native"
+import { useContext, useEffect, useState } from "react"
+import { Text, View, TextInput, ScrollView, Button, Image, Linking } from "react-native"
 import { AntDesign } from '@expo/vector-icons';
 import RatePanel from "./RatePanel/RatePanel.jsx";
 import CommentItem from "./CommentItem/CommentItem";
@@ -7,6 +7,10 @@ import { URL } from '../../../../constants.js';
 import { AppContext } from "../../../AppContext.jsx";
 import axios from 'axios';
 
+// TODO: estilar
+// TODO: mostrar total de comentarios
+// TODO: limpiar
+// TODO: documentar
 export default function LocationDetails({ route }) {
     const { authData } = useContext(AppContext)
     const { locationItem } = route.params

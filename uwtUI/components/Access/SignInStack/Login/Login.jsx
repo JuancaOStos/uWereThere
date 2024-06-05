@@ -1,9 +1,13 @@
 import { useState, useContext } from 'react';
-import { StyleSheet, Text, TextInput, Button, View, Image } from 'react-native';
+import { StyleSheet, Text, TextInput, Button, View, Image, TouchableHighlight } from 'react-native';
 import axios from 'axios';
 import { AppContext } from '../../../AppContext';
 import { URL } from '../../../../constants';
 
+// TODO: estilar
+// TODO: validar
+// TODO: añadir 'He olvidado la contraseña'
+// TODO: documentar
 export default function Login({ navigation }) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -73,6 +77,9 @@ export default function Login({ navigation }) {
         onPress={handleLogin}
         title='Login'
       />
+      <TouchableHighlight>
+        <Text style={{ color: 'green', marginTop: 10 }}>I forgot my password</Text>
+      </TouchableHighlight>
       <Text>{errorMessage}</Text>
       <Text>{userEmail}</Text>
     </View>

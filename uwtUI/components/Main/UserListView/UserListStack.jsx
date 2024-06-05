@@ -4,6 +4,8 @@ import UserProfileView from "./UserProfileView/UserProfileView";
 
 const Stack = createNativeStackNavigator()
 
+// TODO: estilar
+// TODO: documentar
 export default function UserListStack() {
 
     return (

@@ -1,12 +1,16 @@
-import react, {useEffect, useState, useContext} from "react";
-import { View, Text, TextInput, Button, Image, StyleSheet, Linking } from "react-native";
+import { useState, useContext } from "react";
+import { View, TextInput, Button, Image, StyleSheet, Linking } from "react-native";
 import axios from "axios";
 import * as Location from 'expo-location'
 import * as ImagePicker from 'expo-image-picker'
 import { AppContext } from "../../AppContext";
 import { URL } from "../../../constants";
 
-
+// TODO: estilar
+// TODO: añadir poder elegir imagen existente
+// TODO: validar
+// TODO: limpiar
+// TODO: documentar
 export default function NewLocation() {
     const { authData } = useContext(AppContext)
     const [image, setImage] = useState({

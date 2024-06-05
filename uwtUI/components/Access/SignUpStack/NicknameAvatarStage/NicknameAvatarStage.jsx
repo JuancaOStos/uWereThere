@@ -1,11 +1,15 @@
-import react, { useState, useContext } from "react";
+import { useState } from "react";
 import axios from "axios";
-import { View, Text, Button, StyleSheet, Image, TextInput } from 'react-native'
-import { useNavigation } from "@react-navigation/native";
+import { View, Text, Button, StyleSheet, Image, TextInput, TouchableHighlight } from 'react-native'
 import * as ImagePicker from 'expo-image-picker'
-import { AppContext } from "../../../AppContext";
+import { Entypo } from '@expo/vector-icons';
+import { FontAwesome } from '@expo/vector-icons';
 import { URL } from "../../../../constants";
 
+// TODO: estilar
+// TODO: añadir también hacer foto
+// TODO: validar
+// TODO: documentar
 export default function NicknameAvatarStage({ route, navigation }) {
     const { email, password } = route.params
     const [avatar, setAvatar] = useState({
@@ -85,7 +89,6 @@ export default function NicknameAvatarStage({ route, navigation }) {
                 const data = res.data
                 setResultMessage(data.result)
                 alert('User Registered\nVerify your account')
-                // setLoginView(true)
                 navigation.navigate('VerificationStage', {
                     email: email
                 })
@@ -103,29 +106,27 @@ export default function NicknameAvatarStage({ route, navigation }) {
 
     return (
         <View style={styles.container}>
-            <Text>Confirmation Stage</Text>
-            {avatar && <Image source={{ uri: avatar.uri }} style={{
-                width: 150,
-                height: 150,
-                borderColor: 'black',
-                borderWidth: 5,
-                borderRadius: 100
-            }} />}
-            <Button 
-                title="Pick an image"
-                onPress={pickImage}
-            />
-            <Text>Introduce an nickname and choose an avatar</Text>
-            <TextInput placeholder="nickname" onChangeText={handleNickname}/>
-            <Text>{avatar.name}</Text>
+            <Text style={styles.headerText}>Choose an avatar!</Text>
+            {avatar && <Image source={{ uri: avatar.uri }} style={styles.image} />}
+            <View style={styles.horizontalBox}>
+                <TouchableHighlight
+                    onPress={() => {}}
+                >
+                    <Entypo name="camera" size={40} color="black" />
+                </TouchableHighlight>
+                <TouchableHighlight
+                    style={{ marginLeft: 25}}
+                    onPress={pickImage}
+                >
+                    <FontAwesome name="picture-o" size={40} color="black" />
+                </TouchableHighlight>
+            </View>
+            <Text style={styles.headerText}>Who do you want be called?</Text>
+            <TextInput style={styles.textBox} placeholder="nickname" onChangeText={handleNickname}/>
             <Button
                 onPress={newUserSignUp}
                 title="Next"
                 disabled={disableButton}
-            />
-            <Button
-                onPress={() => console.log(avatar)}
-                title="Check avatar"
             />
         </View>
     )
@@ -135,10 +136,38 @@ const styles = StyleSheet.create({
     container: {
         fontSize: 30,
         textAlign: 'center',
+        alignItems: 'center',
         marginTop: "20%"
     },
     image: {
-        width: 200,
-        height: 200,
+        width: 150,
+        height: 150,
+        borderColor: 'black',
+        borderWidth: 5,
+        borderRadius: 100,
+        marginBottom: 20
+    },
+    horizontalBox: {
+        flexDirection: 'row',
+        borderWidth: 2,
+        borderRadius: 10,
+        paddingHorizontal: 10,
+        paddingVertical: 5,
+        marginBottom: 20
+    },
+    headerText: {
+        fontSize: 20,
+        marginHorizontal: 10,
+        fontWeight: 'bold',
+        marginBottom: 20
+    },
+    textBox: {
+        margin: 10,
+        padding: 10,
+        height: 40,
+        borderWidth: 2,
+        borderRadius: 10,
+        width: 250,
+        marginBottom: 20
     }
 })

@@ -5,7 +5,10 @@ import { AppContext } from '../../../AppContext';
 import { URL } from "../../../../constants";
 import axios from "axios";
 
-export default function VerificationStage({ route }) {
+// TODO: estilar
+// TODO: validar
+// TODO: documentar
+export default function VerificationSignUp({ route }) {
     const { email } = route.params
     const { loginView, setLoginView } = useContext(AppContext)
     const [code, setCode] = useState('')
@@ -40,8 +43,11 @@ export default function VerificationStage({ route }) {
                     console.log('Account verified with success')
                     alert('Account verified with success')
                     if (loginView === false) {
+                        console.log('Entonces llega aquí?')
                         setLoginView(true)
                     } else {
+                        console.log('Por qué llega aquí')
+                        console.log(loginView)
                         navigation.goBack()
                     }
 
@@ -58,9 +64,9 @@ export default function VerificationStage({ route }) {
 
     return (
         <View style={styles.container}>
-            <Text>Verification Stage</Text>
-            <Text>Introduce the verification code send to your email</Text>
-            <TextInput value={code} onChangeText={handleCode}/>
+            <Text style={styles.headerText}>Verification your account</Text>
+            <Text style={styles.subHeaderText}>Introduce the verification code send to your email</Text>
+            <TextInput style={styles.textBox} keyboardType='numeric' value={code} onChangeText={handleCode}/>
             <Button 
                 onPress={verifyAccount}
                 title="Verify"
@@ -72,7 +78,29 @@ export default function VerificationStage({ route }) {
 const styles = StyleSheet.create({
     container: {
         fontSize: 30,
+        alignItems: 'center',
         textAlign: 'center',
         marginTop: "20%"
+    },
+    headerText: {
+        fontSize: 30,
+        marginHorizontal: 10,
+        fontWeight: 'bold',
+        marginBottom: 20
+    },
+    subHeaderText: {
+        fontSize: 20,
+        marginHorizontal: 10,
+        marginBottom: 20
+    },
+    textBox: {
+        margin: 10,
+        padding: 10,
+        textAlign: 'center',
+        height: 40,
+        borderWidth: 2,
+        borderRadius: 10,
+        width: 100,
+        marginBottom: 20
     }
 })

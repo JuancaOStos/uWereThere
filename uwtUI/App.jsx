@@ -7,6 +7,7 @@ import AppProvider from './components/AppContext';
 
 // for dev DevCom
 
+// TODO: documentar
 export default function App() {
   const [auth, setAuth] = useState(null)
   const handleAuth = (value) => setAuth(value)
