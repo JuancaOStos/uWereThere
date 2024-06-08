@@ -10,7 +10,10 @@ export default function LocationListStack() {
         <Stack.Navigator
             initialRouteName="LocationListView"
         >
-            <Stack.Screen name="LocationListView" component={LocationListView} options={{ headerShown: false }}/>
+            <Stack.Screen
+                name="LocationListView"
+                component={LocationListView}
+                options={{ headerShown: false }}/>
             <Stack.Screen name="LocationDetails" component={LocationDetails} options={{ headerTitle: '' }}/>
         </Stack.Navigator>
     )

@@ -1,27 +1,35 @@
 import React from "react";
 import { useContext } from "react";
+import { createStackNavigator } from "@react-navigation/stack";
 import { Text, Button, StyleSheet } from "react-native";
-import SignInStack from "./SignInStack/SignInStack";
-import SignUpStack from "./SignUpStack/SignUpStack";
+import Login from "./Login/Login";
+import EmailPasswordStage from "./EmailPasswordStage/EmailPasswordStage";
+import NicknameAvatarStage from "./NicknameAvatarStage/NicknameAvatarStage";
+import VerificationModal from './VerificationModal/VerificationModal'
 import { AppContext } from "../AppContext";
+
+const Stack = createStackNavigator()
 
 // TODO: documentar
 export default function Access() {
     const { loginView, setLoginView } = useContext(AppContext)
     const testHandleLoginView = () => setLoginView(!loginView)
-    const authComponent = (loginView)
-        ? <SignInStack/>
-        : <SignUpStack />
 
     return (
-        <>
-            <Text>Access View</Text>
-            {authComponent}
-            <Button
-                onPress={testHandleLoginView}
-                title="Login/SignUp"
-            />
-        </>
+        <Stack.Navigator
+          screenOptions={{
+            headerShown: false
+          }}
+        >
+          <Stack.Group>
+            <Stack.Screen name="Login" component={Login} />
+            <Stack.Screen name="EmailPasswordStage" component={EmailPasswordStage} />
+            <Stack.Screen name="NicknameAvatarStage" component={NicknameAvatarStage} />
+          </Stack.Group>
+          <Stack.Group screenOptions={{ presentation: 'modal' }}>
+            <Stack.Screen name="VerificationModal" component={VerificationModal} />
+          </Stack.Group>
+        </Stack.Navigator>
     )
 }
 

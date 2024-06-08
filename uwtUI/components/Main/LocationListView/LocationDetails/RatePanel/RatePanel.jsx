@@ -1,14 +1,14 @@
 import React, { useContext, useState } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import axios from "axios";
-import { URL } from "../../../../../constants";
+import { url } from "../../../../../constants";
 import { AntDesign } from '@expo/vector-icons';
 import { AppContext } from "../../../../AppContext";
 
 // TODO: estilar
 // TODO: documentar
 export default function RatePanel({ locationItem }) {
-    const { authData } = useContext(AppContext)
+    const { authData, url } = useContext(AppContext)
     const [rate, setRate] = useState(0)
     const activeStars = []
 
@@ -28,7 +28,7 @@ export default function RatePanel({ locationItem }) {
             rate: rate
         }
         console.log(newRate)
-        await axios.post(URL + '/addRate', newRate)
+        await axios.post(url + '/addRate', newRate)
             .then(res => console.log(res.data.result))
             .catch(err => console.error(err))
     }

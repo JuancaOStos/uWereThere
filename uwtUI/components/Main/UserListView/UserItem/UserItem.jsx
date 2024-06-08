@@ -4,12 +4,12 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import { AppContext } from "../../../AppContext";
-import { URL, USER_LOGO } from '../../../../constants'
+import { url, USER_LOGO } from '../../../../constants'
 
 // TODO: estilar
 // TODO: documentar
 export default function UserItem({ searchName, userItem, handleNavigation, navigationDisabled }) {
-    const { authData } = useContext(AppContext)
+    const { authData, url } = useContext(AppContext)
     console.log(authData.nickname + ' vs ' + userItem.nickname)
     console.log(userItem.avatar)
     const avatar = (userItem.avatar)
@@ -37,7 +37,7 @@ export default function UserItem({ searchName, userItem, handleNavigation, navig
                 borderColor: 'lightblue'
             }}>
                 <View style={{ flexDirection: 'row' }}>
-                    <Image source={{ uri: URL + avatar }}  style={{
+                    <Image source={{ uri: url + avatar }}  style={{
                         width: 40,
                         height: 40,
                         borderRadius: 50,
@@ -62,7 +62,7 @@ export default function UserItem({ searchName, userItem, handleNavigation, navig
                         alignItems: 'center'
                     }}>
                         <AntDesign name="star" size={24} color="black" />
-                        <Text>{userItem.rate}</Text>
+                        <Text>{userItem.rate} not rated</Text>
                     </View>
                     <View style={{
                         alignItems: 'center'

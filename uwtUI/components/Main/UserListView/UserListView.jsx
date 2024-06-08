@@ -1,10 +1,11 @@
-import { useState, useEffect } from "react";
-import { View, TextInput, Text, Button, Touchable, StyleSheet, TouchableHighlight, FlatList } from "react-native";
+import { useState, useEffect, useContext } from "react";
+import { View, TextInput, Text, Button, TouchableOpacity, StyleSheet, TouchableHighlight, FlatList } from "react-native";
 import axios from "axios";
-import { URL } from '../../../constants.js'
+import { url } from '../../../constants.js'
 import { AntDesign } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 import UserItem from "./UserItem/UserItem";
+import { AppContext } from "../../AppContext.jsx";
 
 // TODO: estilar
 // TODO: listar por más antiguos
@@ -14,6 +15,7 @@ import UserItem from "./UserItem/UserItem";
 // TODO: validar caja de búsqueda
 // TODO: documentar
 export default function UserListView({ navigation }) {
+    const { url } = useContext(AppContext)
     const [searchName, setSearchName] = useState('')
     const [users, setUsers] = useState(null)
 
@@ -24,7 +26,7 @@ export default function UserListView({ navigation }) {
     }
     
     const getAllUsers = async() => {
-        const usersData = await axios.get(`${URL}/getAllUsers`)
+        const usersData = await axios.get(`${url}/getAllUsers`)
             .then(res => res.data.result)
         console.log('Users data', usersData)
         console.log(usersData)
@@ -52,23 +54,23 @@ export default function UserListView({ navigation }) {
                     }} placeholder="search" onChangeText={handleSearchName}></TextInput>
                 </View>
                 <View style={styles.filterSection}>
-                    <TouchableHighlight
+                    <TouchableOpacity
                         style={styles.filterButton}
                         onPress={() => {}}
                     >
                         <View >
                             <Text>Older</Text>
                         </View>
-                    </TouchableHighlight>
-                    <TouchableHighlight
+                    </TouchableOpacity>
+                    <TouchableOpacity
                         style={styles.filterButton}
                         onPress={() => {}}
                     >
                         <View>
                             <Text>Newer</Text>
                         </View>
-                    </TouchableHighlight>
-                    <TouchableHighlight
+                    </TouchableOpacity>
+                    <TouchableOpacity
                         style={styles.filterButton}
                         onPress={() => {}}
                     >
@@ -76,8 +78,8 @@ export default function UserListView({ navigation }) {
                             <AntDesign name="star" size={24} color="black" />
                             <AntDesign name="arrowup" size={24} color="black" />
                         </View>
-                    </TouchableHighlight>
-                    <TouchableHighlight
+                    </TouchableOpacity>
+                    <TouchableOpacity
                         style={styles.filterButton}
                         onPress={() => {}}
                     >
@@ -85,7 +87,7 @@ export default function UserListView({ navigation }) {
                             <AntDesign name="star" size={24} color="black" />
                             <AntDesign name="arrowdown" size={24} color="black" />
                         </View>
-                    </TouchableHighlight>
+                    </TouchableOpacity>
                 </View>
                 <FlatList 
                     data={users}
@@ -98,14 +100,14 @@ export default function UserListView({ navigation }) {
                         />
                     )}
                 />
-                <TouchableHighlight
+                <TouchableOpacity
                     style={styles.updateButton}
                     onPress={getAllUsers}
                 >
                     <View>
                         <Ionicons name="reload" size={40} color="black" />
                     </View>
-                </TouchableHighlight>
+                </TouchableOpacity>
             </View>
         </>
     )
@@ -121,25 +123,27 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         borderRadius: 20,
         paddingVertical: 10,
-        paddingHorizontal: 40
+        paddingHorizontal: 40,
+        borderColor: 'lightgrey'
     },
     filterButton: {
         flexDirection: 'row',
         justifyContent: 'center',
         alignContent: 'center',
         alignItems: 'center',
-        borderWidth: 1,
         borderRadius: 10,
         paddingHorizontal: 5,
         marginHorizontal: 5,
-        height: 40
+        height: 40,
+        backgroundColor: 'lightgreen'
     },
     updateButton: {
-        borderWidth: 2,
         borderTopLeftRadius: 100,
         borderTopRightRadius: 100,
         width: '100%',
         alignSelf: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        borderColor: 'lightgrey',
+        backgroundColor: 'lightblue'
     }
 })

@@ -1,8 +1,9 @@
 import { useState, useContext } from 'react';
-import { StyleSheet, Text, TextInput, Button, View, Image, TouchableHighlight } from 'react-native';
+import { StyleSheet, Text, TextInput, Button, View, Image, TouchableOpacity } from 'react-native';
 import axios from 'axios';
-import { AppContext } from '../../../AppContext';
-import { URL } from '../../../../constants';
+import { FontAwesome6 } from '@expo/vector-icons';
+import { AppContext } from '../../AppContext';
+import { URL } from '../../../constants.js';
 
 // TODO: estilar
 // TODO: validar
@@ -12,7 +13,8 @@ export default function Login({ navigation }) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
-  const { handleAuth } = useContext(AppContext)
+  const { handleAuth, setLoginView, handleUrl, url } = useContext(AppContext)
+
 
   const [userEmail, setUserEmail] = useState('')
   const [userPassword, setUserPassword] = useState('')
@@ -25,7 +27,7 @@ export default function Login({ navigation }) {
 
   const checkVerifiedAccount = async () => {
     let verifiedUser = false
-    await axios.post(URL + '/userByEmail', {
+    await axios.post(url + '/userByEmail', {
       email: email
     })
       .then(res => {
@@ -38,7 +40,7 @@ export default function Login({ navigation }) {
   }
 
   const handleLogin = () => {
-    axios.post(`${URL}/login`, {
+    axios.post(`${url}/login`, {
       email: email,
       password: password
     })
@@ -54,8 +56,8 @@ export default function Login({ navigation }) {
             setErrorMessage(res.data.result)
           }
           if (res.data.result === 'User not verified') {
-            // TODO: add navigation to VerificationStage
-            navigation.navigate('VerificationStage', {
+            navigation.navigate('VerificationModal', {
+              fromScreen: 'Login',
               email: email
             })
           }
@@ -70,16 +72,50 @@ export default function Login({ navigation }) {
 "/1717003028872_fe04d5fe-41d0-4aa9-8314-eefec0273ffa.jpeg"
   return (
     <View style={styles.container}>
-      <Text>Welcome home!</Text>
+      <View style={{ flexDirection: 'row' }}>
+        <Text style={{
+          fontSize: 50
+        }}>u</Text>
+        <Text style={{
+          fontSize: 50,
+          color: 'lightgreen'
+        }}>Were</Text>
+        <Text style={{
+          fontSize: 50,
+          color: 'lightblue'
+        }}>There</Text>
+      </View>
+      <View style={{ marginBottom: 50 }}>
+        <FontAwesome6 name="map-location" size={250} color="lightgreen" />
+      </View>
+      <Text>Sección solo para desarrollo</Text>
+      <TextInput style={styles.input} onChangeText={handleUrl} keyboardType='numeric' placeholder='Introduce tu dirección IPv4'/>
+      <Text style={{ marginBottom: 30 }} >{url}</Text>
       <TextInput style={styles.input} onChangeText={handleEmail} placeholder='email'/>
       <TextInput style={styles.input} onChangeText={handlePassword} placeholder='password'/>
-      <Button
+      <TouchableOpacity
+        style={{
+          backgroundColor: 'lightblue',
+          borderRadius: 10,
+          paddingHorizontal: 10,
+          paddingVertical: 5,
+          marginBottom: 10
+        }}
         onPress={handleLogin}
-        title='Login'
-      />
-      <TouchableHighlight>
-        <Text style={{ color: 'green', marginTop: 10 }}>I forgot my password</Text>
-      </TouchableHighlight>
+      >
+        <Text style={{ fontSize: 20 }}>Log in</Text>
+      </TouchableOpacity>
+      <View style={{ flexDirection: 'row' }}>
+        <Text style={{ marginRight: 10, fontSize: 20 }}>Do you want join us?</Text>
+        <TouchableOpacity
+          onPress={() => { navigation.navigate('EmailPasswordStage') }}
+        >
+          <Text style={{ color: 'green', fontSize: 20 }}>Sign up</Text>
+        </TouchableOpacity>
+      </View>
+      <TouchableOpacity>
+        <Text style={{ color: 'green', marginTop: 10, fontSize: 17 }}>I forgot my password</Text>
+      </TouchableOpacity>
       <Text>{errorMessage}</Text>
       <Text>{userEmail}</Text>
     </View>
@@ -94,6 +130,7 @@ const styles = StyleSheet.create({
       justifyContent: 'center'
     },
     input: {
+      fontSize: 17,
       margin: 10,
       padding: 10,
       height: 40,

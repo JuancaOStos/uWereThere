@@ -5,7 +5,7 @@ import RatePanel from "./RatePanel/RatePanel.jsx";
 import CommentItem from "./CommentItem/CommentItem";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Feather } from '@expo/vector-icons';
-import { URL } from '../../../../constants.js';
+import { url } from '../../../../constants.js';
 import { AppContext } from "../../../AppContext.jsx";
 import axios from 'axios';
 
@@ -14,7 +14,7 @@ import axios from 'axios';
 // TODO: limpiar
 // TODO: documentar
 export default function LocationDetails({ route }) {
-    const { authData } = useContext(AppContext)
+    const { authData, url } = useContext(AppContext)
     const { locationItem } = route.params
     const [comments, setComments] = useState([])
     const [newComment, setNewComment] = useState('')
@@ -27,7 +27,7 @@ export default function LocationDetails({ route }) {
 
     
     const handleNewCommentButton = async() => {
-        await axios.put(`${URL}/addNewComment`, {
+        await axios.put(`${url}/addNewComment`, {
             publicationId: locationItem._id,
             authId: authData._id,
             comment: newComment
@@ -37,7 +37,7 @@ export default function LocationDetails({ route }) {
     }
     
     const getAllComments = async() => {
-        await axios.post(`${URL}/getCommentsById`, {
+        await axios.post(`${url}/getCommentsById`, {
             publicationId: locationItem._id
         })
             .then(res => {
@@ -82,7 +82,7 @@ export default function LocationDetails({ route }) {
                         alignItems: 'center'
                     }}>
                         <Text>{locationItem.author.nickname}</Text>
-                        <Image source={{ uri: URL + locationItem.author.avatar }}  style={{
+                        <Image source={{ uri: url + locationItem.author.avatar }}  style={{
                             width: 40,
                             height: 40,
                             borderRadius: 50,
@@ -104,18 +104,18 @@ export default function LocationDetails({ route }) {
                         maxWidth: 350,
                         maxHeight: 250
                     }}
-                    source={{ uri: URL + locationItem.pic}}/>
-                    <Text style={styles.bodyText}>{locationItem.description}añlsdkfjañlsdfkjañsdlkfjasñdlfkjasdñfasñldfjañsldkfjasdñlfkjasdñlkfjlkjasdñflkajsdñflk</Text>
+                    source={{ uri: url + locationItem.pic}}/>
+                    <Text style={styles.bodyText}>{locationItem.description}</Text>
                     {(locationItem.author._id !== authData._id) && <RatePanel locationItem={locationItem}/>}
                     <Text style={styles.bodyText}>Link to Maps</Text>
                     <TouchableOpacity
                         style={styles.mapsButton}
 
                         onPress={() => {
-                            Linking.canOpenURL(`geo:0,0?q=${locationItem.location.latitude},${locationItem.location.longitude}(${locationItem.title})`)
+                            Linking.canOpenurl(`geo:0,0?q=${locationItem.location.latitude},${locationItem.location.longitude}(${locationItem.title})`)
                                 .then((supported) => {
                                     if (supported) {
-                                        Linking.openURL(`geo:$0,0?q=${locationItem.location.latitude},${locationItem.location.longitude}(${locationItem.title})`)
+                                        Linking.openurl(`geo:$0,0?q=${locationItem.location.latitude},${locationItem.location.longitude}(${locationItem.title})`)
                                     } else {
                                         Alert.alert('Error')
                                     }
@@ -149,7 +149,7 @@ export default function LocationDetails({ route }) {
                             paddingHorizontal: 10,
                             marginRight: 10,
                             borderColor: 'lightgrey' 
-                        }} placeholder="search"
+                        }} placeholder="Leave a comment"
                         value={newComment}
                         onChangeText={handleNewComment}
                         multiline

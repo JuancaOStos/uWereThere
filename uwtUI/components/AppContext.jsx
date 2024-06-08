@@ -9,6 +9,8 @@ export default function AppProvider({ children, auth, handleAuth }) {
     const [loginView, setLoginView] = useState(true)
     const [authData, setAuthData] = useState(null)
     const [userPublications, setUserPublications] = useState(null)
+    const [url, setUrl] = useState('')
+    const handleUrl = (value) => setUrl('http://' + value + ':3000')
     useEffect(() => {
         if (auth) {
             const tokenPayload = jwtDecode(auth)
@@ -21,6 +23,8 @@ export default function AppProvider({ children, auth, handleAuth }) {
         <AppContext.Provider value={{
             loginView,
             setLoginView,
+            handleUrl,
+            url,
             authData,
             handleAuth
         }}>

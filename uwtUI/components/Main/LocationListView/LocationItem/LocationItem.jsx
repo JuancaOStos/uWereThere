@@ -1,13 +1,16 @@
+import { useContext } from "react";
 import { View, Text, TouchableHighlight, Image } from "react-native";
 import { AntDesign } from '@expo/vector-icons';
 import { Foundation } from '@expo/vector-icons';
-import { URL } from "../../../../constants";
+import { url } from "../../../../constants";
+import { AppContext } from "../../../AppContext";
 
 // TODO: estilar
 // TODO: mostrar total de comentarios
 // TODO: limpiar
 // TODO: documentar
 export default function LocationItem({ searchName, locationItem, handleNavigation, navigationDisabled  }) {
+    const { url } = useContext(AppContext)
     const authorNickname = (locationItem.author)
         ? locationItem.author.nickname
         : '-nickname-'
@@ -15,8 +18,7 @@ export default function LocationItem({ searchName, locationItem, handleNavigatio
     const avatar = (locationItem.author.avatar)
         ? locationItem.author.avatar
         : 'https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png'
-
-    console.info(locationItem)
+    console.info(url + locationItem.author.avatar)
     if (locationItem.title.toLowerCase().includes(searchName.toLowerCase())) {
         return(
             <TouchableHighlight
@@ -39,7 +41,7 @@ export default function LocationItem({ searchName, locationItem, handleNavigatio
                         alignSelf: 'flex-end',
                         alignItems: 'center',
                     }}>
-                        <Image source={{ uri: URL + avatar}} style={{
+                        <Image source={{ uri: 'http://192.168.1.26:3000/public/images/1717265676831_eb1aab70-bb01-4cbd-a2bf-0fdee5589e81.jpeg'}} style={{
                             backgroundColor: 'lightgrey',
                             width: 30,
                             height: 30,
@@ -56,7 +58,7 @@ export default function LocationItem({ searchName, locationItem, handleNavigatio
                                 borderRadius: 20,
                                 borderColor: 'black'
                             }}
-                            source={{ uri: URL + locationItem.pic}}/>
+                            source={{ uri: url + locationItem.pic}}/>
                         <View style={{ marginStart: 25 }}>
                             <Text>{locationItem.title}</Text>
                             <View style={{

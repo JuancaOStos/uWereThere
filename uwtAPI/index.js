@@ -472,6 +472,7 @@ app.post('/signup', async (req, res) => {
 
 app.post('/verificationCode', async (req, res) => {
     const { email } = req.body
+    console.log('Checking email: ' + email)
     const max = 9999
     const min = 1000
     const randomCode = (Math.round(Math.random() * (max - min) + min)).toString()
@@ -484,6 +485,8 @@ app.post('/verificationCode', async (req, res) => {
         subject: 'Verify your email',
         html: `<h1>Verify your email</h1><p>Your verification code is <b>${randomCode}</b></p>`
     })
+        .then(() => console.log('email send with success'))
+        .catch(err => console.error('Error sending emil: ' + err))
     const updatedUser = await User.findOneAndUpdate({
         email: email
     }, {

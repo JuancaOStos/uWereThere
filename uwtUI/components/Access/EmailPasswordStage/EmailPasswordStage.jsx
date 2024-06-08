@@ -1,22 +1,26 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import axios from "axios";
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native'
+import { View, Text, TextInput, Button, TouchableOpacity, StyleSheet } from 'react-native'
 import { useNavigation } from "@react-navigation/native";
-import { URL } from "../../../../constants";
+import { URL } from "../../../constants";
+import { AppContext } from "../../AppContext";
 
 // TODO: estilar
 // TODO: validar
 // TODO: documentar
 export default function EmailPasswordStage() {
+    const { setLoginView, url } = useContext(AppContext)
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const [repeatPassword, setRepeatPassword] = useState('')
     const handleEmail = (value) => setEmail(value)
     const handlePassword = (value) => setPassword(value)
+    const handleRepeatPassword = (value) => setRepeatPassword(value)
     
     const navigation = useNavigation()
 
     const checkExistingUser = () => {
-        axios.post(`${URL}/users/existingEmail`, {
+        axios.post(`${url}/users/existingEmail`, {
             email: email
         })
             .then(res => {
@@ -46,11 +50,27 @@ export default function EmailPasswordStage() {
             <Text style={styles.headerText}>Introduce an email and password</Text>
             <TextInput placeholder="email" onChangeText={handleEmail} style={styles.textBox}/>
             <TextInput placeholder="password" onChangeText={handlePassword} style={styles.textBox}/>
-            <Button
+            <TextInput placeholder="repeat password" onChangeText={handleRepeatPassword} style={styles.textBox}/>
+            <TouchableOpacity
+                style={{
+                backgroundColor: 'lightblue',
+                paddingHorizontal: 10,
+                paddingVertical: 5,
+                marginBottom: 10
+                }}
                 onPress={checkExistingUser}
-                title="Next"
                 disabled={disableButton}
-            />
+            >
+                <Text style={{ fontSize: 20 }}>Next</Text>
+            </TouchableOpacity>
+            <View style={{ flexDirection: 'row' }}>
+                <Text style={{ marginRight: 10, fontSize: 18 }}>Do you already have an account?</Text>
+                <TouchableOpacity
+                    onPress={() => { navigation.navigate('Login') }}
+                >
+                    <Text style={{ color: 'green', fontSize: 18 }}>Log in</Text>
+                </TouchableOpacity>
+            </View>
         </View>
     )
 }

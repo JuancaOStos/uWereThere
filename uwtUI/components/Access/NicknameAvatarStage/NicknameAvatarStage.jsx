@@ -1,16 +1,18 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import axios from "axios";
-import { View, Text, Button, StyleSheet, Image, TextInput, TouchableHighlight } from 'react-native'
+import { View, Text, Button, StyleSheet, Image, TextInput, TouchableOpacity } from 'react-native'
 import * as ImagePicker from 'expo-image-picker'
 import { Entypo } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
-import { URL } from "../../../../constants";
+import { URL } from "../../../constants";
+import { AppContext } from "../../AppContext";
 
 // TODO: estilar
 // TODO: añadir también hacer foto
 // TODO: validar
 // TODO: documentar
 export default function NicknameAvatarStage({ route, navigation }) {
+    const { url } = useContext(AppContext)
     const { email, password } = route.params
     const [avatar, setAvatar] = useState({
         uri: 'https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png',
@@ -52,7 +54,7 @@ export default function NicknameAvatarStage({ route, navigation }) {
                 type: avatar.type,
                 name: avatar.name
             })
-            await axios.post(`${URL}/upload`, formData, {
+            await axios.post(`${url}/upload`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
@@ -79,7 +81,7 @@ export default function NicknameAvatarStage({ route, navigation }) {
             return
         }
 
-        axios.post(`${URL}/signup`, {
+        axios.post(`${url}/signup`, {
             email: email,
             password: password,
             nickname: nickname,
@@ -89,7 +91,8 @@ export default function NicknameAvatarStage({ route, navigation }) {
                 const data = res.data
                 setResultMessage(data.result)
                 alert('User Registered\nVerify your account')
-                navigation.navigate('VerificationStage', {
+                navigation.navigate('VerificationModal', {
+                    fromScreen: 'NicknameAvatarStage',
                     email: email
                 })
             })
@@ -109,25 +112,32 @@ export default function NicknameAvatarStage({ route, navigation }) {
             <Text style={styles.headerText}>Choose an avatar!</Text>
             {avatar && <Image source={{ uri: avatar.uri }} style={styles.image} />}
             <View style={styles.horizontalBox}>
-                <TouchableHighlight
+                <TouchableOpacity
                     onPress={() => {}}
                 >
                     <Entypo name="camera" size={40} color="black" />
-                </TouchableHighlight>
-                <TouchableHighlight
+                </TouchableOpacity>
+                <TouchableOpacity
                     style={{ marginLeft: 25}}
                     onPress={pickImage}
                 >
                     <FontAwesome name="picture-o" size={40} color="black" />
-                </TouchableHighlight>
+                </TouchableOpacity>
             </View>
-            <Text style={styles.headerText}>Who do you want be called?</Text>
+            <Text style={styles.headerText}>How do you want to be called?</Text>
             <TextInput style={styles.textBox} placeholder="nickname" onChangeText={handleNickname}/>
-            <Button
+            <TouchableOpacity
+                style={{
+                backgroundColor: 'lightblue',
+                paddingHorizontal: 10,
+                paddingVertical: 5,
+                marginBottom: 10
+                }}
                 onPress={newUserSignUp}
-                title="Next"
                 disabled={disableButton}
-            />
+            >
+                <Text style={{ fontSize: 20 }}>Next</Text>
+            </TouchableOpacity>
         </View>
     )
 }

@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from "react";
-import { View, Text, Button, FlatList, Image } from "react-native";
+import { View, Text, Button, FlatList, TextInput, StyleSheet, Image, TouchableOpacity } from "react-native";
 import axios from "axios";
-import { URL } from '../../../../constants.js'
+import { url } from '../../../../constants.js'
 import { AppContext } from "../../../AppContext";
 import LocationItem from "../../LocationListView/LocationItem/LocationItem.jsx";
 import UserItem from "../UserItem/UserItem.jsx";
@@ -19,10 +19,10 @@ import { USER_LOGO } from "../../../../constants.js";
 // TODO: documentar
 export default function UserProfileView({ route }) {
     const [searchName, setSearchName] = useState('')
-    const [publications, setPublications] = useState(null)
-    const [friends, setFriends] = useState(null)
+    const [publications, setPublications] = useState([])
+    const [friends, setFriends] = useState([])
     const [listView, setListView] = useState('publications')
-    const { authData } = useContext(AppContext)
+    const { authData, url } = useContext(AppContext)
     const { userItem } = route.params
     const [authFriend, setAuthFriend] = useState(false)
     console.log(userItem)
@@ -34,7 +34,7 @@ export default function UserProfileView({ route }) {
     const handleSearchName = (value) => setSearchName(value)
 
     const getPublisAndFriends = async () => {
-        await axios.post(`${URL}/getPublicationsById`, {
+        await axios.post(`${url}/getPublicationsById`, {
             authId: userItem._id
         })
             .then(res => {
@@ -45,7 +45,7 @@ export default function UserProfileView({ route }) {
                 console.error('An error has occurred getting publications of auth user:\n' + err)
             })
         
-        await axios.post(`${URL}/getFriendsById`, {
+        await axios.post(`${url}/getFriendsById`, {
             authId: userItem._id
         })
             .then(res => {
@@ -66,7 +66,7 @@ export default function UserProfileView({ route }) {
     }, [])
 
     const checkFriendById = async () => {
-        await axios.post(`${URL}/checkFriendById`, {
+        await axios.post(`${url}/checkFriendById`, {
             authId: authData._id,
             friendId: userItem._id
         })
@@ -89,7 +89,7 @@ export default function UserProfileView({ route }) {
     }
 
     const handleFollow = async () => {
-        await axios.put(`${URL}/followUser`, {
+        await axios.put(`${url}/followUser`, {
             authId: authData._id,
             friendId: userItem._id
         })
@@ -126,7 +126,7 @@ export default function UserProfileView({ route }) {
         )
 
     const handleUnFollow = async () => {
-        await axios.put(`${URL}/unFollowUser`, {
+        await axios.put(`${url}/unFollowUser`, {
             authId: authData._id,
             friendId: userItem._id
         })
@@ -147,14 +147,15 @@ export default function UserProfileView({ route }) {
     return(
         <>
             <View style={{
-            alignItems: 'center',
-            marginTop: 30
-        }}>
+                marginTop: 30,
+                marginHorizontal: 20
+            }}>
             <View style={{
                 flexDirection: 'row',
+                alignSelf: 'flex-start',
                 marginBottom: 20
             }}>
-                <Image source={{ uri: URL + avatar }} style={{
+                <Image source={{ uri: url + avatar }} style={{
                     width: 100,
                     height: 100,
                     borderRadius: 50,
@@ -163,39 +164,152 @@ export default function UserProfileView({ route }) {
                 <View style={{
                     flexDirection: 'row',
                     alignItems: 'center',
-                    marginStart: 20
-                }}>
-                    <AntDesign name="star" size={24} color="black" />
-                    <Text>n</Text>
+                 }}>
+                    <TouchableOpacity
+                        onPress={handlePublicationListButton}
+                    >
+                        <View style={styles.authButtons}>
+                            <Text style={{ fontWeight: 'bold' }}>{publications.length}</Text>
+                            <Text>publications</Text>
+                        </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        onPress={handleFriendListButton}
+                    >
+                        <View style={styles.authButtons}>
+                            <Text style={{ fontWeight: 'bold' }}>0</Text>
+                            <Text>followers</Text>
+                        </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        onPress={handlePublicationListButton}
+                    >
+                        <View style={styles.authButtons}>
+                            <Text style={{ fontWeight: 'bold' }}>{friends.length}</Text>
+                            <Text>followed</Text>
+                        </View>
+                    </TouchableOpacity>
                 </View>
             </View>
             <View style={{
-                alignItems: 'center',
                 marginBottom: 20
             }}>
                 <Text style={{fontSize: 25}}>{userItem.nickname}</Text>
-                <Text style={{fontSize: 15}}>{userItem.email}</Text>
-            </View>
-            <View>
-                <Button
-                    title={followButtonText}
-                    onPress={followButtonFunction}
-                />
+                <View style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                }}>
+                    <AntDesign name="star" size={24} color="black" />
+                    <Text>{userItem.averageRate}</Text>
+                </View>
             </View>
             <View style={{
-                flexDirection: 'row'
+                alignSelf: 'flex-start'
             }}>
-                <Button
-                    title="n publications"
-                    onPress={handlePublicationListButton}
-                />
-                <Button
-                    title="n friends"
-                    onPress={handleFriendListButton}
-                />
+                <TouchableOpacity
+                    style={{
+                        backgroundColor: 'lightblue',
+                        borderRadius: 10,
+                        paddingHorizontal: 10,
+                        paddingVertical: 5,
+                        marginBottom: 10
+                    }}
+                    onPress={followButtonFunction}
+                >
+                    <Text style={{ fontSize: 20 }}>{followButtonText}</Text>
+                </TouchableOpacity>
+            </View>
+            <View>
+                <View style={{
+                        marginTop: 10,
+                        marginHorizontal: '10%',
+                        borderWidth: 1,
+                        borderRadius: 15,
+                        borderColor: 'lightgrey',
+                        marginBottom: 20
+                    }}>
+                        <TextInput style={{
+                            paddingVertical: 5,
+                            paddingStart: 10,
+                        }} placeholder="search" onChangeText={handleSearchName}></TextInput>
+                </View>
+                <View style={styles.filterSection}>
+                        <TouchableOpacity
+                            style={styles.filterButton}
+                            onPress={() => {}}
+                        >
+                        <View >
+                            <Text>Older</Text>
+                        </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={styles.filterButton}
+                        onPress={() => {}}
+                    >
+                        <View>
+                            <Text>Newer</Text>
+                        </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={styles.filterButton}
+                        onPress={() => {}}
+                    >
+                        <View style={{ flexDirection: 'row' }}>
+                            <AntDesign name="star" size={24} color="black" />
+                            <AntDesign name="arrowup" size={24} color="black" />
+                        </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={styles.filterButton}
+                        onPress={() => {}}
+                    >
+                        <View style={{ flexDirection: 'row' }}>
+                            <AntDesign name="star" size={24} color="black" />
+                            <AntDesign name="arrowdown" size={24} color="black" />
+                        </View>
+                    </TouchableOpacity>
+                </View>
             </View>
             {listToShow}
         </View>
         </>
     )
 }
+
+const styles = StyleSheet.create({
+    authButtons: {
+        alignItems: 'center',
+        marginHorizontal: 10
+    },
+    filterSection: {
+        flexDirection: 'row',
+        marginHorizontal: 30,
+        justifyContent: 'center',
+        alignItems: 'center',
+        alignSelf: 'center',
+        borderWidth: 2,
+        borderRadius: 20,
+        paddingVertical: 10,
+        paddingHorizontal: 40,
+        borderColor: 'lightgrey',
+    },
+    filterButton: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignContent: 'center',
+        alignItems: 'center',
+        borderRadius: 10,
+        paddingHorizontal: 5,
+        marginHorizontal: 5,
+        height: 40,
+        backgroundColor: 'lightgreen'
+    },
+    updateButton: {
+        borderWidth: 2,
+        borderTopLeftRadius: 100,
+        borderTopRightRadius: 100,
+        width: '100%',
+        alignSelf: 'center',
+        alignItems: 'center'
+    }
+})

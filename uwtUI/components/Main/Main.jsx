@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { Text, TouchableHighlight, StyleSheet } from "react-native";
+import { Text, TouchableOpacity, StyleSheet } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { FontAwesome5 } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -13,83 +13,87 @@ import ProfileSettingsView from "./ProfileSettingsView/ProfileSettingsView";
 import { AppContext } from "../AppContext";
 
 const Tab = createBottomTabNavigator()
-const { handleAuth } = useContext(AppContext)
 // TODO: estilar
 // TODO: documentar
 export default function Main() {
-
+  const { handleAuth } = useContext(AppContext)
+  
     return(
         <Tab.Navigator
             screenOptions={{
               tabBarStyle: { height: 65 },
               tabBarActiveTintColor: 'green',
               headerRight: () => (
-                <TouchableHighlight
+                <TouchableOpacity
                   onPress={() => handleAuth(null)}
                   style={styles.logoutButton}
                 >
                   <MaterialIcons name="logout" size={30} color="black" />
-                </TouchableHighlight>
-              )
+                </TouchableOpacity>
+              ),
             }}
         >
             <Tab.Screen 
-                name="Publicaciones"
+                name="Locations"
                 component={LocationListStack}
                 options={{
-                  tabBarLabel: 'Ubicaciones',
+                  tabBarLabel: 'Locations',
                   tabBarLabelStyle: {
                     fontSize: 15
                   },
+                  unmountOnBlur: true,
                   tabBarIcon: ({ color, size }) => (
                     <FontAwesome5 name="search-location" size={30} color="black" />
                   )
                 }}
             />
             <Tab.Screen
-                name="Usuarios"
+                name="Users"
                 component={UserListStack}
                 options={{
-                  tabBarLabel: 'Usuarios',
+                  tabBarLabel: 'Users',
                   tabBarLabelStyle: {
                     fontSize: 15
                   },
+                  unmountOnBlur: true,
                   tabBarIcon: ({ color, size }) => (
                     <FontAwesome5 name="users" size={24} color="black" />
                   ),
                 }}
             />
             <Tab.Screen
-                name="Nueva localización"
+                name="New location"
                 component={NewLocation}
                 options={{
-                  tabBarLabel: 'Nueva Ubicación',
+                  tabBarLabel: 'New location',
                   tabBarLabelStyle: {
                     fontSize: 12
-                  },
+                    },
+                  unmountOnBlur: true,
                   tabBarIcon: ({ color, size }) => (
                     <MaterialIcons name="add-location" size={30} color="black" />
-                  ),
+                    ),
                 }}
             />
             <Tab.Screen
-                name="Perfil de usuario"
+                name="Profile"
                 component={AuthProfileView}
                 options={{
-                  tabBarLabel: 'Mi Perfil',
+                  tabBarLabel: 'Profile',
                   tabBarLabelStyle: {
                     fontSize: 15
                   },
+                  unmountOnBlur: true,
                   tabBarIcon: ({ color, size }) => (
                     <FontAwesome5 name="user-circle" size={30} color="black" />
                   ),
                 }}
             />
             <Tab.Screen
-                name="Configuraciones"
+                name="Settings"
                 component={ProfileSettingsView}
                 options={{
-                  tabBarLabel: 'Configuraciones',
+                  tabBarLabel: 'Settings',
                   tabBarLabelStyle: {
                     fontSize: 15
                   },

@@ -1,22 +1,22 @@
 import { useState, useEffect, useContext } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native'
 import { useNavigation } from "@react-navigation/native";
-import { AppContext } from '../../../AppContext';
-import { URL } from "../../../../constants";
+import { AppContext } from '../../AppContext';
+import { URL } from "../../../constants";
 import axios from "axios";
 
 // TODO: estilar
 // TODO: validar
 // TODO: documentar
 export default function VerificationSignUp({ route }) {
-    const { email } = route.params
-    const { loginView, setLoginView } = useContext(AppContext)
+    const { email, fromScreen } = route.params
+    const { loginView, setLoginView, url } = useContext(AppContext)
     const [code, setCode] = useState('')
     const handleCode = (value) => setCode(value)
     const navigation = useNavigation()
 
     const requestVerificationCode = async () => {
-        await axios.post(URL + '/verificationCode', {
+        await axios.post(url + '/verificationCode', {
             email: email
         })
             .then(res => {
@@ -34,7 +34,7 @@ export default function VerificationSignUp({ route }) {
     }, [])
 
     const verifyAccount = async () => {
-        await axios.post(URL + '/verifyCode', {
+        await axios.post(url + '/verifyCode', {
             email: email,
             code: code
         })
@@ -42,14 +42,12 @@ export default function VerificationSignUp({ route }) {
                 if (res.data.status === 'ok') {
                     console.log('Account verified with success')
                     alert('Account verified with success')
-                    if (loginView === false) {
-                        console.log('Entonces llega aquí?')
-                        setLoginView(true)
-                    } else {
-                        console.log('Por qué llega aquí')
-                        console.log(loginView)
-                        navigation.goBack()
-                    }
+                    navigation.navigate('Login')
+                    // if (fromScreen === 'NicknameAvatarStage') {
+                    //     navigation.navigate('Login')
+                    // } else if (fromScreen === 'Login') {
+                    //     navigation.goBack()
+                    // }
 
                 } else {
                     alert('Code doesn\'t match')
