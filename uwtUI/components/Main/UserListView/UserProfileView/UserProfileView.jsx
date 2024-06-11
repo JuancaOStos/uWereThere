@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from "react";
-import { View, Text, Button, FlatList, TextInput, StyleSheet, Image, TouchableOpacity } from "react-native";
+import { View, Text, Button, FlatList, ScrollView, TextInput, StyleSheet, Image, TouchableOpacity } from "react-native";
 import axios from "axios";
 import { url } from '../../../../constants.js'
 import { AppContext } from "../../../AppContext";
@@ -7,6 +7,7 @@ import LocationItem from "../../LocationListView/LocationItem/LocationItem.jsx";
 import UserItem from "../UserItem/UserItem.jsx";
 import { AntDesign } from '@expo/vector-icons';
 import { USER_LOGO } from "../../../../constants.js";
+import { sortElements } from "../../../../utils.js";
 
 // TODO: estilar
 // TODO: cambiar FlatList por ScrollView
@@ -18,18 +19,28 @@ import { USER_LOGO } from "../../../../constants.js";
 // TODO: limpiar
 // TODO: documentar
 export default function UserProfileView({ route }) {
+    const { userItem } = route.params
     const [searchName, setSearchName] = useState('')
     const [publications, setPublications] = useState([])
-    const [friends, setFriends] = useState([])
+    const [rate, setRate] = useState(userItem.averageRate)
+    const [followed, setFollowed] = useState([])
+    const [followers, setFollowers] = useState([])
     const [listView, setListView] = useState('publications')
     const { token, url } = useContext(AppContext)
-    const { userItem } = route.params
     const [authFriend, setAuthFriend] = useState(false)
+    const [sortData, setSortData] = useState({
+        sortField: 'createdAt',
+        sortDirection: 'desc'
+    })
     console.log(userItem)
     console.log(token._id)
     const avatar = (userItem.avatar)
         ? userItem.avatar
         : USER_LOGO
+
+    const rateLabel = (rate > 0)
+        ? rate
+        : 'Not rated yet'
 
     const handleSearchName = (value) => setSearchName(value)
 
@@ -45,12 +56,12 @@ export default function UserProfileView({ route }) {
                 console.error('An error has occurred getting publications of auth user:\n' + err)
             })
         
-        await axios.post(`${url}/getFriendsById`, {
+        await axios.post(`${url}/getFollowedAndFollowersById`, {
             authId: userItem._id
         })
             .then(res => {
-                console.log(res.data.result)
-                setFriends(res.data.result.friends)
+                setFollowed(res.data.result.followed)
+                setFollowers(res.data.result.followers)
             })
             .catch(err => {
                 console.error('An error has occurred getting friends of auth user:\n' + err)
@@ -66,9 +77,9 @@ export default function UserProfileView({ route }) {
     }, [])
 
     const checkFriendById = async () => {
-        await axios.post(`${url}/checkFriendById`, {
+        await axios.post(`${url}/checkFollowedById`, {
             authId: token._id,
-            friendId: userItem._id
+            followedId: userItem._id
         })
             .then(res => {
                 console.log(res.data.result)
@@ -82,16 +93,22 @@ export default function UserProfileView({ route }) {
         console.log(publications)
     }
 
-    const handleFriendListButton = async() => {
+    const handleFollowedListButton = async() => {
         await getPublisAndFriends()
-        setListView('friends')
-        console.log(friends)
+        setListView('followed')
+        console.log(followed)
+    }
+
+    const handleFollowersListButton = async() => {
+        await getPublisAndFriends()
+        setListView('followers')
+        console.log(followers)
     }
 
     const handleFollow = async () => {
         await axios.put(`${url}/followUser`, {
             authId: token._id,
-            friendId: userItem._id
+            followedId: userItem._id
         })
             .then(res => {
                 console.log(res.data.result)
@@ -99,31 +116,99 @@ export default function UserProfileView({ route }) {
         checkFriendById()
     }
 
-    const listToShow = (listView === 'publications')
-        ? (
-            <FlatList
-                data={publications}
-                renderItem={({ item: location }) => (
-                    <LocationItem
-                        searchName={searchName}
-                        locationItem={location}
-                        navigationDisabled={true}
-                    />
-                )}
-            />
-        )
-        : (
-            <FlatList
-                data={friends}
-                renderItem={({ item: friends }) => (
-                    <UserItem
-                        searchName={searchName}
-                        userItem={friends}
-                        navigationDisabled={true}
-                    />
-                )}
-            />
-        )
+    const sortPublications = () => {
+        console.log(sortData.sortField + ' : ' + sortData.sortDirection)
+        const sortedPublications = sortElements(publications, sortData.sortField, sortData.sortDirection)
+
+        return sortedPublications
+    }
+
+    const sortFollowers = () => {
+        console.log(sortData.sortField + ' : ' + sortData.sortDirection)
+        const sortedFollowers = sortElements(followers, sortData.sortField, sortData.sortDirection)
+
+        return sortedFollowers
+    }
+
+    const sortFollowed = () => {
+        console.log(sortData.sortField + ' : ' + sortData.sortDirection)
+        const sortedFollowed = sortElements(followed, sortData.sortField, sortData.sortDirection)
+
+        return sortedFollowed
+    }
+
+    let sortItems
+    if (listView === 'publications') {
+        sortItems = sortPublications
+    } else if (listView === 'followers') {
+        sortItems = sortFollowers
+    } else if (listView === 'followed') {
+        sortItems = sortFollowed
+    }
+
+    const sortedItems = sortItems()
+
+    let listToShow
+    if (listView === 'publications') {
+        listToShow = sortedItems.map(location => {
+            return (
+                <LocationItem
+                    key={location._id}
+                    searchName={searchName}
+                    locationItem={location}
+                    navigationDisabled={true}
+                />
+            )
+        })
+    } else if (listView === 'followers') {
+        listToShow = sortedItems.map(follower => {
+            return (
+                <UserItem
+                    key={follower._id}
+                    searchName={searchName}
+                    userItem={follower}
+                    navigationDisabled={true}
+                />
+            )
+        })
+    } else if (listView === 'followed') {
+        listToShow = sortedItems.map(followedUser => {
+            return (
+                <UserItem
+                    key={followedUser._id}
+                    searchName={searchName}
+                    userItem={followedUser}
+                    navigationDisabled={true}
+                />
+            )
+        })
+    }
+
+    // const listToShow = (listView === 'publications')
+    //     ? (
+    //         <FlatList
+    //             data={publications}
+    //             renderItem={({ item: location }) => (
+    //                 <LocationItem
+    //                     searchName={searchName}
+    //                     locationItem={location}
+    //                     navigationDisabled={true}
+    //                 />
+    //             )}
+    //         />
+    //     )
+    //     : (
+    //         <FlatList
+    //             data={followed}
+    //             renderItem={({ item: friends }) => (
+    //                 <UserItem
+    //                     searchName={searchName}
+    //                     userItem={friends}
+    //                     navigationDisabled={true}
+    //                 />
+    //             )}
+    //         />
+    //     )
 
     const handleUnFollow = async () => {
         await axios.put(`${url}/unFollowUser`, {
@@ -145,7 +230,7 @@ export default function UserProfileView({ route }) {
         : 'follow'
 
     return(
-        <>
+        <ScrollView>
             <View style={{
                 marginTop: 30,
                 marginHorizontal: 20
@@ -174,18 +259,18 @@ export default function UserProfileView({ route }) {
                         </View>
                     </TouchableOpacity>
                     <TouchableOpacity
-                        onPress={handleFriendListButton}
+                        onPress={handleFollowersListButton}
                     >
                         <View style={styles.authButtons}>
-                            <Text style={{ fontWeight: 'bold' }}>0</Text>
+                            <Text style={{ fontWeight: 'bold' }}>{followers.length}</Text>
                             <Text>followers</Text>
                         </View>
                     </TouchableOpacity>
                     <TouchableOpacity
-                        onPress={handlePublicationListButton}
+                        onPress={handleFollowedListButton}
                     >
                         <View style={styles.authButtons}>
-                            <Text style={{ fontWeight: 'bold' }}>{friends.length}</Text>
+                            <Text style={{ fontWeight: 'bold' }}>{followed.length}</Text>
                             <Text>followed</Text>
                         </View>
                     </TouchableOpacity>
@@ -200,7 +285,7 @@ export default function UserProfileView({ route }) {
                     alignItems: 'center',
                 }}>
                     <AntDesign name="star" size={24} color="black" />
-                    <Text>{userItem.averageRate}</Text>
+                    <Text>{rateLabel}</Text>
                 </View>
             </View>
             <View style={{
@@ -236,7 +321,12 @@ export default function UserProfileView({ route }) {
                 <View style={styles.filterSection}>
                         <TouchableOpacity
                             style={styles.filterButton}
-                            onPress={() => {}}
+                            onPress={() => {
+                                setSortData({
+                                    sortField: 'createdAt',
+                                    sortDirection: 'asc'
+                                })
+                            }}
                         >
                         <View >
                             <Text>Older</Text>
@@ -244,7 +334,12 @@ export default function UserProfileView({ route }) {
                     </TouchableOpacity>
                     <TouchableOpacity
                         style={styles.filterButton}
-                        onPress={() => {}}
+                        onPress={() => {
+                            setSortData({
+                                sortField: 'createdAt',
+                                sortDirection: 'desc'
+                            })
+                        }}
                     >
                         <View>
                             <Text>Newer</Text>
@@ -252,7 +347,12 @@ export default function UserProfileView({ route }) {
                     </TouchableOpacity>
                     <TouchableOpacity
                         style={styles.filterButton}
-                        onPress={() => {}}
+                        onPress={() => {
+                            setSortData({
+                                sortField: 'averageRate',
+                                sortDirection: 'asc'
+                            })
+                        }}
                     >
                         <View style={{ flexDirection: 'row' }}>
                             <AntDesign name="star" size={24} color="black" />
@@ -261,7 +361,12 @@ export default function UserProfileView({ route }) {
                     </TouchableOpacity>
                     <TouchableOpacity
                         style={styles.filterButton}
-                        onPress={() => {}}
+                        onPress={() => {
+                            setSortData({
+                                sortField: 'averageRate',
+                                sortDirection: 'desc'
+                            })
+                        }}
                     >
                         <View style={{ flexDirection: 'row' }}>
                             <AntDesign name="star" size={24} color="black" />
@@ -272,7 +377,7 @@ export default function UserProfileView({ route }) {
             </View>
             {listToShow}
         </View>
-        </>
+        </ScrollView>
     )
 }
 

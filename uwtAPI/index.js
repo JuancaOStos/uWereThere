@@ -217,7 +217,7 @@ app.post('/userByEmail', async (req, res) => {
 app.post('/authUserById', async (req, res) => {
     const { _id } = req.body
     
-    await User.findById(_id, '-password -publications -friends -verificationCode')
+    await User.findById(_id, '-password -publications -followed -followers -verificationCode')
         .then(user => {
             if(user) {
                 res.send({
@@ -276,18 +276,19 @@ app.get('/getAllLocations', async (req, res) => {
         })
 })
 
-app.post('/checkFriendById', async (req, res) => {
-    const { authId, friendId } = req.body
-    let authFriends
+app.post('/checkFollowedById', async (req, res) => {
+    const { authId, followedId } = req.body
+    let authFollowed
     if (authId) {
-        await User.findById(authId, 'friends')
+        await User.findById(authId, 'followed')
             .then(data => {
-                authFriends = data.friends
-                const isFriend = (authFriends.includes(friendId))
+                console.log(data)
+                authFollowed = data.followed
+                const isFollowed = (authFollowed.includes(followedId))
                     ? true
                     : false
                 res.send({
-                    result: isFriend
+                    result: isFollowed
                 })
             })
             .catch(err => {
@@ -319,13 +320,13 @@ app.post('/getPublicationsById', async (req, res) => {
         })
 })
 
-app.post('/getFriendsById', async (req, res) => {
+app.post('/getFollowedAndFollowersById', async (req, res) => {
     const { authId } = req.body
 
-    await User.findById(authId, 'friends').populate({
-        path: 'friends',
-        select: '-password'
-    })
+    await User.findById(authId, 'followed followers').populate([
+        { path: 'followed', select: '-password' },
+        { path: 'followers', select: '-password' },
+    ])
         .then(data => {
             res.send({
                 result: data
@@ -482,49 +483,65 @@ app.put('/addNewComment', async (req, res) => {
 })
 
 app.put('/followUser', async (req, res) => {
-    const { authId, friendId } = req.body
+    const { authId, followedId } = req.body
     
-    await User.findByIdAndUpdate(authId, {
-        $push: {
-            friends: friendId
-        }
-    })
-        .then(() => {
-            console.log('User friends updated succesfully')
-            res.send({
-                result: 'New friend added'
+    try {
+        await Promise.all([
+            User.findByIdAndUpdate(authId, {
+                $push: {
+                    followed: followedId
+                }
+            }),
+            User.findByIdAndUpdate(followedId, {
+                $push: {
+                    followers: authId
+                }
             })
-        })
-        .catch(err => {
-            console.error('An error has occurred during user friends updating:\n' + err)
-            res.send({
-                result: 'An error has occurred during user friends updating:\n' + err
-            })
-        })
+        ])
 
+        console.log('Followers and followed updated successfully')
+        res.send({
+            status: 'ok',
+            result: 'New followed added'
+        })
+    } catch (err) {
+        console.error('An error has occurred during user updating:\n' + err)
+        res.status(500).send({
+            status: 'error',
+            result: 'An error has occurred during user updating'
+        })
+    }
 })
 
 app.put('/unFollowUser', async (req, res) => {
-    const { authId, friendId } = req.body
+    const { authId, followedId } = req.body
     
-    await User.findByIdAndUpdate(authId, {
-        $pull: {
-            friends: friendId
-        }
-    })
-        .then(() => {
-            console.log('User friends updated succesfully')
-            res.send({
-                result: 'Friend unfollowed'
+    try {
+        await Promise.all([
+            User.findByIdAndUpdate(authId, {
+                $pull: {
+                    followed: followedId
+                }
+            }),
+            User.findByIdAndUpdate(followedId, {
+                $pull: {
+                    followers: authId
+                }
             })
+        ])
+        
+        console.log('Followers and followed updated successfully')
+        res.send({
+            status: 'ok',
+            result: 'User unfollowed'
         })
-        .catch(err => {
-            console.error('An error has occurred during user friends updating:\n' + err)
-            res.send({
-                result: 'An error has occurred during user friends updating:\n' + err
-            })
+    } catch(err) {
+        console.error('An error has occurred during user updating:\n' + err)
+        res.status(500).send({
+            status: 'error',
+            result: 'An error has occurred during user updating'
         })
-
+    }
 })
 
 app.post('/signup', async (req, res) => {
@@ -550,7 +567,8 @@ app.post('/signup', async (req, res) => {
         verified: false,
         verificationCode: '',
         publications: [],
-        friends: []
+        followed: [],
+        followers: []
     })
         .then(() => {
             console.log('User created with success')

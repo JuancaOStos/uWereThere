@@ -42,7 +42,13 @@ const userSchema = new mongoose.Schema({
             ref: 'Publication'
         }],
     },
-    friends: {
+    followed: {
+        type: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User'
+        }]
+    },
+    followers: {
         type: [{
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User'

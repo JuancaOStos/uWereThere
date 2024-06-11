@@ -95,7 +95,7 @@ export default function UserItem({ searchName, userItem, handleNavigation, navig
                         alignItems: 'center'
                     }}>
                         <FontAwesome5 name="user-friends" size={24} color="black" />
-                        <Text>{userItem.friends.length}</Text>
+                        <Text>{userItem.followed.length}</Text>
                     </View>
                 </View>
             </View>

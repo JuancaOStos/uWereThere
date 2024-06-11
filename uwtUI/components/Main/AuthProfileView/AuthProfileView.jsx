@@ -1,12 +1,13 @@
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
-import { View, Text, Button, TouchableOpacity, FlatList, TextInput, StyleSheet, Image } from "react-native";
+import { View, Text, Button, TouchableOpacity, FlatList, ScrollView, TextInput, StyleSheet, Image } from "react-native";
 import LocationItem from '../LocationListView/LocationItem/LocationItem.jsx'
 import UserItem from '../UserListView/UserItem/UserItem.jsx'
 import { AntDesign } from '@expo/vector-icons';
 import { AppContext } from "../../AppContext";
 import { getAuthData } from "../../../utils.js";
 import { url } from '../../../constants.js'
+import { sortElements } from "../../../utils.js";
 
 // TODO: estilar
 // TODO: listar por más antiguos
@@ -28,15 +29,20 @@ export default function AuthProfileView() {
     })
     const [rate, setRate] = useState(authData.averageRate)
     const [publications, setPublications] = useState([])
-    const [friends, setFriends] = useState([])
+    const [followed, setFollowed] = useState([])
+    const [followers, setFollowers] = useState([])
     const [listView, setListView] = useState('publications')
+    const [sortData, setSortData] = useState({
+        sortField: 'createdAt',
+        sortDirection: 'desc'
+    })
     console.log(authData.avatar)
 
     const handleSearchName = (value) => setSearchName(value)
 
     const rateLabel = (rate > 0)
         ? rate
-        : 'Not rates yet'
+        : 'Not rated yet'
 
     useEffect( () => {
         (async function() {
@@ -58,12 +64,13 @@ export default function AuthProfileView() {
                 console.error('An error has occurred getting publications of auth user:\n' + err)
             })
         
-        await axios.post(`${url}/getFriendsById`, {
+        await axios.post(`${url}/getFollowedAndFollowersById`, {
             authId: token._id
         })
             .then(res => {
                 console.log(res.data.result)
-                setFriends(res.data.result.friends)
+                setFollowed(res.data.result.followed)
+                setFollowers(res.data.result.followers)
             })
             .catch(err => {
                 console.error('An error has occurred getting friends of auth user:\n' + err)
@@ -80,40 +87,115 @@ export default function AuthProfileView() {
         console.log(publications)
     }
 
-    const handleFriendListButton = async() => {
+    const handleFollowedListButton = async() => {
         await getPublisAndFriends()
-        setListView('friends')
-        console.log(friends)
+        setListView('followed')
+        console.log(followed)
     }
 
-    const listToShow = (listView === 'publications')
-        ? (
-            <FlatList
-                data={publications}
-                renderItem={({ item: location }) => (
-                    <LocationItem
-                        searchName={searchName}
-                        locationItem={location}
-                        navigationDisabled={true}
-                    />
-                )}
-            />
-        )
-        : (
-            <FlatList
-                data={friends}
-                renderItem={({ item: friends }) => (
-                    <UserItem
-                        searchName={searchName}
-                        userItem={friends}
-                        navigationDisabled={true}
-                    />
-                )}
-            />
-        )
+    const handleFollowersListButton = async() => {
+        await getPublisAndFriends()
+        setListView('followers')
+        console.log(followers)
+    }
+
+    const sortPublications = () => {
+        console.log(sortData.sortField + ' : ' + sortData.sortDirection)
+        const sortedPublications = sortElements(publications, sortData.sortField, sortData.sortDirection)
+
+        return sortedPublications
+    }
+
+    const sortFollowers = () => {
+        console.log(sortData.sortField + ' : ' + sortData.sortDirection)
+        const sortedFollowers = sortElements(followers, sortData.sortField, sortData.sortDirection)
+
+        return sortedFollowers
+    }
+
+    const sortFollowed = () => {
+        console.log(sortData.sortField + ' : ' + sortData.sortDirection)
+        const sortedFollowed = sortElements(followed, sortData.sortField, sortData.sortDirection)
+
+        return sortedFollowed
+    }
+
+    let sortItems
+    if (listView === 'publications') {
+        sortItems = sortPublications
+    } else if (listView === 'followers') {
+        sortItems = sortFollowers
+    } else if (listView === 'followed') {
+        sortItems = sortFollowed
+    }
+
+    const sortedItems = sortItems()
+
+    let listToShow
+    if (listView === 'publications') {
+        listToShow = sortedItems.map(location => {
+            return (
+                <LocationItem
+                    key={location._id}
+                    searchName={searchName}
+                    locationItem={location}
+                    navigationDisabled={true}
+                />
+            )
+        })
+    } else if (listView === 'followers') {
+        listToShow = sortedItems.map(follower => {
+            return (
+                <UserItem
+                    key={follower._id}
+                    searchName={searchName}
+                    userItem={follower}
+                    navigationDisabled={true}
+                />
+            )
+        })
+    } else if (listView === 'followed') {
+        listToShow = sortedItems.map(followedUser => {
+            return (
+                <UserItem
+                    key={followedUser._id}
+                    searchName={searchName}
+                    userItem={followedUser}
+                    navigationDisabled={true}
+                />
+            )
+        })
+    }
+    
+
+    // const listToShow = (listView === 'publications')
+    //     ? (
+    //         <FlatList
+    //             data={publications}
+    //             renderItem={({ item: location }) => (
+    //                 <LocationItem
+    //                     searchName={searchName}
+    //                     locationItem={location}
+    //                     navigationDisabled={true}
+    //                 />
+    //             )}
+    //         />
+    //     )
+    //     : (
+    //         <FlatList
+    //             data={followed}
+    //             renderItem={({ item: friends }) => (
+    //                 <UserItem
+    //                     searchName={searchName}
+    //                     userItem={friends}
+    //                     navigationDisabled={true}
+    //                 />
+    //             )}
+    //         />
+    //     )
 
     return(
-        <>
+        <ScrollView>
             <View style={{
             marginTop: 30,
             marginHorizontal: 20
@@ -142,18 +224,18 @@ export default function AuthProfileView() {
                         </View>
                     </TouchableOpacity>
                     <TouchableOpacity
-                        onPress={handleFriendListButton}
+                        onPress={handleFollowersListButton}
                     >
                         <View style={styles.authButtons}>
-                            <Text style={{ fontWeight: 'bold' }}>0</Text>
+                            <Text style={{ fontWeight: 'bold' }}>{followers.length}</Text>
                             <Text>followers</Text>
                         </View>
                     </TouchableOpacity>
                     <TouchableOpacity
-                        onPress={handlePublicationListButton}
+                        onPress={handleFollowedListButton}
                     >
                         <View style={styles.authButtons}>
-                            <Text style={{ fontWeight: 'bold' }}>{friends.length}</Text>
+                            <Text style={{ fontWeight: 'bold' }}>{followed.length}</Text>
                             <Text>followed</Text>
                         </View>
                     </TouchableOpacity>
@@ -188,7 +270,12 @@ export default function AuthProfileView() {
                 <View style={styles.filterSection}>
                         <TouchableOpacity
                             style={styles.filterButton}
-                            onPress={() => {}}
+                            onPress={() => {
+                                setSortData({
+                                    sortField: 'createdAt',
+                                    sortDirection: 'asc'
+                                })
+                            }}
                         >
                         <View >
                             <Text>Older</Text>
@@ -196,7 +283,12 @@ export default function AuthProfileView() {
                     </TouchableOpacity>
                     <TouchableOpacity
                         style={styles.filterButton}
-                        onPress={() => {}}
+                        onPress={() => {
+                            setSortData({
+                                sortField: 'createdAt',
+                                sortDirection: 'desc'
+                            })
+                        }}
                     >
                         <View>
                             <Text>Newer</Text>
@@ -204,7 +296,12 @@ export default function AuthProfileView() {
                     </TouchableOpacity>
                     <TouchableOpacity
                         style={styles.filterButton}
-                        onPress={() => {}}
+                        onPress={() => {
+                            setSortData({
+                                sortField: 'averageRate',
+                                sortDirection: 'asc'
+                            })
+                        }}
                     >
                         <View style={{ flexDirection: 'row' }}>
                             <AntDesign name="star" size={24} color="black" />
@@ -213,7 +310,12 @@ export default function AuthProfileView() {
                     </TouchableOpacity>
                     <TouchableOpacity
                         style={styles.filterButton}
-                        onPress={() => {}}
+                        onPress={() => {
+                            setSortData({
+                                sortField: 'averageRate',
+                                sortDirection: 'desc'
+                            })
+                        }}
                     >
                         <View style={{ flexDirection: 'row' }}>
                             <AntDesign name="star" size={24} color="black" />
@@ -224,7 +326,7 @@ export default function AuthProfileView() {
                 {listToShow}
             </View>
         </View>
-        </>
+        </ScrollView>
     )
 }
 

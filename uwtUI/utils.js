@@ -16,10 +16,18 @@ export function sortElements(array, data, direction) {
     const arrayToSort = array
     if (direction === 'asc') {
         console.log('entra en asc')
-        arrayToSort.sort((a, b) => a[data] - b[data])
+        if (data === 'createdAt') {
+            arrayToSort.sort((a, b) => new Date(a[data]) - new Date(b[data]))
+        } else {
+            arrayToSort.sort((a, b) => a[data] - b[data])
+        }
     } else if (direction === 'desc'){
         console.log('entra en desc')
-        arrayToSort.sort((a, b) => b[data] - a[data])
+        if (data === 'createdAt') {
+            arrayToSort.sort((a, b) => new Date(b[data]) - new Date(a[data]))
+        } else {
+            arrayToSort.sort((a, b) => b[data] - a[data])
+        }
     }
     return arrayToSort
 }

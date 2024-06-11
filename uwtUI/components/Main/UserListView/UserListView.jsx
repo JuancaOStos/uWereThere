@@ -123,7 +123,7 @@ export default function UserListView({ navigation }) {
                     </TouchableOpacity>
                 </View>
                 <FlatList 
-                    data={users}
+                    data={sortedUsers}
                     renderItem={({ item: user }) => (
                         <UserItem
                             searchName={searchName}

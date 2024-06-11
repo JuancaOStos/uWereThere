@@ -55,13 +55,13 @@ Accept: application/json
 }
 
 ### Check friend by id
-POST http://localhost:3000/checkFriendById
+POST http://localhost:3000/checkFollowedById
 Content-Type: application/json
 Accept: application/json
 
 {
-    "authId": "664fa7682cf06e67d4e300f7",
-    "friendId": "6653114ab712bba1113071fb"
+    "authId": "665b650c65642513fab7d483",
+    "followedId": "665b653b65642513fab7d486"
 }
 
 ### Get publications by id
@@ -74,12 +74,12 @@ Accept: application/json
 }
 
 ### Get friends by id
-POST http://localhost:3000/getFriendsById
+POST http://localhost:3000/getFollowedById
 Content-Type: application/json
 Accept: application/json
 
 {
-    "authId": "664fa7682cf06e67d4e300f7"
+    "authId": "6668871743d44282a2d90f7f"
 }
 
 ### Follow a friend by id
