@@ -94,13 +94,7 @@ export default function Login({ navigation }) {
       <TextInput style={styles.input} onChangeText={handleEmail} placeholder='email'/>
       <TextInput style={styles.input} onChangeText={handlePassword} placeholder='password'/>
       <TouchableOpacity
-        style={{
-          backgroundColor: 'lightblue',
-          borderRadius: 10,
-          paddingHorizontal: 10,
-          paddingVertical: 5,
-          marginBottom: 10
-        }}
+        style={styles.button}
         onPress={handleLogin}
       >
         <Text style={{ fontSize: 20 }}>Log in</Text>
@@ -113,7 +107,9 @@ export default function Login({ navigation }) {
           <Text style={{ color: 'green', fontSize: 20 }}>Sign up</Text>
         </TouchableOpacity>
       </View>
-      <TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => navigation.navigate('IForgotPassword')}
+      >
         <Text style={{ color: 'green', marginTop: 10, fontSize: 17 }}>I forgot my password</Text>
       </TouchableOpacity>
       <Text>{errorMessage}</Text>
@@ -137,5 +133,12 @@ const styles = StyleSheet.create({
       borderWidth: 2,
       borderRadius: 10,
       width: 250
+    },
+    button: {
+      backgroundColor: 'lightblue',
+      borderRadius: 10,
+      paddingHorizontal: 10,
+      paddingVertical: 5,
+      marginBottom: 10
     }
   });

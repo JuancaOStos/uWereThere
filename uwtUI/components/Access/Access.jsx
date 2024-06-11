@@ -6,6 +6,7 @@ import Login from "./Login/Login";
 import EmailPasswordStage from "./EmailPasswordStage/EmailPasswordStage";
 import NicknameAvatarStage from "./NicknameAvatarStage/NicknameAvatarStage";
 import VerificationModal from './VerificationModal/VerificationModal'
+import IForgotPassword from "./IForgotPassword/IForgotPassword";
 import { AppContext } from "../AppContext";
 
 const Stack = createStackNavigator()
@@ -28,6 +29,7 @@ export default function Access() {
           </Stack.Group>
           <Stack.Group screenOptions={{ presentation: 'modal' }}>
             <Stack.Screen name="VerificationModal" component={VerificationModal} />
+            <Stack.Screen name="IForgotPassword" component={IForgotPassword} />
           </Stack.Group>
         </Stack.Navigator>
     )

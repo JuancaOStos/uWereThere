@@ -11,6 +11,7 @@ const path = require('path')
 const lodash = require('lodash')
 const nodemailer = require('nodemailer')
 const bodyParser = require('body-parser')
+const randomstring = require('randomstring')
 const { getAllUsers,
         getUserById,
         getUserByEmail,
@@ -439,6 +440,68 @@ app.put('/changePassword', async (req, res) => {
         res.send({
             status: 'error',
             result: 'User not found'
+        })
+    }
+})
+
+app.put('/requestNewPassword', async (req, res) => {
+    const { email } = req.body
+
+    let user
+
+    try {
+        user = await User.findOne({ email: email })
+
+        if (!user) {
+            res.send({
+                status: 'bad',
+                result: 'User not found',
+                data: user
+            })
+        } else {
+            // crear nueva contraseña aleatoria
+            const randomPassword = randomstring.generate(8)
+            // cifrar nueva contraseña
+            const encodedPassword = await bcrypt.hash(randomPassword, SALT)
+            // actualizar la anterior contraseña
+            await User.findByIdAndUpdate(user._id, {
+                $set: {
+                    password: encodedPassword
+                }
+            })
+                .then(() => {
+                    console.log('New password established with success')
+                    // envío correo al usuario
+                    transporter.sendMail({
+                        from: '"uWereThereSupport" <uwerethereservices@gmail.com>',
+                        to: email,
+                        subject: 'Your new password',
+                        html: `<h1>You have received a new password</h1><p>Use this new password to log in and change it when you want: <b>${randomPassword}</b></p>`
+                    })
+                        .then(() => console.log('email send with success'))
+                        .catch(err => console.error('Error sending emil: ' + err))
+                    
+                    res.send({
+                        status: 'ok',
+                        result: 'new password and email sent'
+                    })
+                })
+                .catch(err => {
+                    console.error('Error:', err)
+                    res.status(500).send({
+                        status: 'error',
+                        resut: 'Error:', err
+                    })
+                })
+
+        }
+
+        
+    } catch (err) {
+        console.error('Error:', err)
+        res.status(500).send({
+            status: 'error',
+            result: 'Error:', err
         })
     }
 })

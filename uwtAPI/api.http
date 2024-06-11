@@ -73,6 +73,16 @@ Accept: application/json
     "authId": "664fa7682cf06e67d4e300f7"
 }
 
+
+### Request new password by id
+PUT http://localhost:3000/requestNewPassword
+Content-Type: application/json
+Accept: application/json
+
+{
+    "email": "jcostosmolina@gmail.com"
+}
+
 ### Get friends by id
 POST http://localhost:3000/getFollowedById
 Content-Type: application/json
@@ -129,7 +139,7 @@ Accept: application/json
 
 {
     "email": "jcostosmolina@gmail.com",
-    "password": "warakazumba"
+    "password": "s4GSxaqX"
 }
 
 ### Checking existing user
