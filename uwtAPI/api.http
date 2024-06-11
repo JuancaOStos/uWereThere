@@ -7,7 +7,13 @@ GET http://localhost:3000
 GET http://localhost:3000/users
 
 ### Get user by id
-GET http://localhost:3000/users/id/664367e4b68c9c666ab35167
+POST http://localhost:3000/authUserById
+Content-Type: application/json
+Accept: application/json
+
+{
+    "_id": "665b650c65642513fab7d483"
+}
 
 ### Get user by email
 GET http://localhost:3000/users/email/correo@test.com

@@ -3,10 +3,13 @@ import { View, Button, Text, TouchableOpacity, TextInput, StyleSheet, FlatList }
 import axios from "axios";
 import LocationItem from "./LocationItem/LocationItem";
 import { url } from '../../../constants.js'
+import { sortElements } from "../../../utils.js";
 import { AntDesign } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 import { AppContext } from "../../AppContext.jsx";
 
+
+// NO SE USA AUTHDATA
 // TODO: estilar
 // TODO: validar
 // TODO: listar por más antiguos primero
@@ -18,7 +21,11 @@ import { AppContext } from "../../AppContext.jsx";
 export default function LocationListView({ navigation }) {
     const { url } = useContext(AppContext)
     const [searchName, setSearchName] = useState('')
-    const [locations, setLocations] = useState(null)
+    const [locations, setLocations] = useState([])
+    const [sortData, setSortData] = useState({
+        sortField: 'createdAt',
+        sortDirection: 'desc'
+    })
 
     const handleSearchName = (value) => setSearchName(value)
     const handleLocations = (value) => setLocations(value)
@@ -37,14 +44,26 @@ export default function LocationListView({ navigation }) {
                 console.error(errorMessage)
                 alert(errorMessage)
             })
+
         console.log('Locations data', locationsData)
         console.log(locationsData)
-        setLocations(locationsData)
+        handleLocations(locationsData)
     }
+
+    const sortLocations = () => {
+        console.log(sortData.sortField + ' : ' + sortData.sortDirection)
+        const sortedLocations = sortElements(locations, sortData.sortField, sortData.sortDirection)
+
+        return sortedLocations
+    }
+
+    const sortedLocations = sortLocations()
 
     useEffect(() => {
         getAllLocations()
     }, [])
+
+    
 
     return(
         <>
@@ -65,7 +84,12 @@ export default function LocationListView({ navigation }) {
                 <View style={styles.filterSection}>
                     <TouchableOpacity
                         style={styles.filterButton}
-                        onPress={() => {}}
+                        onPress={() => {
+                            setSortData({
+                                sortField: 'createdAt',
+                                sortDirection: 'asc'
+                            })
+                        }}
                     >
                         <View >
                             <Text>Older</Text>
@@ -73,7 +97,12 @@ export default function LocationListView({ navigation }) {
                     </TouchableOpacity>
                     <TouchableOpacity
                         style={styles.filterButton}
-                        onPress={() => {}}
+                        onPress={() => {
+                            setSortData({
+                                sortField: 'createdAt',
+                                sortDirection: 'desc'
+                            })
+                        }}
                     >
                         <View>
                             <Text>Newer</Text>
@@ -81,7 +110,12 @@ export default function LocationListView({ navigation }) {
                     </TouchableOpacity>
                     <TouchableOpacity
                         style={styles.filterButton}
-                        onPress={() => {}}
+                        onPress={() => {
+                            setSortData({
+                                sortField: 'averageRate',
+                                sortDirection: 'asc'
+                            })
+                        }}
                     >
                         <View style={{ flexDirection: 'row' }}>
                             <AntDesign name="star" size={24} color="black" />
@@ -90,7 +124,12 @@ export default function LocationListView({ navigation }) {
                     </TouchableOpacity>
                     <TouchableOpacity
                         style={styles.filterButton}
-                        onPress={() => {}}
+                        onPress={() => {
+                            setSortData({
+                                sortField: 'averageRate',
+                                sortDirection: 'desc'
+                            })
+                        }}
                     >
                         <View style={{ flexDirection: 'row' }}>
                             <AntDesign name="star" size={24} color="black" />
@@ -99,7 +138,7 @@ export default function LocationListView({ navigation }) {
                     </TouchableOpacity>
                 </View>
                 <FlatList
-                    data={locations}
+                    data={sortedLocations}
                     renderItem={({ item: location }) => (
                         <LocationItem
                             searchName={searchName}

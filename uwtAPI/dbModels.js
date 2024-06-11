@@ -48,7 +48,7 @@ const userSchema = new mongoose.Schema({
             ref: 'User'
         }]
     }
-})
+}, { timestamps: true })
 
 const commentSchema = new mongoose.Schema({
     author: {
@@ -109,7 +109,7 @@ const publiSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Comment'
     }],
-})
+}, { timestamps: true })
 
 const User = mongoose.model('User', userSchema)
 

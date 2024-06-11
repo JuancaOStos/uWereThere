@@ -7,10 +7,10 @@ import { url } from "../../../../../constants.js";
 // TODO: documentar
 export default function CommentItem({ commentItem }) {
     //  Podría servirme para estilar si el comentario es del autenticado
-    const { authData, url } = useContext(AppContext)
-    console.log(authData._id)
+    const { token, url } = useContext(AppContext)
+    console.log(token._id)
     console.log(commentItem.author._id)
-    const commentAuth = (authData._id === commentItem.author._id)
+    const commentAuth = (token._id === commentItem.author._id)
         ? {
             flexDirection: 'row-reverse',
             alignSelf: 'flex-end',

@@ -7,7 +7,8 @@ export const AppContext = createContext()
 // TODO: documentar
 export default function AppProvider({ children, auth, handleAuth }) {
     const [loginView, setLoginView] = useState(true)
-    const [authData, setAuthData] = useState(null)
+    const [token, setToken] = useState(null)
+    const handleAuthData = (value) => setToken(value)
     const [userPublications, setUserPublications] = useState(null)
     const [url, setUrl] = useState('')
     const handleUrl = (value) => setUrl('http://' + value + ':3000')
@@ -15,7 +16,7 @@ export default function AppProvider({ children, auth, handleAuth }) {
         if (auth) {
             const tokenPayload = jwtDecode(auth)
             console.log(tokenPayload.email)
-            setAuthData(tokenPayload)
+            setToken(tokenPayload)
         }
     }, [auth])
     
@@ -25,7 +26,8 @@ export default function AppProvider({ children, auth, handleAuth }) {
             setLoginView,
             handleUrl,
             url,
-            authData,
+            token,
+            handleAuthData,
             handleAuth
         }}>
             {children}

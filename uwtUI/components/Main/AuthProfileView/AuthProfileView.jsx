@@ -5,6 +5,7 @@ import LocationItem from '../LocationListView/LocationItem/LocationItem.jsx'
 import UserItem from '../UserListView/UserItem/UserItem.jsx'
 import { AntDesign } from '@expo/vector-icons';
 import { AppContext } from "../../AppContext";
+import { getAuthData } from "../../../utils.js";
 import { url } from '../../../constants.js'
 
 // TODO: estilar
@@ -16,14 +17,20 @@ import { url } from '../../../constants.js'
 // TODO: validar caja de búsqueda
 // TODO: documentar
 export default function AuthProfileView() {
-    const { authData, url } = useContext(AppContext)
+    const { token, url } = useContext(AppContext)
     const [searchName, setSearchName] = useState('')
+    const [authData, setAuthData] = useState({
+        _id: 0,
+        email: '',
+        nickname: '',
+        avatar: '',
+        averageRate: ''
+    })
     const [rate, setRate] = useState(authData.averageRate)
     const [publications, setPublications] = useState([])
     const [friends, setFriends] = useState([])
     const [listView, setListView] = useState('publications')
     console.log(authData.avatar)
-    console.error('url + AVATAR' + url + authData.avatar)
 
     const handleSearchName = (value) => setSearchName(value)
 
@@ -31,9 +38,17 @@ export default function AuthProfileView() {
         ? rate
         : 'Not rates yet'
 
+    useEffect( () => {
+        (async function() {
+            const authData = await getAuthData(url, token._id)
+            console.log('showing authData:', authData)
+            setAuthData(authData)
+        })()
+    }, [])
+
     const getPublisAndFriends = async () => {
         await axios.post(`${url}/getPublicationsById`, {
-            authId: authData._id
+            authId: token._id
         })
             .then(res => {
                 console.log(res.data.result)
@@ -44,7 +59,7 @@ export default function AuthProfileView() {
             })
         
         await axios.post(`${url}/getFriendsById`, {
-            authId: authData._id
+            authId: token._id
         })
             .then(res => {
                 console.log(res.data.result)

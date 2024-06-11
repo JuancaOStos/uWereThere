@@ -22,11 +22,11 @@ export default function UserProfileView({ route }) {
     const [publications, setPublications] = useState([])
     const [friends, setFriends] = useState([])
     const [listView, setListView] = useState('publications')
-    const { authData, url } = useContext(AppContext)
+    const { token, url } = useContext(AppContext)
     const { userItem } = route.params
     const [authFriend, setAuthFriend] = useState(false)
     console.log(userItem)
-    console.log(authData._id)
+    console.log(token._id)
     const avatar = (userItem.avatar)
         ? userItem.avatar
         : USER_LOGO
@@ -67,7 +67,7 @@ export default function UserProfileView({ route }) {
 
     const checkFriendById = async () => {
         await axios.post(`${url}/checkFriendById`, {
-            authId: authData._id,
+            authId: token._id,
             friendId: userItem._id
         })
             .then(res => {
@@ -90,7 +90,7 @@ export default function UserProfileView({ route }) {
 
     const handleFollow = async () => {
         await axios.put(`${url}/followUser`, {
-            authId: authData._id,
+            authId: token._id,
             friendId: userItem._id
         })
             .then(res => {
@@ -127,7 +127,7 @@ export default function UserProfileView({ route }) {
 
     const handleUnFollow = async () => {
         await axios.put(`${url}/unFollowUser`, {
-            authId: authData._id,
+            authId: token._id,
             friendId: userItem._id
         })
             .then(res => {

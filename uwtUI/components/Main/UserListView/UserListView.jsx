@@ -2,6 +2,7 @@ import { useState, useEffect, useContext } from "react";
 import { View, TextInput, Text, Button, TouchableOpacity, StyleSheet, TouchableHighlight, FlatList } from "react-native";
 import axios from "axios";
 import { url } from '../../../constants.js'
+import { sortElements } from "../../../utils.js";
 import { AntDesign } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 import UserItem from "./UserItem/UserItem";
@@ -17,8 +18,11 @@ import { AppContext } from "../../AppContext.jsx";
 export default function UserListView({ navigation }) {
     const { url } = useContext(AppContext)
     const [searchName, setSearchName] = useState('')
-    const [users, setUsers] = useState(null)
-
+    const [users, setUsers] = useState([])
+    const [sortData, setSortData] = useState({
+        sortField: 'createdAt',
+        sortDirection: 'desc'
+    })
     const handleSearchName = (value) => setSearchName(value)
     const handleUsers = (value) => setUsers(value)
     const handleNavigation = (userItem) => {
@@ -32,6 +36,15 @@ export default function UserListView({ navigation }) {
         console.log(usersData)
         setUsers(usersData)
     }
+
+    const sortUsers = () => {
+        console.log(sortData.sortField + ' : ' + sortData.sortDirection)
+        const sortedUsers = sortElements(users, sortData.sortField, sortData.sortDirection)
+
+        return sortedUsers
+    }
+
+    const sortedUsers = sortUsers()
     
     useEffect(() => {
         getAllUsers()
@@ -56,7 +69,12 @@ export default function UserListView({ navigation }) {
                 <View style={styles.filterSection}>
                     <TouchableOpacity
                         style={styles.filterButton}
-                        onPress={() => {}}
+                        onPress={() => {
+                            setSortData({
+                                sortField: 'createdAt',
+                                sortDirection: 'asc'
+                            })
+                        }}
                     >
                         <View >
                             <Text>Older</Text>
@@ -64,7 +82,12 @@ export default function UserListView({ navigation }) {
                     </TouchableOpacity>
                     <TouchableOpacity
                         style={styles.filterButton}
-                        onPress={() => {}}
+                        onPress={() => {
+                            setSortData({
+                                sortField: 'createdAt',
+                                sortDirection: 'desc'
+                            })
+                        }}
                     >
                         <View>
                             <Text>Newer</Text>
@@ -72,7 +95,12 @@ export default function UserListView({ navigation }) {
                     </TouchableOpacity>
                     <TouchableOpacity
                         style={styles.filterButton}
-                        onPress={() => {}}
+                        onPress={() => {
+                            setSortData({
+                                sortField: 'averageRate',
+                                sortDirection: 'asc'
+                            })
+                        }}
                     >
                         <View style={{ flexDirection: 'row' }}>
                             <AntDesign name="star" size={24} color="black" />
@@ -81,7 +109,12 @@ export default function UserListView({ navigation }) {
                     </TouchableOpacity>
                     <TouchableOpacity
                         style={styles.filterButton}
-                        onPress={() => {}}
+                        onPress={() => {
+                            setSortData({
+                                sortField: 'averageRate',
+                                sortDirection: 'desc'
+                            })
+                        }}
                     >
                         <View style={{ flexDirection: 'row' }}>
                             <AntDesign name="star" size={24} color="black" />

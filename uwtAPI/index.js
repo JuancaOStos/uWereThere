@@ -27,7 +27,7 @@ const transporter = nodemailer.createTransport({
     port: 465,
     secure: true, // Use `true` for port 465, `false` for all other ports
     auth: {
-      user: "jcostosmolina@gmail.com",
+      user: "uwerethereservices@gmail.com",
       pass: APP_PASSWORD,
     },
   });
@@ -43,23 +43,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage })
 
-app.post('/upload', upload.single('file'), (req, res) => {
-    console.log(req.file)
-    const fileUrl = `/public/images/${req.file.filename}`
-    res.send({
-        url: fileUrl
-    })
-    // if (req.file) {
-    //     console.log(req.file)
-    //     res.send({
-    //         result: 'Image uploaded successfully', file: req.file
-    //     })
-    // } else {
-    //     res.status(400).send({
-    //         result: 'No file uploaded'
-    //     })
-    // }
-})
+
 
 const DATABASE = 'uwtDevDB'
 const USERNAME = 'jcostosmolina'
@@ -85,6 +69,24 @@ app.use(express.json())
 
 app.get('/', (req, res) => {
     res.json({ message: 'Welcome home!'})
+})
+
+app.post('/upload', upload.single('file'), (req, res) => {
+    console.log(req.file)
+    const fileUrl = `/public/images/${req.file.filename}`
+    res.send({
+        url: fileUrl
+    })
+    // if (req.file) {
+    //     console.log(req.file)
+    //     res.send({
+    //         result: 'Image uploaded successfully', file: req.file
+    //     })
+    // } else {
+    //     res.status(400).send({
+    //         result: 'No file uploaded'
+    //     })
+    // }
 })
 
 app.get('/users', async (req, res) => {
@@ -136,10 +138,6 @@ app.post('/login', async (req, res) => {
         if (match && existingUser.verified) {
             const token = jwt.sign({
                 _id: existingUser._id,
-                email: existingUser.email,
-                nickname: existingUser.nickname,
-                avatar: existingUser.avatar,
-                averageRate: existingUser.averageRate,
                 exp: new Date().getDate() + DAY_IN_SEC
 
             }, SWORD)
@@ -198,6 +196,28 @@ app.post('/userByEmail', async (req, res) => {
     const { email } = req.body
     
     await User.findOne({ email: email })
+        .then(user => {
+            if(user) {
+                res.send({
+                    result: user
+                })
+            } else {
+                res.send({
+                    result: null
+                })
+            }
+        })
+        .catch(err => {
+            res.send({
+                result: 'An error has occurred finding document:\n' + err
+            })
+        })
+})
+
+app.post('/authUserById', async (req, res) => {
+    const { _id } = req.body
+    
+    await User.findById(_id, '-password -publications -friends -verificationCode')
         .then(user => {
             if(user) {
                 res.send({
@@ -342,6 +362,84 @@ app.post('/getCommentsById', async (req, res) => {
                 result: 'An error has occurred:\n' + err
             })
         })
+})
+
+app.put('/changeNickname', async (req, res) => {
+    const { _id, newNickname } = req.body
+    
+    await User.findByIdAndUpdate(_id, {
+        $set: {
+            nickname: newNickname
+        }
+    })
+        .then(() => {
+            res.send({
+                status: 'ok',
+                result: 'User nickname changed successfully'
+            })
+        })
+        .catch(err => {
+            console.error('An error has occurred changing nickname:\n' + err)
+        })
+})
+
+app.put('/changePassword', async (req, res) => {
+    const { _id, password, newPassword } = req.body
+    
+    const storedPassword = await User.findById(_id, 'password')
+        .catch(err => {
+            console.error('An error has occurred finding user:\n' + err)
+        })
+    
+    if (storedPassword) {
+        const match = await bcrypt.compare(password, storedPassword.password)
+        console.error('Mostrar match:', match)
+        if (match) {
+            const encodedNewPassword = await bcrypt.hash(newPassword, SALT)
+                .catch(err => {
+                    console.error('An error has occurred during password encrypting\n' + err)
+                    return res.send({
+                        status: 'error',
+                        result: 'An error has occurred during signup'
+                    })
+                })
+            
+            if (encodedNewPassword) {
+                await User.findByIdAndUpdate(_id, {
+                    $set: {
+                        password: encodedNewPassword
+                    }
+                })
+                    .then(() => {
+                        console.log('User password changed successfully')
+                        res.send({
+                            status: 'ok',
+                            result: 'User password changed successfully'
+                        })
+                    })
+                    .catch(err => {
+                        console.error('Error changing password\n:' + err)
+                        res.send({
+                            status: 'error',
+                            result: 'Error changing password\n:' + err
+                        })
+                    })
+            }
+
+        } else {
+            console.error('The password doesn\'t match')
+            res.send({
+                status: 'error',
+                result: 'The password doesn\'t match'
+            })
+        }
+    } else {
+        console.error('User not found')
+        res.send({
+            status: 'error',
+            result: 'User not found'
+        })
+    }
 })
 
 app.put('/addNewComment', async (req, res) => {

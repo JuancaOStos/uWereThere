@@ -1,6 +1,6 @@
 import { useState, useContext } from "react";
 import { View, Text, TouchableOpacity, StyleSheet, Modal } from "react-native";
-import { AppContext } from "../../AppContext";
+import { AppContext } from "../../../AppContext";
 
 // TODO: añadir cambio de contraseña
 // TODO: añadir cambio de avatar
@@ -8,7 +8,7 @@ import { AppContext } from "../../AppContext";
 // TODO: [añadir cambio de privacidad]
 // TODO: estilar
 // TODO: documentar
-export default function ProfileSettingsView() {
+export default function ProfileSettingsView({ navigation }) {
     const [isVisible, setIsVisible] = useState(false)
     const { handleAuth, url } = useContext(AppContext)
 
@@ -22,11 +22,13 @@ export default function ProfileSettingsView() {
         }}>
             <TouchableOpacity
                 style={styles.settingsButton}
+                onPress={() => navigation.navigate('ChangeNickname')}
             >
                 <Text style={{ fontSize: 20 }}>Cambiar nickname</Text>
             </TouchableOpacity>
             <TouchableOpacity
                 style={styles.settingsButton}
+                onPress={() => navigation.navigate('ChangePassword')}
             >
                 <Text style={{ fontSize: 20 }}>Cambiar contraseña</Text>
             </TouchableOpacity>
@@ -44,42 +46,6 @@ export default function ProfileSettingsView() {
                 </TouchableOpacity>
 
             </View>
-            <TouchableOpacity
-                    style={styles.settingsButton}
-                    onPress={handleIsVisible}
-                >
-                    <Text style={{ fontSize: 20 }}>Toggle modal</Text>
-                </TouchableOpacity>
-            <Modal
-                animationType="slide"
-                onRequestClose={handleIsVisible}
-                presentationStyle="pageSheet"
-                visible={isVisible}
-            >
-                <View style={{
-                    borderWidth: 1,
-                    height: '100%',
-                    width: '100%',
-                    alignSelf: 'center',
-                    justifyContent: 'center',
-                    backgroundColor: 'lightgrey'
-                }}>
-                    <Text
-                        style={{alignSelf: 'center' }}
-                    >
-                        Modal
-                    </Text>
-                    <TouchableOpacity
-                        style={{ backgroundColor: 'lightblue', alignSelf: 'center', padding: 10 }}
-                        onPress={() => {
-                            alert('it works')
-                            handleIsVisible()
-                        }}
-                    >
-                        <Text style={{ fontSize: 20 }}>Press me</Text>
-                    </TouchableOpacity>
-                </View>
-            </Modal>
         </View>
     )
 }

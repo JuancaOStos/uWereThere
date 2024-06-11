@@ -14,7 +14,7 @@ import { url } from "../../../constants";
 // TODO: limpiar
 // TODO: documentar
 export default function NewLocation() {
-    const { authData, url } = useContext(AppContext)
+    const { token, url } = useContext(AppContext)
     const [image, setImage] = useState({
         uri: `${url}/public/images/pictureLogo.png`,
         width: null,
@@ -115,7 +115,7 @@ export default function NewLocation() {
             title: title,
             description: description,
             pic: picurl,
-            author: authData._id
+            author: token._id
         }
         axios.post(`${url}/addNewPublication`, newLocation)
             .then(res => {

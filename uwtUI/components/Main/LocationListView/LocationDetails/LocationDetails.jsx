@@ -14,7 +14,7 @@ import axios from 'axios';
 // TODO: limpiar
 // TODO: documentar
 export default function LocationDetails({ route }) {
-    const { authData, url } = useContext(AppContext)
+    const { token, url } = useContext(AppContext)
     const { locationItem } = route.params
     const [comments, setComments] = useState([])
     const [newComment, setNewComment] = useState('')
@@ -29,7 +29,7 @@ export default function LocationDetails({ route }) {
     const handleNewCommentButton = async() => {
         await axios.put(`${url}/addNewComment`, {
             publicationId: locationItem._id,
-            authId: authData._id,
+            authId: token._id,
             comment: newComment
         })
         getAllComments()
@@ -49,7 +49,7 @@ export default function LocationDetails({ route }) {
             })
     }
 
-    console.log(`${locationItem.author._id} vs ${authData._id}`)
+    console.log(`${locationItem.author._id} vs ${token._id}`)
 
     useEffect(() => {
         getAllComments()
@@ -106,7 +106,7 @@ export default function LocationDetails({ route }) {
                     }}
                     source={{ uri: url + locationItem.pic}}/>
                     <Text style={styles.bodyText}>{locationItem.description}</Text>
-                    {(locationItem.author._id !== authData._id) && <RatePanel locationItem={locationItem}/>}
+                    {(locationItem.author._id !== token._id) && <RatePanel locationItem={locationItem}/>}
                     <Text style={styles.bodyText}>Link to Maps</Text>
                     <TouchableOpacity
                         style={styles.mapsButton}

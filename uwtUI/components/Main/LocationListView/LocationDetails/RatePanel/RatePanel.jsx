@@ -8,7 +8,7 @@ import { AppContext } from "../../../../AppContext";
 // TODO: estilar
 // TODO: documentar
 export default function RatePanel({ locationItem }) {
-    const { authData, url } = useContext(AppContext)
+    const { token, url } = useContext(AppContext)
     const [rate, setRate] = useState(0)
     const activeStars = []
 
@@ -24,7 +24,7 @@ export default function RatePanel({ locationItem }) {
     const ratePublication = async () => {
         const newRate = {
             publicationId: locationItem._id,
-            author: authData._id,
+            author: token._id,
             rate: rate
         }
         console.log(newRate)

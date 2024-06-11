@@ -1,20 +1,41 @@
-import { useContext } from "react";
+import { useState, useEffect, useContext } from "react";
 import { View, Text, TouchableHighlight, Image } from "react-native";
 import { FontAwesome5 } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import { AppContext } from "../../../AppContext";
+import { getAuthData } from "../../../../utils";
 import { url, USER_LOGO } from '../../../../constants'
 
 // TODO: estilar
 // TODO: documentar
 export default function UserItem({ searchName, userItem, handleNavigation, navigationDisabled }) {
-    const { authData, url } = useContext(AppContext)
+    const { token, url } = useContext(AppContext)
+    const [authData, setAuthData] = useState({
+        _id: 0,
+        email: '',
+        nickname: '',
+        avatar: '',
+        averageRate: ''
+    })
     console.log(authData.nickname + ' vs ' + userItem.nickname)
     console.log(userItem.avatar)
+
     const avatar = (userItem.avatar)
         ? userItem.avatar
         : USER_LOGO
+
+    const parsedRate = (userItem.averageRate !== 0)
+        ? userItem.averageRate
+        : 'Not rated'
+
+    useEffect( () => {
+        (async function() {
+            const authData = await getAuthData(url, token._id)
+            console.log('showing authData:', authData)
+            setAuthData(authData)
+        })()
+    }, [])
 
     if (userItem.nickname.toLowerCase().includes(searchName.toLowerCase())
         && userItem.nickname !== authData.nickname) {
@@ -62,7 +83,7 @@ export default function UserItem({ searchName, userItem, handleNavigation, navig
                         alignItems: 'center'
                     }}>
                         <AntDesign name="star" size={24} color="black" />
-                        <Text>{userItem.rate} not rated</Text>
+                        <Text>{parsedRate}</Text>
                     </View>
                     <View style={{
                         alignItems: 'center'

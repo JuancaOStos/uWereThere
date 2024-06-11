@@ -4,6 +4,7 @@ import LocationDetails from "./LocationDetails/LocationDetails";
 
 const Stack = createNativeStackNavigator()
 
+// NO SE USA AUTHDATA
 // TODO: documentar
 export default function LocationListStack() {
     return (

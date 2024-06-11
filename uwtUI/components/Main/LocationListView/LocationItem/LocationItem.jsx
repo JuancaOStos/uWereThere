@@ -5,6 +5,7 @@ import { Foundation } from '@expo/vector-icons';
 import { url } from "../../../../constants";
 import { AppContext } from "../../../AppContext";
 
+// NO SE USA AUTHDATA
 // TODO: estilar
 // TODO: mostrar total de comentarios
 // TODO: limpiar
@@ -41,7 +42,7 @@ export default function LocationItem({ searchName, locationItem, handleNavigatio
                         alignSelf: 'flex-end',
                         alignItems: 'center',
                     }}>
-                        <Image source={{ uri: 'http://192.168.1.26:3000/public/images/1717265676831_eb1aab70-bb01-4cbd-a2bf-0fdee5589e81.jpeg'}} style={{
+                        <Image source={{ uri: url + locationItem.author.avatar }} style={{
                             backgroundColor: 'lightgrey',
                             width: 30,
                             height: 30,

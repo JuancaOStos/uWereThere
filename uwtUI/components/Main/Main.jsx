@@ -9,7 +9,7 @@ import UserListStack from "./UserListView/UserListStack";
 import LocationListStack from "./LocationListView/LocationListStack";
 import NewLocation from "./NewLocation/NewLocation";
 import AuthProfileView from "./AuthProfileView/AuthProfileView";
-import ProfileSettingsView from "./ProfileSettingsView/ProfileSettingsView";
+import ProfileSettingsStack from "./ProfileSettingsStack/ProfileSettingsStack";
 import { AppContext } from "../AppContext";
 
 const Tab = createBottomTabNavigator()
@@ -91,7 +91,7 @@ export default function Main() {
             />
             <Tab.Screen
                 name="Settings"
-                component={ProfileSettingsView}
+                component={ProfileSettingsStack}
                 options={{
                   tabBarLabel: 'Settings',
                   tabBarLabelStyle: {
