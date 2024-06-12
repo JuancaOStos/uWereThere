@@ -60,8 +60,8 @@ Content-Type: application/json
 Accept: application/json
 
 {
-    "authId": "665b650c65642513fab7d483",
-    "followedId": "665b653b65642513fab7d486"
+    "authId": "6668871743d44282a2d90f7f",
+    "followedId": "6668e82e0e402424459fbbf1"
 }
 
 ### Get publications by id

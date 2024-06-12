@@ -5,7 +5,8 @@ import RatePanel from "./RatePanel/RatePanel.jsx";
 import CommentItem from "./CommentItem/CommentItem";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Feather } from '@expo/vector-icons';
-import { url } from '../../../../constants.js';
+import Toast from "react-native-toast-message";
+import { url, REGEX, TOAST_MESSAGES } from '../../../../constants.js';
 import { AppContext } from "../../../AppContext.jsx";
 import axios from 'axios';
 
@@ -27,13 +28,17 @@ export default function LocationDetails({ route }) {
 
     
     const handleNewCommentButton = async() => {
-        await axios.put(`${url}/addNewComment`, {
-            publicationId: locationItem._id,
-            authId: token._id,
-            comment: newComment
-        })
-        getAllComments()
-        setNewComment('')
+        if (REGEX.COMMENT.test(newComment)) {
+            await axios.put(`${url}/addNewComment`, {
+                publicationId: locationItem._id,
+                authId: token._id,
+                comment: newComment
+            })
+            getAllComments()
+            setNewComment('')
+        } else {
+            Toast.show(TOAST_MESSAGES.LOCATION_DETAILS.INVALID_COMMENT)
+        }
     }
     
     const getAllComments = async() => {
@@ -160,6 +165,7 @@ export default function LocationDetails({ route }) {
                             <Feather name="send" size={30} color="black" />
                         </TouchableOpacity>
                     </View>
+                    <Text style={{ color: 'grey', alignSelf: 'center', marginBottom: 30 }}>Introduce a comment between 1 and 200 characters</Text>
                     {
                         comments.map(comment => {
                             return (

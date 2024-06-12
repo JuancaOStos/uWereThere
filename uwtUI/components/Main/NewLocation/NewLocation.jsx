@@ -6,7 +6,8 @@ import * as ImagePicker from 'expo-image-picker'
 import { Entypo } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { AppContext } from "../../AppContext";
-import { url } from "../../../constants";
+import Toast from "react-native-toast-message";
+import { url, REGEX, TOAST_MESSAGES } from "../../../constants";
 
 // TODO: estilar
 // TODO: añadir poder elegir imagen existente
@@ -52,7 +53,7 @@ export default function NewLocation() {
                 return
             }
             let result = await ImagePicker.launchCameraAsync({
-                mediaTypes: ImagePicker.MediaTypeOptions.All,
+                mediaTypes: ImagePicker.MediaTypeOptions.Images,
                 allowsEditing: true,
                 aspect: [4, 3],
                 quality: 1
@@ -103,14 +104,15 @@ export default function NewLocation() {
         const picurl = await upload()
 
         if (!picurl) {
-            alert('Error', 'Failed to upload image')
+            Toast.show(TOAST_MESSAGES.UNEXPECTED_ERROR)
+            console.error('Failed to upload image')
             return
         }
 
         const newLocation = {
             location: {
-                latitude: location.latitude + 0.5,
-                longitude: location.longitude+ 0.5
+                latitude: location.latitude,
+                longitude: location.longitude
             },
             title: title,
             description: description,
@@ -120,17 +122,35 @@ export default function NewLocation() {
         axios.post(`${url}/addNewPublication`, newLocation)
             .then(res => {
                 console.log(res.data)
-                if (res.data.status === 'error') {
-                    alert(res.data.result)
-                } else {
-                    alert(res.data.result)
+                if (res.data.status === 'ok') {
+                    Toast.show(TOAST_MESSAGES.NEW_LOCATION.NEW_LOCATION_SUCCESS)
+                } else if (res.data.status === 'error') {
+                    Toast.show(TOAST_MESSAGES.UNEXPECTED_ERROR)
                 }
             }).
             catch(err => {
                 console.error('An error has occurred:\n' + err)
+                Toast.show(TOAST_MESSAGES.CONNECTION_ERROR)
             })
     }
 
+    const checkTitleDescription = () => {
+        if (REGEX.TITLE.test(title) && REGEX.DESCRIPTION.test(description)) {
+            addNewLocation()
+            // console.error(REGEX.TITLE.test(title) && REGEX.DESCRIPTION.test(description))
+        } else {
+            if (!REGEX.TITLE.test(title) && !REGEX.DESCRIPTION.test(description)) {
+                console.error('No se cumple ninguno de los dos')
+                Toast.show(TOAST_MESSAGES.NEW_LOCATION.INVALID_TITLE_DESCRIPTION)
+            } else if (!REGEX.TITLE.test(title)) {
+                console.error('No se cumple el título')
+                Toast.show(TOAST_MESSAGES.NEW_LOCATION.INVALID_TITLE)
+            } else if (!REGEX.DESCRIPTION.test(description)) {
+                console.error('No se cumple la descripción')
+                Toast.show(TOAST_MESSAGES.NEW_LOCATION.INVALID_DESCRIPTION)
+            }
+        }
+    }
 
     const getCurrentLocation = async () => {
         let { status } = await Location.requestForegroundPermissionsAsync()
@@ -161,13 +181,14 @@ export default function NewLocation() {
                 <Image
                     style={{
                         marginTop: 20,
-                        width: 350,
-                        height: 250,
+                        width: 300,
+                        height: 200,
                         borderRadius: 50,
                         borderColor: 'black',
                         borderWidth: 5,
                         maxWidth: 350,
-                        maxHeight: 250
+                        maxHeight: 250,
+                        marginBottom: 5
                     }}
                     source={{ uri: image.uri}}/>
                 <View style={ styles.container}>
@@ -177,19 +198,24 @@ export default function NewLocation() {
                             borderRadius: 10,
                             paddingHorizontal: 10,
                             paddingVertical: 5,
-                            marginBottom: 20
+                            marginBottom: 8
                         }}
                         onPress={takeAPic}
                     >
                         <Entypo name="camera" size={40} color="black" />
                     </TouchableOpacity>
-                    <Button 
-                        title="Update current location"
-                        onPress={getCurrentLocation}
-                    />
                     
                     <TextInput onChangeText={handleTitle} placeholder="title" style={styles.textBoxTitle} />
+                    <Text style={{ color: 'grey', marginBottom: 10 }}>Introduce a title between 3 and 40 characters</Text>
                     <TextInput onChangeText={handleDescription} placeholder="description" style={styles.textBoxTitle} multiline/>
+                    <Text style={{ color: 'grey', marginBottom: 20 }}>Introduce a description between 10 and 200 characters</Text>
+
+                    <TouchableOpacity
+                        style={styles.button}
+                        onPress={getCurrentLocation}
+                    >
+                        <Text>Update current location</Text>
+                    </TouchableOpacity>
                     {(location) && (
                         <TouchableOpacity
                         style={styles.mapsButton}
@@ -219,11 +245,13 @@ export default function NewLocation() {
                         </View>
                     </TouchableOpacity>
                     )}
-                    <Button
-                        title="Publish location"
+                    <TouchableOpacity
+                        style={styles.button}
                         disabled={(!title || !description || !imagePicked)}
-                        onPress={addNewLocation}
-                    />
+                        onPress={checkTitleDescription}
+                    >
+                        <Text>Publish location</Text>
+                    </TouchableOpacity>
                 </View>
             </View>
         </>
@@ -234,11 +262,10 @@ const styles = StyleSheet.create({
     container: {
       alignItems: "center",
       justifyContent: "center",
-      marginTop: 20
     },
     image: {
-      width: 200,
-      height: 200,
+      width: 170,
+      height: 170,
     },
     headerText: {
         fontSize: 23,
@@ -252,14 +279,22 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         width: 350,
         borderRadius: 20,
+        marginBottom: 20,
         backgroundColor: '#8BEF7F'
     },
     textBoxTitle: {
-        margin: 10,
+        marginBottom: 0,
         padding: 10,
         height: 40,
         borderWidth: 2,
         borderRadius: 10,
         width: 250
-    }
+    },
+    button: {
+        backgroundColor: 'lightblue',
+        borderRadius: 10,
+        paddingHorizontal: 10,
+        paddingVertical: 5,
+        marginBottom: 20
+      }
   });

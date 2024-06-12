@@ -90,6 +90,39 @@ app.post('/upload', upload.single('file'), (req, res) => {
     // }
 })
 
+app.post('/checkNickname', async (req, res) => {
+    const { nickname } = req.body
+
+    let user
+
+    try {
+        user = await User.findOne({ nickname: nickname })
+        
+        if (user) {
+            console.error('This nickname already exists')
+            res.send({
+                status: 'bad',
+                result: 'This nickname already exists',
+                valid: false 
+            })
+        } else {
+            console.log('This nickname doesn\'t exist')
+            res.send({
+                status: 'ok',
+                result: 'This nickname doesn\'t exist',
+                valid: true
+            })
+        }
+    } catch (err) {
+        console.error('Error:', err)
+        res.status(500).send({
+            status: 'error',
+            result: 'Error:' + err,
+            valid: null
+        })
+    }
+})
+
 app.get('/users', async (req, res) => {
     const users = await User.find()
     if (users.length === 0) {
@@ -366,6 +399,30 @@ app.post('/getCommentsById', async (req, res) => {
         })
 })
 
+app.put('/changeAvatar', async (req, res) => {
+    const { _id, newAvatar } = req.body
+
+    await User.findByIdAndUpdate(_id, {
+        $set: {
+            avatar: newAvatar
+        }
+    })
+        .then(() => {
+            console.log('User avatar changed successfully')
+            res.send({
+                status: 'ok',
+                result: 'User avatar changed successfully'
+            })
+        })
+        .catch(err => {
+            console.error('An error has occurred changing avatar:\n' + err)
+            res.send({
+                status: 'error',
+                result: 'An error has occurred changing avatar:\n' + err
+            })
+        })
+})
+
 app.put('/changeNickname', async (req, res) => {
     const { _id, newNickname } = req.body
     
@@ -382,6 +439,10 @@ app.put('/changeNickname', async (req, res) => {
         })
         .catch(err => {
             console.error('An error has occurred changing nickname:\n' + err)
+            res.status(500).send({
+                status: 'error',
+                result: 'An error has occurred changing nickname:\n' + err
+            })
         })
 })
 

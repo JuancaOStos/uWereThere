@@ -4,7 +4,8 @@ import { View, Text, Button, StyleSheet, Image, TextInput, TouchableOpacity } fr
 import * as ImagePicker from 'expo-image-picker'
 import { Entypo } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
-import { URL } from "../../../constants";
+import Toast from "react-native-toast-message";
+import { URL, REGEX, TOAST_MESSAGES } from "../../../constants";
 import { AppContext } from "../../AppContext";
 
 // TODO: estilar
@@ -27,7 +28,7 @@ export default function NicknameAvatarStage({ route, navigation }) {
 
     const pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.All,
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
             allowsEditing: true,
             aspect: [4, 3],
             quality: 1
@@ -42,6 +43,48 @@ export default function NicknameAvatarStage({ route, navigation }) {
                 name: result.assets[0].fileName
             })
             setAvatarSelected(true)
+        }
+    }
+
+    const takeAPic = async () => {
+        let { status } = await ImagePicker.requestCameraPermissionsAsync()
+        if (status !== 'granted') {
+        alert('Permission denied')
+            return
+        }
+        let result = await ImagePicker.launchCameraAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            aspect: [4, 3],
+            quality: 1
+        })
+        if (!result.canceled) {
+            const filenameArray = result.assets[0].fileName.split('.')
+            const ext = filenameArray[filenameArray.length - 1]
+            setAvatarSelected(true)
+            setAvatar({
+                uri: result.assets[0].uri,
+                type: `${result.assets[0].type}/${ext}`,
+                name: result.assets[0].fileName
+            })
+        }
+    }
+
+    const checkNickname = async () => {
+        // llamar api para comprobar si existe ya el nombre
+        if (REGEX.NICKNAME.test(nickname)) {
+            const res = await axios.post(url + '/checkNickname', {
+                nickname: nickname
+            })
+            if (res.data.status === 'ok') {
+                newUserSignUp()
+            } else if (res.data.status === 'bad') {
+                Toast.show(TOAST_MESSAGES.SIGN_UP.EXISTING_NICKNAME)
+            } else if (res.data.status === 'error') {
+                Toast.show(TOAST_MESSAGES.UNEXPECTED_ERROR)
+            }
+        } else {
+            Toast.show(TOAST_MESSAGES.SIGN_UP.INVALID_NICKNAME)
         }
     }
 
@@ -90,7 +133,7 @@ export default function NicknameAvatarStage({ route, navigation }) {
             .then(res => {
                 const data = res.data
                 setResultMessage(data.result)
-                alert('User Registered\nVerify your account')
+                Toast.show(TOAST_MESSAGES.SIGN_UP.SIGN_UP_SUCCESS)
                 navigation.navigate('VerificationModal', {
                     fromScreen: 'NicknameAvatarStage',
                     email: email
@@ -102,10 +145,13 @@ export default function NicknameAvatarStage({ route, navigation }) {
             })
     }
 
-    const disableButton = (nickname)
+    const disableButton = (nickname && avatarSelected)
         ? false
         : true
 
+    const buttonColor = (disableButton)
+        ? 'lightgrey'
+        : 'lightblue'
 
     return (
         <View style={styles.container}>
@@ -113,7 +159,7 @@ export default function NicknameAvatarStage({ route, navigation }) {
             {avatar && <Image source={{ uri: avatar.uri }} style={styles.image} />}
             <View style={styles.horizontalBox}>
                 <TouchableOpacity
-                    onPress={() => {}}
+                    onPress={takeAPic}
                 >
                     <Entypo name="camera" size={40} color="black" />
                 </TouchableOpacity>
@@ -128,12 +174,12 @@ export default function NicknameAvatarStage({ route, navigation }) {
             <TextInput style={styles.textBox} placeholder="nickname" onChangeText={handleNickname}/>
             <TouchableOpacity
                 style={{
-                backgroundColor: 'lightblue',
+                backgroundColor: buttonColor,
                 paddingHorizontal: 10,
                 paddingVertical: 5,
                 marginBottom: 10
                 }}
-                onPress={newUserSignUp}
+                onPress={checkNickname}
                 disabled={disableButton}
             >
                 <Text style={{ fontSize: 20 }}>Next</Text>

@@ -6,7 +6,8 @@ import { AppContext } from "../../../AppContext";
 import LocationItem from "../../LocationListView/LocationItem/LocationItem.jsx";
 import UserItem from "../UserItem/UserItem.jsx";
 import { AntDesign } from '@expo/vector-icons';
-import { USER_LOGO } from "../../../../constants.js";
+import Toast from "react-native-toast-message";
+import { USER_LOGO, TOAST_MESSAGES } from "../../../../constants.js";
 import { sortElements } from "../../../../utils.js";
 
 // TODO: estilar
@@ -73,10 +74,10 @@ export default function UserProfileView({ route }) {
     }, [])
 
     useEffect(() => {
-        checkFriendById()
+        checkFollowedById()
     }, [])
 
-    const checkFriendById = async () => {
+    const checkFollowedById = async () => {
         await axios.post(`${url}/checkFollowedById`, {
             authId: token._id,
             followedId: userItem._id
@@ -112,8 +113,9 @@ export default function UserProfileView({ route }) {
         })
             .then(res => {
                 console.log(res.data.result)
+                Toast.show(TOAST_MESSAGES.USER_PROFILE.FOLLOWED)
             })
-        checkFriendById()
+        checkFollowedById()
     }
 
     const sortPublications = () => {
@@ -213,12 +215,12 @@ export default function UserProfileView({ route }) {
     const handleUnFollow = async () => {
         await axios.put(`${url}/unFollowUser`, {
             authId: token._id,
-            friendId: userItem._id
+            followedId: userItem._id
         })
             .then(res => {
                 console.log(res.data.result)
             })
-        checkFriendById()
+        checkFollowedById()
     }
 
     const followButtonFunction = (authFriend)

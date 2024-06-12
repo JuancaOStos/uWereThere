@@ -1,7 +1,8 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import axios from "axios";
-import { url } from "../../../../../constants";
+import Toast from "react-native-toast-message";
+import { url, TOAST_MESSAGES } from "../../../../../constants";
 import { AntDesign } from '@expo/vector-icons';
 import { AppContext } from "../../../../AppContext";
 
@@ -11,6 +12,19 @@ export default function RatePanel({ locationItem }) {
     const { token, url } = useContext(AppContext)
     const [rate, setRate] = useState(0)
     const activeStars = []
+
+    const getAuthRate = () => {
+        console.log('SHOWING LOCATION RATES:', locationItem.rates)
+        if (locationItem.rates) {
+            let authRate = null
+            authRate = locationItem.rates.find((rate) => rate.author === token._id)
+            if (authRate) setRate(authRate.rate)
+        }
+    }
+
+    useEffect(() => {
+        getAuthRate()
+    }, [])
 
     for (let i = 0; i < 5; i++) {
         const color = (i < rate) ? true : false
@@ -29,8 +43,16 @@ export default function RatePanel({ locationItem }) {
         }
         console.log(newRate)
         await axios.post(url + '/addRate', newRate)
-            .then(res => console.log(res.data.result))
+            .then(res => {
+                console.log(res.data.result)
+                getAuthRate()
+                Toast.show(TOAST_MESSAGES.LOCATION_DETAILS.LOCATION_RATED)
+            })
             .catch(err => console.error(err))
+    }
+
+    const getRate = async () => {
+
     }
 
     return (

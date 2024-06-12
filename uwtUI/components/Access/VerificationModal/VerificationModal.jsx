@@ -2,7 +2,8 @@ import { useState, useEffect, useContext } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native'
 import { useNavigation } from "@react-navigation/native";
 import { AppContext } from '../../AppContext';
-import { URL } from "../../../constants";
+import Toast from 'react-native-toast-message';
+import { URL, TOAST_MESSAGES } from "../../../constants";
 import axios from "axios";
 
 // TODO: estilar
@@ -26,6 +27,8 @@ export default function VerificationSignUp({ route }) {
                 console.log('Error: ' + err)
                 alert('Error: ' + err)
             })
+        
+        Toast.show(TOAST_MESSAGES.SIGN_UP.VERIFICATION_CODE_SENT)
 
     }
 
@@ -41,7 +44,7 @@ export default function VerificationSignUp({ route }) {
             .then(res => {
                 if (res.data.status === 'ok') {
                     console.log('Account verified with success')
-                    alert('Account verified with success')
+                    Toast.show(TOAST_MESSAGES.SIGN_UP.ACCOUNT_VERIFIED)
                     navigation.navigate('Login')
                     // if (fromScreen === 'NicknameAvatarStage') {
                     //     navigation.navigate('Login')

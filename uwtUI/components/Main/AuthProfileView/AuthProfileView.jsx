@@ -3,10 +3,12 @@ import axios from "axios";
 import { View, Text, Button, TouchableOpacity, FlatList, ScrollView, TextInput, StyleSheet, Image } from "react-native";
 import LocationItem from '../LocationListView/LocationItem/LocationItem.jsx'
 import UserItem from '../UserListView/UserItem/UserItem.jsx'
+import * as ImagePicker from 'expo-image-picker'
 import { AntDesign } from '@expo/vector-icons';
 import { AppContext } from "../../AppContext";
 import { getAuthData } from "../../../utils.js";
-import { url } from '../../../constants.js'
+import Toast from "react-native-toast-message";
+import { url, TOAST_MESSAGES } from '../../../constants.js'
 import { sortElements } from "../../../utils.js";
 
 // TODO: estilar
@@ -51,6 +53,72 @@ export default function AuthProfileView() {
             setAuthData(authData)
         })()
     }, [])
+
+    const pickImage = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            aspect: [4, 3],
+            quality: 1
+        })
+        let newAvatar
+        if (!result.canceled) {
+            const filenameArray = result.assets[0].fileName.split('.')
+            const ext = filenameArray[filenameArray.length - 1]
+            newAvatar = {
+                uri: result.assets[0].uri,
+                type: `${result.assets[0].type}/${ext}`,
+                name: result.assets[0].fileName
+            }
+        } else {
+            newAvatar = null
+        }
+        return newAvatar
+    }
+
+    const upload = async (avatar) => {
+        let avatarUrl = null
+        const formData = new FormData()
+        formData.append('file', {
+            uri: avatar.uri,
+            type: avatar.type,
+            name: avatar.name
+        })
+        await axios.post(`${url}/upload`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        })
+            .then(res => {
+                console.log(res.data.url)
+                avatarUrl = res.data.url
+            }) 
+            .catch(err => {
+                console.error('An error has occurred:\n' + err)
+                return null
+            })
+            return avatarUrl
+    }
+
+    const changeAvatar = async () => {
+        const selectedAvatar = await pickImage()
+        if (selectedAvatar !== null) {
+            const avatarUrl = await upload(selectedAvatar)
+            await axios.put(url + '/changeAvatar', {
+                _id: token._id,
+                newAvatar: avatarUrl
+            })
+                .then(res => {
+                    if (res.data.status === 'ok') {
+                        Toast.show(TOAST_MESSAGES.USER_PROFILE.AVATAR_CHANGED)
+                    } else if (res.data.status === 'error') {
+                        Toast.show(TOAST_MESSAGES.UNEXPECTED_ERROR)
+                    }
+                })
+        }
+
+
+    }
 
     const getPublisAndFriends = async () => {
         await axios.post(`${url}/getPublicationsById`, {
@@ -205,12 +273,16 @@ export default function AuthProfileView() {
                 alignSelf: 'flex-start',
                 marginBottom: 20
             }}>
-                <Image source={{ uri: url + authData.avatar }} style={{
-                    width: 100,
-                    height: 100,
-                    borderRadius: 100,
-                    backgroundColor: 'lightgrey'
-                }}/>
+                <TouchableOpacity
+                    onPress={changeAvatar}
+                >
+                    <Image source={{ uri: url + authData.avatar }} style={{
+                        width: 100,
+                        height: 100,
+                        borderRadius: 100,
+                        backgroundColor: 'lightgrey'
+                    }}/>
+                </TouchableOpacity>
                 <View style={{
                     flexDirection: 'row',
                     alignItems: 'center',
