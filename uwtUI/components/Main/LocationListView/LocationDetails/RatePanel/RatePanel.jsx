@@ -5,11 +5,17 @@ import Toast from "react-native-toast-message";
 import { url, TOAST_MESSAGES } from "../../../../../constants";
 import { AntDesign } from '@expo/vector-icons';
 import { AppContext } from "../../../../AppContext";
+import { getAuthData } from "../../../../../utils";
+import { useTranslation } from "react-i18next";
 
 // TODO: estilar
 // TODO: documentar
 export default function RatePanel({ locationItem }) {
-    const { token, url } = useContext(AppContext)
+    const { t } = useTranslation()
+    const { token, url, translateToast } = useContext(AppContext)
+    const [authData, setAuthData] = useState({
+        nickname: ''
+    })
     const [rate, setRate] = useState(0)
     const activeStars = []
 
@@ -21,6 +27,13 @@ export default function RatePanel({ locationItem }) {
             if (authRate) setRate(authRate.rate)
         }
     }
+
+    useEffect(() => {
+        (async () => {
+            const authData = await getAuthData(url, token._id)
+            setAuthData(authData)
+        })()
+    })
 
     useEffect(() => {
         getAuthRate()
@@ -38,7 +51,8 @@ export default function RatePanel({ locationItem }) {
     const ratePublication = async () => {
         const newRate = {
             publicationId: locationItem._id,
-            author: token._id,
+            authId: token._id,
+            authNickname: authData.nickname,
             rate: rate
         }
         console.log(newRate)
@@ -46,7 +60,8 @@ export default function RatePanel({ locationItem }) {
             .then(res => {
                 console.log(res.data.result)
                 getAuthRate()
-                Toast.show(TOAST_MESSAGES.LOCATION_DETAILS.LOCATION_RATED)
+                const translatedToast = translateToast(TOAST_MESSAGES.LOCATION_DETAILS.LOCATION_RATED, t)
+                Toast.show(translatedToast)
             })
             .catch(err => console.error(err))
     }
@@ -94,7 +109,7 @@ export default function RatePanel({ locationItem }) {
                     marginLeft: 10
 
                 }}>
-                    <Text>Rate</Text>
+                    <Text>{t('buttons.rate')}</Text>
                 </View>
             </TouchableOpacity>
         </View>

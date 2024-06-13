@@ -2,6 +2,7 @@ import { useState, useEffect, useContext } from "react";
 import { View, TextInput, Text, Button, TouchableOpacity, StyleSheet, TouchableHighlight, FlatList } from "react-native";
 import axios from "axios";
 import { url } from '../../../constants.js'
+import { useTranslation } from "react-i18next";
 import { sortElements } from "../../../utils.js";
 import { AntDesign } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
@@ -16,6 +17,7 @@ import { AppContext } from "../../AppContext.jsx";
 // TODO: validar caja de búsqueda
 // TODO: documentar
 export default function UserListView({ navigation }) {
+    const { t } = useTranslation()
     const { url } = useContext(AppContext)
     const [searchName, setSearchName] = useState('')
     const [users, setUsers] = useState([])
@@ -64,7 +66,7 @@ export default function UserListView({ navigation }) {
                     <TextInput style={{
                         paddingVertical: 5,
                         paddingStart: 10
-                    }} placeholder="search" onChangeText={handleSearchName}></TextInput>
+                    }} placeholder={t('placeholders.search')} onChangeText={handleSearchName}></TextInput>
                 </View>
                 <View style={styles.filterSection}>
                     <TouchableOpacity
@@ -77,7 +79,7 @@ export default function UserListView({ navigation }) {
                         }}
                     >
                         <View >
-                            <Text>Older</Text>
+                            <Text>{t('buttons.older')}</Text>
                         </View>
                     </TouchableOpacity>
                     <TouchableOpacity
@@ -90,7 +92,7 @@ export default function UserListView({ navigation }) {
                         }}
                     >
                         <View>
-                            <Text>Newer</Text>
+                            <Text>{t('buttons.newer')}</Text>
                         </View>
                     </TouchableOpacity>
                     <TouchableOpacity

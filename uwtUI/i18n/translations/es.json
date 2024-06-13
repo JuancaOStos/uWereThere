@@ -1,0 +1,218 @@
+{
+    "login": {
+        "do_you_want_to_join_us": "¿Quieres unirte a nosotros?"
+    },
+    "forgot_password": {
+        "introduce_your_email_and_we_will_send_you_a_temporal_password": "Introduce tu email y te enviaremos una contraseña temporal"
+    },
+    "sign_up": {
+        "introduce_an_email_and_password": "Introduce un email y una contraseña",
+        "email_between_10_and_40_characters_before": "Email de entre 10 y 40 caracteres antes de la ",
+        "password_between_8_and_25_characters": "Contraseña de entre 8 y 25 caracteres",
+        "do_you_already_have_an_account": "¿Tienes ya una cuenta?",
+        "choose_an_avatar": "Elige un avatar",
+        "how_do_you_want_to_be_called": "¿Cómo quieres que te llamen?",
+        "nickname_between_2_and_25_characters": "Nickname entre 2 y 25 caracteres"
+    },
+    "verification": {
+        "verify_your_account": "Verifica tu cuenta",
+        "introduce_the_verification_code_send_to_your_email": "Introduce el código de verificación enviado a tu email"
+    },
+    "location_details": {
+        "link_to_maps": "Enlace a Maps",
+        "comments": "Comentarios",
+        "comment_between_1_and_200_characters": "Comentarios de entre 1 y 200 caracteres"
+    },
+    "user_profile": {
+        "not_rated": "No puntuado"
+    },
+    "new_location": {
+        "show_us_what_you_discovered": "Muéstranos qué has descubierto",
+        "title_between_3_and_40_characters": "Título de entre 3 y 40 caracteres",
+        "description_between_10_and_200_characters": "Descripción de entre 10 y 200 caracteres"
+    },
+    "settings": {
+        "languages": "Idiomas",
+        "introduce_your_new_nickname": "Introduce tu nuevo nickname",
+        "introduce_your_password": "Introduce tu contraseña",
+        "introduce_your_new_password": "Introduce tu nueva contraseña",
+        "repeat_your_new_password": "Repite tu nueva contraseña"
+    },
+    "nav_bar": {
+        "locations": "Ubicaciones",
+        "users": "Usuarios",
+        "new_location": "Nueva ubicación",
+        "profile": "Perfil",
+        "settings": "Ajustes"
+    },
+    "placeholders": {
+        "password": "contraseña",
+        "new_password": "nueva contraseña",
+        "repeat_password": "repite la contraseña",
+        "repeat_new_password": "repite nueva contraseña",
+        "nickname": "nickname",
+        "new_nickname": "nuevo nickname",
+        "search": "buscar",
+        "title": "título",
+        "description": "descripción",
+        "comment": "comentar"
+    },
+    "buttons": {
+        "log_in": "Inicia sesión",
+        "sign_up": "Regístrate",
+        "next": "Siguiente",
+        "verify": "Verificar",
+        "i_forgot_my_password": "He olvidado mi contraseña",
+        "older": "Antiguos",
+        "newer": "Nuevos",
+        "rate": "Puntuar",
+        "follow": "Seguir",
+        "un_follow": "Siguiendo",
+        "publications": "ubicaciones",
+        "followers": "seguidores",
+        "followed": "seguidos",
+        "update_current_location": "Actualizar ubicación actual",
+        "publish_location": "Publicar ubicación",
+        "change_nickname": "Cambiar nickname",
+        "change_password": "Cambiar contraseña",
+        "espagnol": "Español",
+        "english": "English",
+        "request_new_password": "Pedir nueva contraseña",
+        "change_my_nickname": "Cambiar mi nickname",
+        "change_my_password": "Cambiar mi contraseña"
+    },
+    "toast": {
+        "sign_up": {
+        "invalid_email": {
+            "invalid_email": "Correo inválido",
+            "please_introduce_a_valid_email": "Por favor introduce un correo válido"
+        },
+        "existing_email": {
+            "existing_email": "Correo existente",
+            "this_email_already_exists": "Este correo ya existe"
+        },
+        "invalid_password": {
+            "invalid_password": "Contraseña inválida",
+            "please_introduce_a_valid_password": "Por favor introduce una contraseña válida"
+        },
+        "invalid_email_password": {
+            "invalid_email_and_password": "Correo y contraseña inválidos",
+            "please_introduce_a_valid_email_and_password": "Por favor introduce un correo y contraseña válidos"
+        },
+        "invalid_repeat_password": {
+            "password_doesnt_match": "Las contraseñas no coinciden",
+            "the_fields_password_and_repeat_password_doesnt_match": "Los campos de contraseña y repetir contraseña no coinciden"
+        },
+        "invalid_nickname": {
+            "invalid_nickname": "Nickname inválido",
+            "please_introduce_a_valid_nickname": "Por favor introduce un nickname válido"
+        },
+        "existing_nickname": {
+            "existing_nickname": "Nickname existente",
+            "this_nickname_already_exists": "Este nickname ya existe"
+        },
+        "sign_up_success": {
+            "sign_up_success": "Registro exitoso",
+            "now_verify_your_account": "Ahora verifica tu cuenta"
+        },
+        "verification_code_sent": {
+            "verification_code_sent": "Código de verificación enviado",
+            "check_you_email_and_input_the_code_sent": "Verifica tu correo e ingresa el código enviado"
+        },
+        "account_verified": {
+            "account_verified": "Cuenta verificada",
+            "we_are_waiting_for_you": "Estamos esperándote"
+        }
+    },
+    "log_in": {
+        "invalid_credentials": {
+            "invalid_credentials": "Credenciales inválidas",
+            "the_credentials_introduced_are_incorrect": "Las credenciales introducidas son incorrectas"
+        },
+        "email_not_found": {
+            "email_not_found": "Correo no encontrado",
+            "the_email_introduced_doesnt_exists": "El correo introducido no existe"
+        },
+        "forgot_password": {
+            "new_password_established": "Nueva contraseña establecida",
+            "check_the_new_password_in_your_email_sent": "Verifica la nueva contraseña en tu correo enviado"
+        }
+    },
+    "location_details": {
+        "location_rated": {
+            "perfect": "Perfecto",
+            "this_explorer_thanks_you": "Este explorador te agradece"
+        },
+        "invalid_comment": {
+            "invalid_comment": "Comentario inválido",
+            "please_introduce_a_valid_comment": "Por favor introduce un comentario válido"
+        }
+    },
+    "user_profile": {
+        "followed": {
+            "followed": "Seguido",
+            "you_followed_this_user": "Has seguido a este usuario"
+        },
+        "avatar_changed": {
+            "avatar_changed": "Avatar cambiado",
+            "what_a_beautiful_pic": "Qué hermosa imagen"
+        }
+    },
+    "new_location": {
+        "invalid_title": {
+            "invalid_title": "Título inválido",
+            "please_introduce_a_valid_title": "Por favor introduce un título válido"
+        },
+        "invalid_description": {
+            "invalid_description": "Descripción inválida",
+            "please_introduce_a_valid_description": "Por favor introduce una descripción válida"
+        },
+        "invalid_title_description": {
+            "invalid_title_and_description": "Título y descripción inválidos",
+            "please_introduce_a_valid_title_and_description": "Por favor introduce un título y descripción válidos"
+        },
+        "new_location_success": {
+            "new_location": "Nueva ubicación",
+            "thanks_for_sharing": "Gracias por compartir"
+        }
+    },
+    "settings": {
+        "password_doesnt_match": {
+            "incorrect_password": "Contraseña incorrecta",
+            "the_password_introduced_is_incorrect": "La contraseña introducida es incorrecta"
+        },
+        "invalid_password": {
+            "invalid_password": "Contraseña inválida",
+            "please_introduce_a_valid_password": "Por favor introduce una contraseña válida"
+        },
+        "invalid_repeat_password": {
+            "invalid_repeat_password": "La contraseña no es la misma",
+            "the_fields_password_and_repeat_password_doesnt_match": "Los campos de contraseña y repetir contraseña no coinciden"
+        },
+        "new_password": {
+            "new_password": "Nueva contraseña",
+            "new_password_established": "Nueva contraseña establecida"
+        },
+        "invalid_nickname": {
+            "invalid_nickname": "Nickname inválido",
+            "please_introduce_a_valid_nickname": "Por favor introduce un nickname válido"
+        },
+        "new_nickname": {
+            "new_nickname": "Nuevo nickname",
+            "it_suits_you_great": "Te queda genial"
+        }
+    },
+    "internal_error": {
+        "internal_error": "Error de servidor",
+        "there_are_problems_with_server": "Hay problemas con el servidor"
+    },
+    "connection_error": {
+        "connection_error": "Error de conexión",
+        "there_are_problems_with_the_connection": "Hay problemas con la conexión"
+    },
+    "unexpected_error": {
+        "unexpected_error": "Error inesperado",
+        "there_is_an_unexpected_error": "Hay un error inesperado"
+    }
+    }
+}

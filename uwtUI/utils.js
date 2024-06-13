@@ -1,4 +1,5 @@
 import axios from "axios"
+import { useTranslation } from "react-i18next"
 
 export async function getAuthData(url, _id) {
     const authData = await axios.post(url + '/authUserById', {

@@ -1,5 +1,6 @@
 import { useState, useContext } from "react";
 import axios from "axios";
+import { useTransition } from "react";
 import { View, Text, Button, StyleSheet, Image, TextInput, TouchableOpacity } from 'react-native'
 import * as ImagePicker from 'expo-image-picker'
 import { Entypo } from '@expo/vector-icons';
@@ -7,13 +8,15 @@ import { FontAwesome } from '@expo/vector-icons';
 import Toast from "react-native-toast-message";
 import { URL, REGEX, TOAST_MESSAGES } from "../../../constants";
 import { AppContext } from "../../AppContext";
+import { useTranslation } from "react-i18next";
 
 // TODO: estilar
 // TODO: añadir también hacer foto
 // TODO: validar
 // TODO: documentar
 export default function NicknameAvatarStage({ route, navigation }) {
-    const { url } = useContext(AppContext)
+    const { t } = useTranslation()
+    const { url, translateToast } = useContext(AppContext)
     const { email, password } = route.params
     const [avatar, setAvatar] = useState({
         uri: 'https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png',
@@ -79,12 +82,15 @@ export default function NicknameAvatarStage({ route, navigation }) {
             if (res.data.status === 'ok') {
                 newUserSignUp()
             } else if (res.data.status === 'bad') {
-                Toast.show(TOAST_MESSAGES.SIGN_UP.EXISTING_NICKNAME)
+                const translatedToast = translateToast(TOAST_MESSAGES.SIGN_UP.EXISTING_NICKNAME, t)
+                Toast.show(translatedToast)
             } else if (res.data.status === 'error') {
-                Toast.show(TOAST_MESSAGES.UNEXPECTED_ERROR)
+                const translatedToast = translateToast(TOAST_MESSAGES.UNEXPECTED_ERROR, t)
+                Toast.show(translatedToast)
             }
         } else {
-            Toast.show(TOAST_MESSAGES.SIGN_UP.INVALID_NICKNAME)
+            const translatedToast = translateToast(TOAST_MESSAGES.SIGN_UP.INVALID_NICKNAME, t)
+            Toast.show(translatedToast)
         }
     }
 
@@ -133,7 +139,8 @@ export default function NicknameAvatarStage({ route, navigation }) {
             .then(res => {
                 const data = res.data
                 setResultMessage(data.result)
-                Toast.show(TOAST_MESSAGES.SIGN_UP.SIGN_UP_SUCCESS)
+                const translatedToast = translateToast(TOAST_MESSAGES.SIGN_UP.SIGN_UP_SUCCESS, t)
+                Toast.show(translatedToast)
                 navigation.navigate('VerificationModal', {
                     fromScreen: 'NicknameAvatarStage',
                     email: email
@@ -155,7 +162,7 @@ export default function NicknameAvatarStage({ route, navigation }) {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.headerText}>Choose an avatar!</Text>
+            <Text style={styles.headerText}>{t('sign_up.choose_an_avatar')}</Text>
             {avatar && <Image source={{ uri: avatar.uri }} style={styles.image} />}
             <View style={styles.horizontalBox}>
                 <TouchableOpacity
@@ -170,8 +177,11 @@ export default function NicknameAvatarStage({ route, navigation }) {
                     <FontAwesome name="picture-o" size={40} color="black" />
                 </TouchableOpacity>
             </View>
-            <Text style={styles.headerText}>How do you want to be called?</Text>
+            <Text style={styles.headerText}>{t('sign_up.how_do_you_want_to_be_called')}</Text>
             <TextInput style={styles.textBox} placeholder="nickname" onChangeText={handleNickname}/>
+            <Text
+                style={{ color: 'grey',marginBottom: 20 }}
+            >{t('sign_up.nickname_between_2_and_25_characters')}</Text>
             <TouchableOpacity
                 style={{
                 backgroundColor: buttonColor,
@@ -182,7 +192,7 @@ export default function NicknameAvatarStage({ route, navigation }) {
                 onPress={checkNickname}
                 disabled={disableButton}
             >
-                <Text style={{ fontSize: 20 }}>Next</Text>
+                <Text style={{ fontSize: 20 }}>{t('buttons.next')}</Text>
             </TouchableOpacity>
         </View>
     )
@@ -224,6 +234,6 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         borderRadius: 10,
         width: 250,
-        marginBottom: 20
+        marginBottom: 0
     }
 })

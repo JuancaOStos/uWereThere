@@ -1,9 +1,11 @@
 import react, { useState, useContext } from "react";
+import { useTranslation } from "react-i18next";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from "react-native";
 import axios from "axios";
 import { AppContext } from "../../AppContext";
 
 export default function IForgotPassword({ navigation }) {
+    const { t } = useTranslation()
     const [email, setEmail] = useState('')
     const { url } = useContext(AppContext)
 
@@ -28,13 +30,13 @@ export default function IForgotPassword({ navigation }) {
 
     return (
         <View style={styles.container}>
-            <Text>Introduce your email and we will send you a temporal password</Text>
+            <Text>{t('forgot_password.introduce_your_email_and_we_will_send_you_a_temporal_password')}</Text>
             <TextInput placeholder="email"  style={styles.input} onChangeText={handleEmail}/>
             <TouchableOpacity
                 onPress={requestNewPassword}
                 style={styles.button}
             >
-                <Text>Request new password</Text>
+                <Text>{t('buttons.request_new_password')}</Text>
             </TouchableOpacity>
         </View>
     )

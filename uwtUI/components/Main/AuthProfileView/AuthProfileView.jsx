@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { View, Text, Button, TouchableOpacity, FlatList, ScrollView, TextInput, StyleSheet, Image } from "react-native";
 import LocationItem from '../LocationListView/LocationItem/LocationItem.jsx'
+import { useTranslation } from "react-i18next";
 import UserItem from '../UserListView/UserItem/UserItem.jsx'
 import * as ImagePicker from 'expo-image-picker'
 import { AntDesign } from '@expo/vector-icons';
@@ -20,7 +21,8 @@ import { sortElements } from "../../../utils.js";
 // TODO: validar caja de búsqueda
 // TODO: documentar
 export default function AuthProfileView() {
-    const { token, url } = useContext(AppContext)
+    const { t } = useTranslation()
+    const { token, url, translateToast } = useContext(AppContext)
     const [searchName, setSearchName] = useState('')
     const [authData, setAuthData] = useState({
         _id: 0,
@@ -44,7 +46,7 @@ export default function AuthProfileView() {
 
     const rateLabel = (rate > 0)
         ? rate
-        : 'Not rated yet'
+        : t('user_profile.not_rated')
 
     useEffect( () => {
         (async function() {
@@ -110,9 +112,11 @@ export default function AuthProfileView() {
             })
                 .then(res => {
                     if (res.data.status === 'ok') {
-                        Toast.show(TOAST_MESSAGES.USER_PROFILE.AVATAR_CHANGED)
+                        const translatedToast = translateToast(TOAST_MESSAGES.USER_PROFILE.AVATAR_CHANGED, t)
+                        Toast.show(translatedToast)
                     } else if (res.data.status === 'error') {
-                        Toast.show(TOAST_MESSAGES.UNEXPECTED_ERROR)
+                        const translatedToast = translateToast(TOAST_MESSAGES.UNEXPECTED_ERROR, t)
+                        Toast.show(translatedToast)
                     }
                 })
         }
@@ -292,7 +296,7 @@ export default function AuthProfileView() {
                     >
                         <View style={styles.authButtons}>
                             <Text style={{ fontWeight: 'bold' }}>{publications.length}</Text>
-                            <Text>publications</Text>
+                            <Text>{t('buttons.publications')}</Text>
                         </View>
                     </TouchableOpacity>
                     <TouchableOpacity
@@ -300,7 +304,7 @@ export default function AuthProfileView() {
                     >
                         <View style={styles.authButtons}>
                             <Text style={{ fontWeight: 'bold' }}>{followers.length}</Text>
-                            <Text>followers</Text>
+                            <Text>{t('buttons.followers')}</Text>
                         </View>
                     </TouchableOpacity>
                     <TouchableOpacity
@@ -308,7 +312,7 @@ export default function AuthProfileView() {
                     >
                         <View style={styles.authButtons}>
                             <Text style={{ fontWeight: 'bold' }}>{followed.length}</Text>
-                            <Text>followed</Text>
+                            <Text>{t('buttons.followed')}</Text>
                         </View>
                     </TouchableOpacity>
                 </View>
@@ -337,7 +341,7 @@ export default function AuthProfileView() {
                         <TextInput style={{
                             paddingVertical: 5,
                             paddingStart: 10,
-                        }} placeholder="search" onChangeText={handleSearchName}></TextInput>
+                        }} placeholder={t('placeholders.search')} onChangeText={handleSearchName}></TextInput>
                 </View>
                 <View style={styles.filterSection}>
                         <TouchableOpacity
@@ -350,7 +354,7 @@ export default function AuthProfileView() {
                             }}
                         >
                         <View >
-                            <Text>Older</Text>
+                            <Text>{t('buttons.older')}</Text>
                         </View>
                     </TouchableOpacity>
                     <TouchableOpacity
@@ -363,7 +367,7 @@ export default function AuthProfileView() {
                         }}
                     >
                         <View>
-                            <Text>Newer</Text>
+                            <Text>{t('buttons.newer')}</Text>
                         </View>
                     </TouchableOpacity>
                     <TouchableOpacity

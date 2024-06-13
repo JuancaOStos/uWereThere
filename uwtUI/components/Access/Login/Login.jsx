@@ -1,19 +1,22 @@
 import { useState, useContext } from 'react';
+import { useTranslation } from 'react-i18next';
 import { StyleSheet, Text, TextInput, Button, View, Image, TouchableOpacity } from 'react-native';
+import Toast from 'react-native-toast-message';
 import axios from 'axios';
 import { FontAwesome6 } from '@expo/vector-icons';
 import { AppContext } from '../../AppContext';
-import { URL } from '../../../constants.js';
+import { TOAST_MESSAGES, URL } from '../../../constants.js';
 
 // TODO: estilar
 // TODO: validar
 // TODO: añadir 'He olvidado la contraseña'
 // TODO: documentar
 export default function Login({ navigation }) {
+  const { t } = useTranslation()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
-  const { handleAuth, setLoginView, handleUrl, url } = useContext(AppContext)
+  const { handleAuth, setLoginView, handleUrl, url, translateToast } = useContext(AppContext)
 
 
   const [userEmail, setUserEmail] = useState('')
@@ -54,8 +57,13 @@ export default function Login({ navigation }) {
         else {
           if (res.data.result === 'Password doesn\'t match') {
             setErrorMessage(res.data.result)
-          }
-          if (res.data.result === 'User not verified') {
+            const translatedToast = translateToast(TOAST_MESSAGES.LOG_IN.INVALID_CREDENTIALS, t)
+            Toast.show(translatedToast)
+
+          } else if (res.data.result === 'The user doesn\'t exist') {
+            const translatedToast = translateToast(TOAST_MESSAGES.LOG_IN.INVALID_CREDENTIALS, t)
+            Toast.show(translatedToast)
+          } else if (res.data.result === 'User not verified') {
             navigation.navigate('VerificationModal', {
               fromScreen: 'Login',
               email: email
@@ -65,8 +73,9 @@ export default function Login({ navigation }) {
         // handleAuth(data.result)
       })
       .catch(err => {
-        alert('An error has occurred:\n' + err)
         console.error('An error has occurred:', err)
+        const translatedToast = translateToast(TOAST_MESSAGES.CONNECTION_ERROR, t)
+        Toast.show(translatedToast)
       })
   }
 "/1717003028872_fe04d5fe-41d0-4aa9-8314-eefec0273ffa.jpeg"
@@ -89,28 +98,46 @@ export default function Login({ navigation }) {
         <FontAwesome6 name="map-location" size={250} color="lightgreen" />
       </View>
       <Text>Sección solo para desarrollo</Text>
-      <TextInput style={styles.input} onChangeText={handleUrl} keyboardType='numeric' placeholder='Introduce tu dirección IPv4'/>
-      <Text style={{ marginBottom: 30 }} >{url}</Text>
-      <TextInput style={styles.input} onChangeText={handleEmail} placeholder='email'/>
-      <TextInput style={styles.input} onChangeText={handlePassword} placeholder='password'/>
+      <TextInput
+        style={styles.input}
+        onChangeText={handleUrl}
+        keyboardType='numeric'
+        placeholder='Introduce tu dirección IPv4'/>
+
+      <Text
+        style={{ marginBottom: 30 }}
+        >
+          {url}
+      </Text>
+      <TextInput
+        style={styles.input}
+        onChangeText={handleEmail}
+        placeholder='email'/>
+
+      <TextInput
+        style={styles.input}
+        onChangeText={handlePassword}
+        placeholder={t('placeholders.password')}
+        secureTextEntry={true}
+        />
       <TouchableOpacity
         style={styles.button}
         onPress={handleLogin}
       >
-        <Text style={{ fontSize: 20 }}>Log in</Text>
+        <Text style={{ fontSize: 20 }}>{t('buttons.log_in')}</Text>
       </TouchableOpacity>
       <View style={{ flexDirection: 'row' }}>
-        <Text style={{ marginRight: 10, fontSize: 20 }}>Do you want join us?</Text>
+        <Text style={{ marginRight: 10, fontSize: 20 }}>{t('login.do_you_want_to_join_us')}</Text>
         <TouchableOpacity
           onPress={() => { navigation.navigate('EmailPasswordStage') }}
         >
-          <Text style={{ color: 'green', fontSize: 20 }}>Sign up</Text>
+          <Text style={{ color: 'green', fontSize: 20 }}>{t('buttons.sign_up')}</Text>
         </TouchableOpacity>
       </View>
       <TouchableOpacity
         onPress={() => navigation.navigate('IForgotPassword')}
       >
-        <Text style={{ color: 'green', marginTop: 10, fontSize: 17 }}>I forgot my password</Text>
+        <Text style={{ color: 'green', marginTop: 10, fontSize: 17 }}>{t('buttons.i_forgot_my_password')}</Text>
       </TouchableOpacity>
       <Text>{errorMessage}</Text>
       <Text>{userEmail}</Text>

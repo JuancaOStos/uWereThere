@@ -2,6 +2,7 @@ import { useState, useEffect, useContext } from "react";
 import { View, Text, Button, FlatList, ScrollView, TextInput, StyleSheet, Image, TouchableOpacity } from "react-native";
 import axios from "axios";
 import { url } from '../../../../constants.js'
+import { useTranslation } from "react-i18next";
 import { AppContext } from "../../../AppContext";
 import LocationItem from "../../LocationListView/LocationItem/LocationItem.jsx";
 import UserItem from "../UserItem/UserItem.jsx";
@@ -20,6 +21,7 @@ import { sortElements } from "../../../../utils.js";
 // TODO: limpiar
 // TODO: documentar
 export default function UserProfileView({ route }) {
+    const { t } = useTranslation()
     const { userItem } = route.params
     const [searchName, setSearchName] = useState('')
     const [publications, setPublications] = useState([])
@@ -27,7 +29,7 @@ export default function UserProfileView({ route }) {
     const [followed, setFollowed] = useState([])
     const [followers, setFollowers] = useState([])
     const [listView, setListView] = useState('publications')
-    const { token, url } = useContext(AppContext)
+    const { token, url, translateToast } = useContext(AppContext)
     const [authFriend, setAuthFriend] = useState(false)
     const [sortData, setSortData] = useState({
         sortField: 'createdAt',
@@ -41,7 +43,7 @@ export default function UserProfileView({ route }) {
 
     const rateLabel = (rate > 0)
         ? rate
-        : 'Not rated yet'
+        : t('user_profile.not_rated')
 
     const handleSearchName = (value) => setSearchName(value)
 
@@ -113,7 +115,8 @@ export default function UserProfileView({ route }) {
         })
             .then(res => {
                 console.log(res.data.result)
-                Toast.show(TOAST_MESSAGES.USER_PROFILE.FOLLOWED)
+                const translatedToast = translateToast(TOAST_MESSAGES.USER_PROFILE.FOLLOWED, t)
+                Toast.show(translatedToast)
             })
         checkFollowedById()
     }
@@ -228,8 +231,8 @@ export default function UserProfileView({ route }) {
         : handleFollow
     
     const followButtonText = (authFriend)
-        ? 'unfollow'
-        : 'follow'
+        ? t('buttons.un_follow')
+        : t('buttons.follow')
 
     return(
         <ScrollView>
@@ -257,7 +260,7 @@ export default function UserProfileView({ route }) {
                     >
                         <View style={styles.authButtons}>
                             <Text style={{ fontWeight: 'bold' }}>{publications.length}</Text>
-                            <Text>publications</Text>
+                            <Text>{t('buttons.publications')}</Text>
                         </View>
                     </TouchableOpacity>
                     <TouchableOpacity
@@ -265,7 +268,7 @@ export default function UserProfileView({ route }) {
                     >
                         <View style={styles.authButtons}>
                             <Text style={{ fontWeight: 'bold' }}>{followers.length}</Text>
-                            <Text>followers</Text>
+                            <Text>{t('buttons.followers')}</Text>
                         </View>
                     </TouchableOpacity>
                     <TouchableOpacity
@@ -273,7 +276,7 @@ export default function UserProfileView({ route }) {
                     >
                         <View style={styles.authButtons}>
                             <Text style={{ fontWeight: 'bold' }}>{followed.length}</Text>
-                            <Text>followed</Text>
+                            <Text>{t('buttons.followed')}</Text>
                         </View>
                     </TouchableOpacity>
                 </View>
@@ -318,7 +321,7 @@ export default function UserProfileView({ route }) {
                         <TextInput style={{
                             paddingVertical: 5,
                             paddingStart: 10,
-                        }} placeholder="search" onChangeText={handleSearchName}></TextInput>
+                        }} placeholder={t('placeholders.search')} onChangeText={handleSearchName}></TextInput>
                 </View>
                 <View style={styles.filterSection}>
                         <TouchableOpacity
@@ -331,7 +334,7 @@ export default function UserProfileView({ route }) {
                             }}
                         >
                         <View >
-                            <Text>Older</Text>
+                            <Text>{t('buttons.older')}</Text>
                         </View>
                     </TouchableOpacity>
                     <TouchableOpacity
@@ -344,7 +347,7 @@ export default function UserProfileView({ route }) {
                         }}
                     >
                         <View>
-                            <Text>Newer</Text>
+                            <Text>{t('buttons.newer')}</Text>
                         </View>
                     </TouchableOpacity>
                     <TouchableOpacity

@@ -5,11 +5,13 @@ import { Ionicons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import { AppContext } from "../../../AppContext";
 import { getAuthData } from "../../../../utils";
+import { useTranslation } from "react-i18next";
 import { url, USER_LOGO } from '../../../../constants'
 
 // TODO: estilar
 // TODO: documentar
 export default function UserItem({ searchName, userItem, handleNavigation, navigationDisabled }) {
+    const { t } = useTranslation()
     const { token, url } = useContext(AppContext)
     const [authData, setAuthData] = useState({
         _id: 0,
@@ -27,7 +29,7 @@ export default function UserItem({ searchName, userItem, handleNavigation, navig
 
     const parsedRate = (userItem.averageRate !== 0)
         ? userItem.averageRate
-        : 'Not rated'
+        : t('user_profile.not_rated')
 
     useEffect( () => {
         (async function() {

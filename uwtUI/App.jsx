@@ -5,6 +5,7 @@ import Toast from 'react-native-toast-message';
 import Main from './components/Main/Main';
 import Access from './components/Access/Access';
 import AppProvider from './components/AppContext';
+import i18n from './i18n/i18n';
 
 // for dev DevCom
 

@@ -1,5 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import axios from "axios";
+import { useTranslation } from "react-i18next";
 import { View, Text, TextInput, Button, TouchableOpacity, StyleSheet } from 'react-native'
 import { useNavigation } from "@react-navigation/native";
 import Toast from "react-native-toast-message";
@@ -10,7 +11,8 @@ import { AppContext } from "../../AppContext";
 // TODO: validar
 // TODO: documentar
 export default function EmailPasswordStage() {
-    const { setLoginView, url } = useContext(AppContext)
+    const { t } = useTranslation()
+    const { setLoginView, url, translateToast } = useContext(AppContext)
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [repeatPassword, setRepeatPassword] = useState('')
@@ -23,7 +25,8 @@ export default function EmailPasswordStage() {
     const checkExistingUser = () => {
         if (REGEX.EMAIL.test(email) && REGEX.PASSWORD.test(password)) {
             if (password !== repeatPassword) {
-                Toast.show(TOAST_MESSAGES.SIGN_UP.INVALID_REPEAT_PASSWORD)
+                const translatedToast = translateToast(TOAST_MESSAGES.SIGN_UP.INVALID_REPEAT_PASSWORD, t)
+                Toast.show(translatedToast)
             } else {
                 axios.post(`${url}/users/existingEmail`, {
                     email: email
@@ -32,6 +35,8 @@ export default function EmailPasswordStage() {
                         const result = res.data.result
                         if (result) {
                             console.error(result)
+                            const translatedToast = translateToast(TOAST_MESSAGES.SIGN_UP.EXISTING_EMAIL, t)
+                            Toast.show(translatedToast)
                         } else {
                             console.log('Valid user')
                             navigation.navigate('NicknameAvatarStage', {
@@ -54,7 +59,8 @@ export default function EmailPasswordStage() {
             } else if (!REGEX.PASSWORD.test(password)) {
                 errorMessage = errorMessage = errorMessage = TOAST_MESSAGES.SIGN_UP.INVALID_PASSWORD
             }
-            Toast.show(errorMessage)
+            const translatedToast = translateToast(errorMessage, t)
+            Toast.show(translatedToast)
         }
     }
 
@@ -68,12 +74,39 @@ export default function EmailPasswordStage() {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.headerText}>Introduce an email and password</Text>
-            <TextInput placeholder="email" onChangeText={handleEmail} style={styles.textBox}/>
-            <Text style={{ color: 'grey' }}>Email between 10 and 40 characters before @</Text>
-            <TextInput placeholder="password" onChangeText={handlePassword} style={styles.textBox}/>
-            <Text style={{ color: 'grey' }}>Password between 8 and 25 characters</Text>
-            <TextInput placeholder="repeat password" onChangeText={handleRepeatPassword} style={styles.textBox}/>
+            <Text 
+                style={styles.headerText}
+                >
+                    {t('sign_up.introduce_an_email_and_password')}
+            </Text>
+            <TextInput
+                style={styles.textBox}
+                placeholder="email"
+                onChangeText={handleEmail}
+                />
+
+            <Text
+                style={{ color: 'grey' }}
+                >
+                    {t('sign_up.email_between_10_and_40_characters_before')}@
+            </Text>
+            <TextInput
+                style={styles.textBox}
+                placeholder={t('placeholders.password')}
+                onChangeText={handlePassword}
+                secureTextEntry={true}
+                />
+            <Text
+                style={{ color: 'grey' }}
+                >
+                    {t('sign_up.password_between_8_and_25_characters')}
+            </Text>
+            <TextInput
+                style={styles.textBox}
+                placeholder={t('placeholders.repeat_password')}
+                onChangeText={handleRepeatPassword}
+                secureTextEntry={true}
+                />
             <TouchableOpacity
                 style={{
                 backgroundColor: buttonColor,
@@ -84,14 +117,14 @@ export default function EmailPasswordStage() {
                 onPress={checkExistingUser}
                 disabled={disableButton}
             >
-                <Text style={{ fontSize: 20 }}>Next</Text>
+                <Text style={{ fontSize: 20 }}>{t('buttons.next')}</Text>
             </TouchableOpacity>
             <View style={{ flexDirection: 'row' }}>
-                <Text style={{ marginRight: 10, fontSize: 18 }}>Do you already have an account?</Text>
+                <Text style={{ marginRight: 10, fontSize: 18 }}>{t('sign_up.do_you_already_have_an_account')}</Text>
                 <TouchableOpacity
                     onPress={() => { navigation.navigate('Login') }}
                 >
-                    <Text style={{ color: 'green', fontSize: 18 }}>Log in</Text>
+                    <Text style={{ color: 'green', fontSize: 18 }}>{t('buttons.log_in')}</Text>
                 </TouchableOpacity>
             </View>
         </View>

@@ -8,6 +8,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { AppContext } from "../../AppContext";
 import Toast from "react-native-toast-message";
 import { url, REGEX, TOAST_MESSAGES } from "../../../constants";
+import { useTranslation } from "react-i18next";
 
 // TODO: estilar
 // TODO: añadir poder elegir imagen existente
@@ -15,7 +16,8 @@ import { url, REGEX, TOAST_MESSAGES } from "../../../constants";
 // TODO: limpiar
 // TODO: documentar
 export default function NewLocation() {
-    const { token, url } = useContext(AppContext)
+    const { t } = useTranslation()
+    const { token, url, translateToast } = useContext(AppContext)
     const [image, setImage] = useState({
         uri: `${url}/public/images/pictureLogo.png`,
         width: null,
@@ -104,15 +106,16 @@ export default function NewLocation() {
         const picurl = await upload()
 
         if (!picurl) {
-            Toast.show(TOAST_MESSAGES.UNEXPECTED_ERROR)
+            const translatedToast = translateToast(TOAST_MESSAGES.UNEXPECTED_ERROR, t)
+            Toast.show(translatedToast)
             console.error('Failed to upload image')
             return
         }
 
         const newLocation = {
             location: {
-                latitude: location.latitude,
-                longitude: location.longitude
+                latitude: location.latitude + 0.1,
+                longitude: location.longitude + 0.1
             },
             title: title,
             description: description,
@@ -123,14 +126,17 @@ export default function NewLocation() {
             .then(res => {
                 console.log(res.data)
                 if (res.data.status === 'ok') {
-                    Toast.show(TOAST_MESSAGES.NEW_LOCATION.NEW_LOCATION_SUCCESS)
+                    const translatedToast = translateToast(TOAST_MESSAGES.NEW_LOCATION.NEW_LOCATION_SUCCESS, t)
+                    Toast.show(translatedToast)
                 } else if (res.data.status === 'error') {
-                    Toast.show(TOAST_MESSAGES.UNEXPECTED_ERROR)
+                    const translatedToast = translateToast(TOAST_MESSAGES.UNEXPECTED_ERROR, t)
+                    Toast.show(translatedToast)
                 }
             }).
             catch(err => {
                 console.error('An error has occurred:\n' + err)
-                Toast.show(TOAST_MESSAGES.CONNECTION_ERROR)
+                const translatedToast = translateToast(TOAST_MESSAGES.CONNECTION_ERROR, t)
+                Toast.show(translatedToast)
             })
     }
 
@@ -141,13 +147,16 @@ export default function NewLocation() {
         } else {
             if (!REGEX.TITLE.test(title) && !REGEX.DESCRIPTION.test(description)) {
                 console.error('No se cumple ninguno de los dos')
-                Toast.show(TOAST_MESSAGES.NEW_LOCATION.INVALID_TITLE_DESCRIPTION)
+                const translatedToast = translateToast(TOAST_MESSAGES.NEW_LOCATION.INVALID_TITLE_DESCRIPTION, t)
+                Toast.show(translatedToast)
             } else if (!REGEX.TITLE.test(title)) {
                 console.error('No se cumple el título')
-                Toast.show(TOAST_MESSAGES.NEW_LOCATION.INVALID_TITLE)
+                const translatedToast = translateToast(TOAST_MESSAGES.NEW_LOCATION.INVALID_TITLE, t)
+                Toast.show(translatedToast)
             } else if (!REGEX.DESCRIPTION.test(description)) {
                 console.error('No se cumple la descripción')
-                Toast.show(TOAST_MESSAGES.NEW_LOCATION.INVALID_DESCRIPTION)
+                const translatedToast = translateToast(TOAST_MESSAGES.NEW_LOCATION.INVALID_DESCRIPTION, t)
+                Toast.show(translatedToast)
             }
         }
     }
@@ -177,7 +186,7 @@ export default function NewLocation() {
                 justifyContent: 'center',
                 alignItems: 'center',
             }}>
-                <Text style={styles.headerText}>Show us what you discovered!</Text>
+                <Text style={styles.headerText}>{t('new_location.show_us_what_you_discovered')}</Text>
                 <Image
                     style={{
                         marginTop: 20,
@@ -205,16 +214,16 @@ export default function NewLocation() {
                         <Entypo name="camera" size={40} color="black" />
                     </TouchableOpacity>
                     
-                    <TextInput onChangeText={handleTitle} placeholder="title" style={styles.textBoxTitle} />
-                    <Text style={{ color: 'grey', marginBottom: 10 }}>Introduce a title between 3 and 40 characters</Text>
-                    <TextInput onChangeText={handleDescription} placeholder="description" style={styles.textBoxTitle} multiline/>
-                    <Text style={{ color: 'grey', marginBottom: 20 }}>Introduce a description between 10 and 200 characters</Text>
+                    <TextInput onChangeText={handleTitle} placeholder={t('placeholders.title')} style={styles.textBoxTitle} />
+                    <Text style={{ color: 'grey', marginBottom: 10 }}>{t('new_location.title_between_3_and_40_characters')}</Text>
+                    <TextInput onChangeText={handleDescription} placeholder={t('placeholders.description')} style={styles.textBoxTitle} multiline/>
+                    <Text style={{ color: 'grey', marginBottom: 20 }}>{t('new_location.description_between_10_and_200_characters')}</Text>
 
                     <TouchableOpacity
                         style={styles.button}
                         onPress={getCurrentLocation}
                     >
-                        <Text>Update current location</Text>
+                        <Text>{t('buttons.update_current_location')}</Text>
                     </TouchableOpacity>
                     {(location) && (
                         <TouchableOpacity
@@ -250,7 +259,7 @@ export default function NewLocation() {
                         disabled={(!title || !description || !imagePicked)}
                         onPress={checkTitleDescription}
                     >
-                        <Text>Publish location</Text>
+                        <Text>{t('buttons.publish_location')}</Text>
                     </TouchableOpacity>
                 </View>
             </View>

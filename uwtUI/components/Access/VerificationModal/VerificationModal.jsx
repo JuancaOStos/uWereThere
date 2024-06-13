@@ -1,4 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
+import { useTranslation } from 'react-i18next';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native'
 import { useNavigation } from "@react-navigation/native";
 import { AppContext } from '../../AppContext';
@@ -10,8 +11,9 @@ import axios from "axios";
 // TODO: validar
 // TODO: documentar
 export default function VerificationSignUp({ route }) {
+    const { t } = useTranslation()
     const { email, fromScreen } = route.params
-    const { loginView, setLoginView, url } = useContext(AppContext)
+    const { loginView, setLoginView, url, translateToast } = useContext(AppContext)
     const [code, setCode] = useState('')
     const handleCode = (value) => setCode(value)
     const navigation = useNavigation()
@@ -27,8 +29,9 @@ export default function VerificationSignUp({ route }) {
                 console.log('Error: ' + err)
                 alert('Error: ' + err)
             })
-        
-        Toast.show(TOAST_MESSAGES.SIGN_UP.VERIFICATION_CODE_SENT)
+
+        const translatedToast = translateToast(TOAST_MESSAGES.SIGN_UP.VERIFICATION_CODE_SENT, t)
+        Toast.show(translatedToast)
 
     }
 
@@ -44,7 +47,8 @@ export default function VerificationSignUp({ route }) {
             .then(res => {
                 if (res.data.status === 'ok') {
                     console.log('Account verified with success')
-                    Toast.show(TOAST_MESSAGES.SIGN_UP.ACCOUNT_VERIFIED)
+                    const translatedToast = translateToast(TOAST_MESSAGES.SIGN_UP.ACCOUNT_VERIFIED, t)
+                    Toast.show(translatedToast)
                     navigation.navigate('Login')
                     // if (fromScreen === 'NicknameAvatarStage') {
                     //     navigation.navigate('Login')
@@ -65,12 +69,12 @@ export default function VerificationSignUp({ route }) {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.headerText}>Verification your account</Text>
-            <Text style={styles.subHeaderText}>Introduce the verification code send to your email</Text>
+            <Text style={styles.headerText}>{t('verification.verify_your_account')}</Text>
+            <Text style={styles.subHeaderText}>{t('verification.introduce_the_verification_code_send_to_your_email')}</Text>
             <TextInput style={styles.textBox} keyboardType='numeric' value={code} onChangeText={handleCode}/>
             <Button 
                 onPress={verifyAccount}
-                title="Verify"
+                title={t('buttons.verify')}
             />
         </View>
     )

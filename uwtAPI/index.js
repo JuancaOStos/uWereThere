@@ -198,10 +198,59 @@ app.post('/login', async (req, res) => {
         }
     } else {
         res.send({
-            result: null
+            status: 'bad',
+            result: 'The user doesn\'t exist'
         })
     }
     
+})
+
+app.post('/checkPassword', async (req, res) => {
+    // recojo valores del body
+    const { _id, password } = req.body
+    // hago búsqueda del usuario por su id
+    let user = null
+    try {
+        user = await User.findById(_id)
+        if (user) {
+            // si existe, se procede a comparar password
+            console.log(bcrypt.compare(password, user.password))
+            const match = await bcrypt.compare(password, user.password)
+            if (match) {
+                // Si coincide, se envía true
+                console.log('The password matches')
+                res.send({
+                    status: 'ok',
+                    result: 'The password matches',
+                    match: true
+                })
+            } else {
+                // Si no coincide, se envía false
+                console.error('The password doesn\'t match')
+                res.send({
+                    status: 'bad',
+                    result: 'The password doesn\'t match',
+                    match: false
+                })
+            }
+        } else {
+            // si no existe, se termina con 'User not found'
+            console.error('User not found')
+            res.send({
+                status: 'bad',
+                result: 'User not found',
+                match: false
+            })
+        }
+
+    } catch(err) {
+        console.error('Error finding user')
+        res.send({
+            status: 'error',
+            result: 'Error finding user',
+            match: null
+        })
+    }
 })
 
 app.post('/users/existingEmail', async (req, res) => {
@@ -537,7 +586,7 @@ app.put('/requestNewPassword', async (req, res) => {
                         from: '"uWereThereSupport" <uwerethereservices@gmail.com>',
                         to: email,
                         subject: 'Your new password',
-                        html: `<h1>You have received a new password</h1><p>Use this new password to log in and change it when you want: <b>${randomPassword}</b></p>`
+                        html: `<h3>You have received a new password</h3><p>Use this new password to log in and change it when you want: <b>${randomPassword}</b></p>`
                     })
                         .then(() => console.log('email send with success'))
                         .catch(err => console.error('Error sending emil: ' + err))
@@ -568,62 +617,93 @@ app.put('/requestNewPassword', async (req, res) => {
 })
 
 app.put('/addNewComment', async (req, res) => {
-    const { publicationId, authId, comment } = req.body
+    const { publicationId, authId, authNickname, comment } = req.body
 
     const newComment = {
         author: authId,
         comment: comment
     }
 
-    await Comment.create({
-        author: authId,
-        comment: comment
-    })
-        .then(async newComment => {
-            await Publication.findByIdAndUpdate(publicationId, {
-                $push: {
-                    comments: newComment._id
-                }
+    try {
+
+        await Comment.create({
+            author: authId,
+            comment: comment
+        })
+            .then(async newComment => {
+                await Publication.findByIdAndUpdate(publicationId, {
+                    $push: {
+                        comments: newComment._id
+                    }
+                }).populate('author')
+                    .then(publication => {
+                        console.log('Publication comments updated with success')
+                        console.log(authNickname)
+                        console.log(publication.author.nickname)
+                        if (authId !== publication.author._id) {
+                            transporter.sendMail({
+                                from: '"uWereThereSupport" <uwerethereservices@gmail.com>',
+                                to: publication.author.email,
+                                subject: 'Someone left a comment',
+                                html: `<h3>Hey, ${publication.author.nickname}!</h3>
+                                       <p>The explorer <b>${authNickname}</b> left a comment in your publication <b>${publication.title}</b>!</p>`
+                            })
+                                .then(() => console.log('email send with success'))
+                                .catch(err => console.error('Error sending emil: ' + err))
+                        }
+                    })
+                    .catch(err => {
+                        console.error('An error has occurred during publication updating:', err)
+                    })
             })
-                .then(() => {
-                    console.log('Publication comments updated with success')
+            .then(() => {
+                console.log('Comment created with success')
+                res.send({
+                    result: 'Comment created with success'
                 })
-                .catch(err => {
-                    console.error('An error has occurred during publication updating')
+            })
+            .catch(err => {
+                console.error('An error has occurred creating new comment:\n' + err)
+                res.send({
+                    result: 'An error has occurred creating new comment:\n' + err
                 })
-        })
-        .then(() => {
-            console.log('Comment created with success')
-            res.send({
-                result: 'Comment created with success'
             })
-        })
-        .catch(err => {
-            console.error('An error has occurred creating new comment:\n' + err)
-            res.send({
-                result: 'An error has occurred creating new comment:\n' + err
-            })
-        })
+    } catch (err) {
+
+    }
+
 })
 
 app.put('/followUser', async (req, res) => {
     const { authId, followedId } = req.body
     
     try {
+        let authUser = null
+        let followedUser = null
         await Promise.all([
-            User.findByIdAndUpdate(authId, {
+            authUser = await User.findByIdAndUpdate(authId, {
                 $push: {
                     followed: followedId
                 }
             }),
-            User.findByIdAndUpdate(followedId, {
+            followedUser = await User.findByIdAndUpdate(followedId, {
                 $push: {
                     followers: authId
                 }
             })
         ])
-
+        console.log('Auth user that follows:', authUser)
+        console.log('Followed user:', followedUser)
         console.log('Followers and followed updated successfully')
+        transporter.sendMail({
+            from: '"uWereThereSupport" <uwerethereservices@gmail.com>',
+            to: followedUser.email,
+            subject: 'Someone follows you',
+            html: `<h3>Hey, ${followedUser.nickname}!</h3>
+                   <p>The explorer <b>${authUser.nickname}</b> stated to follow you!</p>`
+        })
+            .then(() => console.log('email send with success'))
+            .catch(err => console.error('Error sending emil: ' + err))
         res.send({
             status: 'ok',
             result: 'New followed added'
@@ -720,10 +800,10 @@ app.post('/verificationCode', async (req, res) => {
     const encodedCode = await bcrypt.hash(randomCode, SALT)
     console.log(await bcrypt.compare(randomCode, encodedCode))
     transporter.sendMail({
-        from: '"Verify your email" <jcostosmolina@gmail.com>',
+        from: '"uWereThereSupport" <uwerethereservices@gmail.com>',
         to: email,
-        subject: 'Verify your email',
-        html: `<h1>Verify your email</h1><p>Your verification code is <b>${randomCode}</b></p>`
+        subject: 'Verify your account',
+        html: `<h3>Verify your account</h3><p>Your verification code is <b>${randomCode}</b></p>`
     })
         .then(() => console.log('email send with success'))
         .catch(err => console.error('Error sending emil: ' + err))
@@ -758,8 +838,17 @@ app.post('/verifyCode', async (req, res) => {
                     verified: true
                 }
             })
-                .then(() => {
+                .then(user => {
                     console.log('User verify with success')
+                    transporter.sendMail({
+                        from: '"uWereThereSupport" <uwerethereservices@gmail.com>',
+                        to: email,
+                        subject: 'Account verified',
+                        html: `<h3>Your account has been verified successfully</h3>
+                               <p>Wellcome, ${user.nickname}!</p> We are waiting for you to see what you discover in your journey!`
+                    })
+                        .then(() => console.log('email send with success'))
+                        .catch(err => console.error('Error sending emil: ' + err))
                 })
                 .catch(err => {
                     console.error('Error:', err)
@@ -779,28 +868,37 @@ app.post('/verifyCode', async (req, res) => {
 })
 
 app.post('/addRate', async (req, res) => {
-    const { publicationId, author, rate } = req.body
+    const { publicationId, authId, authNickname, rate } = req.body
 
     const publicationRates = await Publication.findById(publicationId, 'rates')
     console.log(publicationRates)
     if (publicationRates.rates) {
         const authors = publicationRates.rates.map(rateItem => rateItem.author.toString())
         console.log(authors)
-        console.log(authors.includes(author))
-        if (!authors.includes(author)) {
+        console.log(authors.includes(authId))
+        if (!authors.includes(authId)) {
             // create
             console.log('create')
             const newRate = {
-                author: author,
+                author: authId,
                 rate: rate
             }
             await Publication.findByIdAndUpdate(publicationId, {
                 $push: {
                     rates: newRate
                 }
-            })
-                .then(() => {
+            }).populate('author')
+                .then(publication => {
                     console.log('New rate added')
+                    transporter.sendMail({
+                        from: '"uWereThereSupport" <uwerethereservices@gmail.com>',
+                        to: publication.author.email,
+                        subject: 'Someone rated a publication!',
+                        html: `<h3>Hey, ${publication.author.nickname}!</h3>
+                               <p>The explorer <b>${authNickname}</b> rated your publication <b>${publication.title}</b> with <b>${rate} stars</b>!</p>`
+                    })
+                        .then(() => console.log('email send with success'))
+                        .catch(err => console.error('Error sending emil: ' + err))
                 })
                 .catch(err => {
                     res.send({
@@ -812,7 +910,7 @@ app.post('/addRate', async (req, res) => {
             console.log('update')
             await Publication.findOneAndUpdate({
                 _id: publicationId,
-                'rates.author': author
+                'rates.author': authId
             }, {
                 $set: { 'rates.$.rate': rate }
             })

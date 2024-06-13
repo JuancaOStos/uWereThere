@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import { Text, TouchableOpacity, StyleSheet } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { useTranslation } from "react-i18next";
 import { FontAwesome5 } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Feather } from '@expo/vector-icons';
@@ -16,7 +17,8 @@ const Tab = createBottomTabNavigator()
 // TODO: estilar
 // TODO: documentar
 export default function Main() {
-  const { handleAuth } = useContext(AppContext)
+  const { t } = useTranslation()
+  const { handleAuth, translateToast } = useContext(AppContext)
   
     return(
         <Tab.Navigator
@@ -34,12 +36,12 @@ export default function Main() {
             }}
         >
             <Tab.Screen 
-                name="Locations"
+                name={t('nav_bar.locations')}
                 component={LocationListStack}
                 options={{
-                  tabBarLabel: 'Locations',
+                  tabBarLabel: t('nav_bar.locations'),
                   tabBarLabelStyle: {
-                    fontSize: 15
+                    fontSize: 13
                   },
                   unmountOnBlur: true,
                   tabBarIcon: ({ color, size }) => (
@@ -48,12 +50,12 @@ export default function Main() {
                 }}
             />
             <Tab.Screen
-                name="Users"
+                name={t('nav_bar.users')}
                 component={UserListStack}
                 options={{
-                  tabBarLabel: 'Users',
+                  tabBarLabel: t('nav_bar.users'),
                   tabBarLabelStyle: {
-                    fontSize: 15
+                    fontSize: 13
                   },
                   unmountOnBlur: true,
                   tabBarIcon: ({ color, size }) => (
@@ -62,24 +64,24 @@ export default function Main() {
                 }}
             />
             <Tab.Screen
-                name="New location"
+                name={t('nav_bar.new_location')}
                 component={NewLocation}
                 options={{
-                  tabBarLabel: 'New location',
+                  tabBarLabel: t('nav_bar.new_location'),
                   tabBarLabelStyle: {
-                    fontSize: 12
+                    fontSize: 10
                     },
                   unmountOnBlur: true,
                   tabBarIcon: ({ color, size }) => (
-                    <MaterialIcons name="add-location" size={30} color="black" />
+                    <MaterialIcons name="add-location" size={50} color="black" />
                     ),
                 }}
             />
             <Tab.Screen
-                name="Profile"
+                name={t('nav_bar.profile')}
                 component={AuthProfileView}
                 options={{
-                  tabBarLabel: 'Profile',
+                  tabBarLabel: t('nav_bar.profile'),
                   tabBarLabelStyle: {
                     fontSize: 15
                   },
@@ -90,10 +92,10 @@ export default function Main() {
                 }}
             />
             <Tab.Screen
-                name="Settings"
+                name={t('nav_bar.settings')}
                 component={ProfileSettingsStack}
                 options={{
-                  tabBarLabel: 'Settings',
+                  tabBarLabel: t('nav_bar.settings'),
                   tabBarLabelStyle: {
                     fontSize: 15
                   },

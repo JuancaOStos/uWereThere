@@ -1,5 +1,6 @@
 import { useContext } from "react";
 import { View, Text, TouchableHighlight, Image } from "react-native";
+import { useTranslation } from "react-i18next";
 import { AntDesign } from '@expo/vector-icons';
 import { Foundation } from '@expo/vector-icons';
 import { url } from "../../../../constants";
@@ -11,11 +12,12 @@ import { AppContext } from "../../../AppContext";
 // TODO: limpiar
 // TODO: documentar
 export default function LocationItem({ searchName, locationItem, handleNavigation, navigationDisabled  }) {
+    const { t } = useTranslation()
     const { url } = useContext(AppContext)
     const authorNickname = (locationItem.author)
         ? locationItem.author.nickname
         : '-nickname-'
-    const parsedRate = (locationItem.averageRate) ? locationItem.averageRate : 'Not rated'
+    const parsedRate = (locationItem.averageRate) ? locationItem.averageRate : t('user_profile.not_rated')
     const avatar = (locationItem.author.avatar)
         ? locationItem.author.avatar
         : 'https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png'

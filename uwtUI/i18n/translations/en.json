@@ -1,0 +1,218 @@
+{
+  "login": {
+      "do_you_want_to_join_us": "Do you want to join us?"
+  },
+  "forgot_password": {
+      "introduce_your_email_and_we_will_send_you_a_temporal_password": "Enter your email and we will send you a temporary password"
+  },
+  "sign_up": {
+      "introduce_an_email_and_password": "Enter an email and a password",
+      "email_between_10_and_40_characters_before": "Email between 10 and 40 characters before the",
+      "password_between_8_and_25_characters": "Password between 8 and 25 characters",
+      "do_you_already_have_an_account": "Do you already have an account?",
+      "choose_an_avatar": "Choose an avatar",
+      "how_do_you_want_to_be_called": "How do you want to be called?",
+      "nickname_between_2_and_25_characters": "Nickname between 2 and 25 characters"
+  },
+  "verification": {
+      "verify_your_account": "Verify your account",
+      "introduce_the_verification_code_send_to_your_email": "Enter the verification code sent to your email"
+  },
+  "location_details": {
+      "link_to_maps": "Link to Maps",
+      "comments": "Comments",
+      "comment_between_1_and_200_characters": "Comments between 1 and 200 characters"
+  },
+  "user_profile": {
+      "not_rated": "Not rated"
+  },
+  "new_location": {
+      "show_us_what_you_discovered": "Show us what you discovered",
+      "title_between_3_and_40_characters": "Title between 3 and 4 characters",
+      "description_between_10_and_200_characters": "Description between 10 and 200 characters"
+  },
+  "settings": {
+        "languages": "Languages",
+        "introduce_your_new_nickname": "Introduce tu nuevo nickname",
+        "introduce_your_password": "Introduce your password",
+        "introduce_your_new_password": "Introduce your new password",
+        "repeat_your_new_password": "Repeat your new password"
+  },
+  "nav_bar": {
+      "locations": "Locations",
+      "users": "Users",
+      "new_location": "New location",
+      "profile": "Profile",
+      "settings": "Settings"
+  },
+  "placeholders": {
+        "password": "password",
+        "new_password": "new password",
+        "repeat_password": "repeat password",
+        "repeat_new_password": "repeat new password",
+        "nickname": "nickname",
+        "new_nickname": "new nickname",
+        "search": "search",
+        "title": "title",
+        "description": "description",
+        "comment": "comment"
+    },
+  "buttons": {
+      "log_in": "Log in",
+      "sign_up": "Sign up",
+      "next": "Next",
+      "verify": "Verify",
+      "i_forgot_my_password": "I forgot my password",
+      "older": "Older",
+      "newer": "Newer",
+      "rate": "Rate",
+      "follow": "Follow",
+      "un_follow": "Unfollow",
+      "publications": "Publications",
+      "followers": "Followers",
+      "followed": "Followed",
+      "update_current_location": "Update current location",
+      "publish_location": "Publish location",
+      "change_nickname": "Change nickname",
+      "change_password": "Change password",
+      "espagnol": "Spanish",
+      "english": "English",
+      "request_new_password": "Request new password",
+      "change_my_nickname": "Change my nickname",
+      "change_my_password": "Change my password"
+  },
+  "toast": {
+      "sign_up": {
+          "invalid_email": {
+              "invalid_email": "Invalid email",
+              "please_introduce_a_valid_email": "Please introduce a valid email"
+          },
+          "existing_email": {
+              "existing_email": "Existing email",
+              "this_email_already_exists": "This email already exists"
+          },
+          "invalid_password": {
+              "invalid_password": "Invalid password",
+              "please_introduce_a_valid_password": "Please introduce a valid password"
+          },
+          "invalid_email_password": {
+              "invalid_email_and_password": "Invalid email and password",
+              "please_introduce_a_valid_email_and_password": "Please introduce a valid email and password"
+          },
+          "invalid_repeat_password": {
+              "password_doesnt_match": "Passwords don't match",
+              "the_fields_password_and_repeat_password_doesnt_match": "The fields password and repeat password don't match"
+          },
+          "invalid_nickname": {
+              "invalid_nickname": "Invalid nickname",
+              "please_introduce_a_valid_nickname": "Please introduce a valid nickname"
+          },
+          "existing_nickname": {
+              "existing_nickname": "Existing nickname",
+              "this_nickname_already_exists": "This nickname already exists"
+          },
+          "sign_up_success": {
+              "sign_up_success": "Sign up success",
+              "now_verify_your_account": "Now verify your account"
+          },
+          "verification_code_sent": {
+              "verification_code_sent": "Verification code sent",
+              "check_you_email_and_input_the_code_sent": "Check your email and input the code sent"
+          },
+          "account_verified": {
+              "account_verified": "Account verified",
+              "we_are_waiting_for_you": "We are waiting for you"
+          }
+      },
+      "log_in": {
+          "invalid_credentials": {
+              "invalid_credentials": "Invalid credentials",
+              "the_credentials_introduced_are_incorrect": "The credentials introduced are incorrect"
+          },
+          "email_not_found": {
+              "email_not_found": "Email not found",
+              "the_email_introduced_doesnt_exists": "The email introduced doesn't exist"
+          },
+          "forgot_password": {
+              "new_password_established": "New password established",
+              "check_the_new_password_in_your_email_sent": "Check the new password in your email sent"
+          }
+      },
+      "location_details": {
+          "location_rated": {
+              "perfect": "Perfect",
+              "this_explorer_thanks_you": "This explorer thanks you"
+          },
+          "invalid_comment": {
+              "invalid_comment": "Invalid comment",
+              "please_introduce_a_valid_comment": "Please introduce a valid comment"
+          }
+      },
+      "user_profile": {
+          "followed": {
+              "followed": "Followed",
+              "you_followed_this_user": "You followed this user"
+          },
+          "avatar_changed": {
+              "avatar_changed": "Avatar changed",
+              "what_a_beautiful_pic": "What a beautiful picture"
+          }
+      },
+      "new_location": {
+          "invalid_title": {
+              "invalid_title": "Invalid title",
+              "please_introduce_a_valid_title": "Please introduce a valid title"
+          },
+          "invalid_description": {
+              "invalid_description": "Invalid description",
+              "please_introduce_a_valid_description": "Please introduce a valid description"
+          },
+          "invalid_title_description": {
+              "invalid_title_and_description": "Invalid title and description",
+              "please_introduce_a_valid_title_and_description": "Please introduce a valid title and description"
+          },
+          "new_location_success": {
+              "new_location": "New location",
+              "thanks_for_sharing": "Thanks for sharing"
+          }
+      },
+      "settings": {
+          "password_doesnt_match": {
+              "incorrect_password": "Incorrect password",
+              "the_password_introduced_is_incorrect": "The password introduced is incorrect"
+          },
+          "invalid_password": {
+              "invalid_password": "Invalid password",
+              "please_introduce_a_valid_password": "Please introduce a valid password"
+          },
+          "invalid_repeat_password": {
+            "invalid_repeat_password": "The password isn't the same",
+            "the_fields_password_and_repeat_password_doesnt_match": "The fields password and repeat password doesnt match"
+          },
+          "new_password": {
+              "new_password": "New password",
+              "new_password_established": "New password established"
+          },
+          "invalid_nickname": {
+              "invalid_nickname": "Invalid nickname",
+              "please_introduce_a_valid_nickname": "Please introduce a valid nickname"
+          },
+          "new_nickname": {
+              "new_nickname": "New nickname",
+              "it_suits_you_great": "It suits you great"
+          }
+      },
+      "internal_error": {
+        "server_error": "Server error",
+        "there_are_problems_with_server": "There are problems with server"
+    },
+    "connection_error": {
+        "connection_error": "Connection error",
+        "there_are_problems_with_the_connection": "There are problems with the connection"
+    },
+    "unexpected_error": {
+        "unexpected_error": "Unexpected error",
+        "there_is_an_unexpected_error": "There is an unexpected error"
+    }
+    }
+}

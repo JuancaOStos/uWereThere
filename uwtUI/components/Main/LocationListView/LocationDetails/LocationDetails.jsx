@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from "react"
 import { Text, View, TextInput, ScrollView, StyleSheet, TouchableOpacity, Button, Image, Linking } from "react-native"
+import { useTranslation } from "react-i18next";
 import { AntDesign } from '@expo/vector-icons';
 import RatePanel from "./RatePanel/RatePanel.jsx";
 import CommentItem from "./CommentItem/CommentItem";
@@ -8,6 +9,7 @@ import { Feather } from '@expo/vector-icons';
 import Toast from "react-native-toast-message";
 import { url, REGEX, TOAST_MESSAGES } from '../../../../constants.js';
 import { AppContext } from "../../../AppContext.jsx";
+import { getAuthData } from "../../../../utils.js";
 import axios from 'axios';
 
 // TODO: estilar
@@ -15,8 +17,12 @@ import axios from 'axios';
 // TODO: limpiar
 // TODO: documentar
 export default function LocationDetails({ route }) {
-    const { token, url } = useContext(AppContext)
+    const { t } = useTranslation()
+    const { token, url, translateToast } = useContext(AppContext)
     const { locationItem } = route.params
+    const [authData, setAuthData] = useState({
+        nickname: ''
+    })
     const [comments, setComments] = useState([])
     const [newComment, setNewComment] = useState('')
     console.log(locationItem)
@@ -26,18 +32,19 @@ export default function LocationDetails({ route }) {
 
     const handleNewComment = (value) => setNewComment(value)
 
-    
     const handleNewCommentButton = async() => {
         if (REGEX.COMMENT.test(newComment)) {
             await axios.put(`${url}/addNewComment`, {
                 publicationId: locationItem._id,
                 authId: token._id,
+                authNickname: authData.nickname,
                 comment: newComment
             })
             getAllComments()
             setNewComment('')
         } else {
-            Toast.show(TOAST_MESSAGES.LOCATION_DETAILS.INVALID_COMMENT)
+            const translatedToast = translateToast(TOAST_MESSAGES.LOCATION_DETAILS.INVALID_COMMENT, t)
+            Toast.show(translatedToast)
         }
     }
     
@@ -57,12 +64,19 @@ export default function LocationDetails({ route }) {
     console.log(`${locationItem.author._id} vs ${token._id}`)
 
     useEffect(() => {
+        (async () => {
+            const authData = await getAuthData(url, token._id)
+            setAuthData(authData)
+        })()
+    }, [])
+
+    useEffect(() => {
         getAllComments()
     }, [])
 
     const parsedRate = (locationItem.rates.length !== 0)
         ? locationItem.averageRate
-        : 'Not rated yet'
+        : t('user_profile.not_rated')
 
     return(
         <>
@@ -112,15 +126,15 @@ export default function LocationDetails({ route }) {
                     source={{ uri: url + locationItem.pic}}/>
                     <Text style={styles.bodyText}>{locationItem.description}</Text>
                     {(locationItem.author._id !== token._id) && <RatePanel locationItem={locationItem}/>}
-                    <Text style={styles.bodyText}>Link to Maps</Text>
+                    <Text style={styles.bodyText}>{t('location_details.link_to_maps')}</Text>
                     <TouchableOpacity
                         style={styles.mapsButton}
 
                         onPress={() => {
-                            Linking.canOpenurl(`geo:0,0?q=${locationItem.location.latitude},${locationItem.location.longitude}(${locationItem.title})`)
+                            Linking.canOpenURL(`geo:0,0?q=${locationItem.location.latitude},${locationItem.location.longitude}(${locationItem.title})`)
                                 .then((supported) => {
                                     if (supported) {
-                                        Linking.openurl(`geo:$0,0?q=${locationItem.location.latitude},${locationItem.location.longitude}(${locationItem.title})`)
+                                        Linking.openURL(`geo:$0,0?q=${locationItem.location.latitude},${locationItem.location.longitude}(${locationItem.title})`)
                                     } else {
                                         Alert.alert('Error')
                                     }
@@ -140,7 +154,7 @@ export default function LocationDetails({ route }) {
                             </View>
                         </View>
                     </TouchableOpacity>
-                    <Text style={styles.bodyText}>Comments ({locationItem.comments.length})</Text>
+                    <Text style={styles.bodyText}>{t('location_details.comments')} ({locationItem.comments.length})</Text>
                     <View style={{
                         flexDirection: 'row',
                         alignItems: 'center',
@@ -165,7 +179,7 @@ export default function LocationDetails({ route }) {
                             <Feather name="send" size={30} color="black" />
                         </TouchableOpacity>
                     </View>
-                    <Text style={{ color: 'grey', alignSelf: 'center', marginBottom: 30 }}>Introduce a comment between 1 and 200 characters</Text>
+                    <Text style={{ color: 'grey', alignSelf: 'center', marginBottom: 30 }}>{t('location_details.comment_between_1_and_200_characters')}</Text>
                     {
                         comments.map(comment => {
                             return (

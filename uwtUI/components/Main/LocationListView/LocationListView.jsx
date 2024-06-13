@@ -2,6 +2,7 @@ import { useState, useEffect, useContext } from "react";
 import { View, Button, Text, TouchableOpacity, TextInput, StyleSheet, FlatList } from "react-native";
 import axios from "axios";
 import LocationItem from "./LocationItem/LocationItem";
+import { useTranslation } from "react-i18next";
 import { url } from '../../../constants.js'
 import { sortElements } from "../../../utils.js";
 import { AntDesign } from '@expo/vector-icons';
@@ -19,6 +20,7 @@ import { AppContext } from "../../AppContext.jsx";
 // TODO: limpiar
 // TODO: documentar
 export default function LocationListView({ navigation }) {
+    const { t } = useTranslation()
     const { url } = useContext(AppContext)
     const [searchName, setSearchName] = useState('')
     const [locations, setLocations] = useState([])
@@ -79,7 +81,7 @@ export default function LocationListView({ navigation }) {
                     <TextInput style={{
                         paddingVertical: 5,
                         paddingStart: 10
-                    }} placeholder="search" onChangeText={handleSearchName}></TextInput>
+                    }} placeholder={t('placeholders.search')} onChangeText={handleSearchName}></TextInput>
                 </View>
                 <View style={styles.filterSection}>
                     <TouchableOpacity
@@ -92,7 +94,7 @@ export default function LocationListView({ navigation }) {
                         }}
                     >
                         <View >
-                            <Text>Older</Text>
+                            <Text>{t('buttons.older')}</Text>
                         </View>
                     </TouchableOpacity>
                     <TouchableOpacity
@@ -105,7 +107,7 @@ export default function LocationListView({ navigation }) {
                         }}
                     >
                         <View>
-                            <Text>Newer</Text>
+                            <Text>{t('buttons.newer')}</Text>
                         </View>
                     </TouchableOpacity>
                     <TouchableOpacity

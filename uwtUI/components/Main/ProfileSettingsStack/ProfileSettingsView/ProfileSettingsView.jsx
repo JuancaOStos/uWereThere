@@ -1,5 +1,7 @@
 import { useState, useContext } from "react";
 import { View, Text, TouchableOpacity, StyleSheet, Modal } from "react-native";
+import i18n, { resources } from "../../../../i18n/i18n";
+import { useTranslation } from "react-i18next";
 import { AppContext } from "../../../AppContext";
 
 // TODO: añadir cambio de contraseña
@@ -9,6 +11,7 @@ import { AppContext } from "../../../AppContext";
 // TODO: estilar
 // TODO: documentar
 export default function ProfileSettingsView({ navigation }) {
+    const { t } = useTranslation()
     const [isVisible, setIsVisible] = useState(false)
     const { handleAuth, url } = useContext(AppContext)
 
@@ -24,22 +27,24 @@ export default function ProfileSettingsView({ navigation }) {
                 style={styles.settingsButton}
                 onPress={() => navigation.navigate('ChangeNickname')}
             >
-                <Text style={{ fontSize: 20 }}>Cambiar nickname</Text>
+                <Text style={{ fontSize: 20 }}>{t('buttons.change_nickname')}</Text>
             </TouchableOpacity>
             <TouchableOpacity
                 style={styles.settingsButton}
                 onPress={() => navigation.navigate('ChangePassword')}
             >
-                <Text style={{ fontSize: 20 }}>Cambiar contraseña</Text>
+                <Text style={{ fontSize: 20 }}>{t('buttons.change_password')}</Text>
             </TouchableOpacity>
-            <Text style={styles.sectionTitle}>Languages</Text>
+            <Text style={styles.sectionTitle}>{t('Languages')}</Text>
             <View style={{ flexDirection: 'row' }}>
                 <TouchableOpacity
+                    onPress={() => i18n.changeLanguage('es')}
                     style={styles.settingsButton}
                 >
                     <Text style={{ fontSize: 20 }}>Español</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
+                    onPress={() => i18n.changeLanguage('en')}
                     style={styles.settingsButton}
                 >
                     <Text style={{ fontSize: 20 }}>English</Text>
