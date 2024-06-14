@@ -9,7 +9,7 @@ import { REGEX, TOAST_MESSAGES } from "../../../../constants";
 export default function ChangeNickname() {
     const { t } = useTranslation()
     const [newNickname, setNewNickname] = useState('')
-    const { token, url } = useContext(AppContext)
+    const { token, url, translateToast } = useContext(AppContext)
 
     const handleNewNickname = (value) => setNewNickname(value)
 
@@ -20,7 +20,8 @@ export default function ChangeNickname() {
         })
             .then(res => {
                 console.log(res.data.result)
-                Toast.show(TOAST_MESSAGES.SETTINGS.NEW_NICKNAME)
+                const translatedToast = translateToast(TOAST_MESSAGES.SETTINGS.NEW_NICKNAME, t)
+                Toast.show(translatedToast)
             })
             .catch(err => {
                 console.error(err)
@@ -36,12 +37,15 @@ export default function ChangeNickname() {
             if (res.data.status === 'ok') {
                 changeNickname()
             } else if (res.data.status === 'bad') {
-                Toast.show(TOAST_MESSAGES.SIGN_UP.EXISTING_NICKNAME)
+                const translatedToast = translateToast(TOAST_MESSAGES.SIGN_UP.EXISTING_NICKNAME, t)
+                Toast.show(translatedToast)
             } else if (res.data.status === 'error') {
-                Toast.show(TOAST_MESSAGES.UNEXPECTED_ERROR)
+                const translatedToast = translateToast(TOAST_MESSAGES.UNEXPECTED_ERROR, t)
+                Toast.show(translatedToast)
             }
         } else {
-            Toast.show(TOAST_MESSAGES.SIGN_UP.INVALID_NICKNAME)
+            const translatedToast = translateToast(TOAST_MESSAGES.SIGN_UP.INVALID_NICKNAME, t)
+            Toast.show(translatedToast)
         }
     }
 

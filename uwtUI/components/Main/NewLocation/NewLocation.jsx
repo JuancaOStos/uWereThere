@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from "react";
-import { View, Text, TextInput, Button, TouchableOpacity, Image, StyleSheet, Linking } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, Linking, ActivityIndicator } from "react-native";
 import axios from "axios";
 import * as Location from 'expo-location'
 import * as ImagePicker from 'expo-image-picker'
@@ -18,6 +18,7 @@ import { useTranslation } from "react-i18next";
 export default function NewLocation() {
     const { t } = useTranslation()
     const { token, url, translateToast } = useContext(AppContext)
+    const [loading, setLoading] = useState(false)
     const [image, setImage] = useState({
         uri: `${url}/public/images/pictureLogo.png`,
         width: null,
@@ -111,11 +112,11 @@ export default function NewLocation() {
             console.error('Failed to upload image')
             return
         }
-
+        setLoading(true)
         const newLocation = {
             location: {
-                latitude: location.latitude + 0.1,
-                longitude: location.longitude + 0.1
+                latitude: location.latitude,
+                longitude: location.longitude
             },
             title: title,
             description: description,
@@ -128,6 +129,14 @@ export default function NewLocation() {
                 if (res.data.status === 'ok') {
                     const translatedToast = translateToast(TOAST_MESSAGES.NEW_LOCATION.NEW_LOCATION_SUCCESS, t)
                     Toast.show(translatedToast)
+                    setImage({
+                        uri: url + '/public/images/pictureLogo.png',
+                        width: null,
+                        height: null
+                    })
+                    handleTitle('')
+                    handleDescription('')
+                    setLoading(false)
                 } else if (res.data.status === 'error') {
                     const translatedToast = translateToast(TOAST_MESSAGES.UNEXPECTED_ERROR, t)
                     Toast.show(translatedToast)
@@ -175,6 +184,13 @@ export default function NewLocation() {
         setLocation(currentLocation)
     }
 
+    const buttonColor = (!title || !description || !imagePicked || loading)
+        ? 'lightgrey'
+        : 'lightblue'
+    
+    const buttonLoadingLabel = (!loading)
+        ? (<Text>{t('buttons.publish_location')}</Text>)
+        : (<ActivityIndicator style={styles.spinner} size={'large'}/>)
 
     useEffect(() => {
         getCurrentLocation()
@@ -214,9 +230,9 @@ export default function NewLocation() {
                         <Entypo name="camera" size={40} color="black" />
                     </TouchableOpacity>
                     
-                    <TextInput onChangeText={handleTitle} placeholder={t('placeholders.title')} style={styles.textBoxTitle} />
+                    <TextInput onChangeText={handleTitle} value={title} placeholder={t('placeholders.title')} style={styles.textBoxTitle} />
                     <Text style={{ color: 'grey', marginBottom: 10 }}>{t('new_location.title_between_3_and_40_characters')}</Text>
-                    <TextInput onChangeText={handleDescription} placeholder={t('placeholders.description')} style={styles.textBoxTitle} multiline/>
+                    <TextInput onChangeText={handleDescription} value={description} placeholder={t('placeholders.description')} style={styles.textBoxTitle} multiline/>
                     <Text style={{ color: 'grey', marginBottom: 20 }}>{t('new_location.description_between_10_and_200_characters')}</Text>
 
                     <TouchableOpacity
@@ -230,36 +246,35 @@ export default function NewLocation() {
                         style={styles.mapsButton}
 
                         onPress={() => {
-                            Linking.canOpenurl(`geo:0,0?q=${location.latitude},${location.longitude}(${title})`)
+                            Linking.canOpenURL(`geo:0,0?q=${location.latitude},${location.longitude}(${title})`)
                                 .then((supported) => {
                                     if (supported) {
-                                        Linking.openurl(`geo:$0,0?q=${location.latitude},${location.longitude}(${title})`)
+                                        Linking.openURL(`geo:$0,0?q=${location.latitude},${location.longitude}(${title})`)
                                     } else {
-                                        Alert.alert('Error')
+                                        alert('Error')
                                     }
                                 })
-                                .catch(err => Alert.alert('Error'))
+                                .catch(err => alert('Error'))
                         }}
                         disabled={(!title)}
                     >
-                        <View style={{ flexDirection: 'row' }}>
+                        <View style={{ flexDirection: 'row', alignSelf: 'center' }}>
                             <View style={{ alignSelf: 'center', alignItems: 'flex-start' }}>
                                 <MaterialCommunityIcons name="google-maps" size={40} color="black" />
                             </View>
                             <Text style={{ alignSelf: 'center', marginRight: 10 }}>{title}</Text>
-                            <View>
-                                <Text>lat:{location.latitude}</Text>
-                                <Text>lon:{location.longitude}</Text>
-                            </View>
                         </View>
                     </TouchableOpacity>
                     )}
                     <TouchableOpacity
-                        style={styles.button}
-                        disabled={(!title || !description || !imagePicked)}
+                        style={{ 
+                            ...styles.button,
+                            backgroundColor: buttonColor
+                         }}
+                        disabled={(!title || !description || !imagePicked || loading)}
                         onPress={checkTitleDescription}
                     >
-                        <Text>{t('buttons.publish_location')}</Text>
+                        {buttonLoadingLabel}
                     </TouchableOpacity>
                 </View>
             </View>
@@ -286,10 +301,9 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         paddingVertical: 5,
         paddingHorizontal: 10,
-        width: 350,
         borderRadius: 20,
-        marginBottom: 20,
-        backgroundColor: '#8BEF7F'
+        backgroundColor: '#8BEF7F',
+        marginBottom: 30
     },
     textBoxTitle: {
         marginBottom: 0,
@@ -301,9 +315,20 @@ const styles = StyleSheet.create({
     },
     button: {
         backgroundColor: 'lightblue',
+        justifyContent: 'center',
+        alignItems: 'center',
         borderRadius: 10,
         paddingHorizontal: 10,
         paddingVertical: 5,
-        marginBottom: 20
-      }
+        marginBottom: 10
+      },
+    loadingView: {
+        position: 'relative',
+        backgroundColor: 'grey',
+        borderColor: 'black',
+        top: 40,
+        borderRadius: 10,
+        width: 100,
+        height: 100
+    },
   });

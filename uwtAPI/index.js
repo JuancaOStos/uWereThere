@@ -1,8 +1,3 @@
-// TODO: limpiar profundo
-// TODO: quitar endpoints innecesarios
-// TODO: modificar contraseña de la BD
-// TODO: reorganizar y normalizar los endpoints
-// TODO: documentar
 const express = require('express')
 const cors = require('cors')
 const bcrypt = require('bcrypt')
@@ -21,12 +16,12 @@ const app = express()
 const mongoose = require('mongoose')
 const { User, Publication, Comment } = require('./dbModels.js')
 const multer = require('multer')
-const { URL, MAILTRAP_USERNAME, MAILTRAP_PASSWORD, APP_PASSWORD } = require('../uwtUI/constants.js')
+const { APP_PASSWORD } = require('../uwtUI/constants.js')
 
 const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
     port: 465,
-    secure: true, // Use `true` for port 465, `false` for all other ports
+    secure: true,
     auth: {
       user: "uwerethereservices@gmail.com",
       pass: APP_PASSWORD,
@@ -78,16 +73,6 @@ app.post('/upload', upload.single('file'), (req, res) => {
     res.send({
         url: fileUrl
     })
-    // if (req.file) {
-    //     console.log(req.file)
-    //     res.send({
-    //         result: 'Image uploaded successfully', file: req.file
-    //     })
-    // } else {
-    //     res.status(400).send({
-    //         result: 'No file uploaded'
-    //     })
-    // }
 })
 
 app.post('/checkNickname', async (req, res) => {
@@ -160,11 +145,7 @@ app.post('/login', async (req, res) => {
     // console.log('Lo muestro', email, password)
 
     const existingUser = await User.findOne({ email: email })
-        .catch(() => {
-            res.send({
-                token: null
-            })
-        })
+
     console.log(existingUser)
     if (existingUser) {
         const match = await bcrypt.compare(password, existingUser.password)
@@ -175,7 +156,7 @@ app.post('/login', async (req, res) => {
                 exp: new Date().getDate() + DAY_IN_SEC
 
             }, SWORD)
-            res.send({
+            return res.send({
                 status: 'ok',
                 result: 'User logged with success',
                 token: token
@@ -183,21 +164,21 @@ app.post('/login', async (req, res) => {
         } else {
             if (!match) {
                 console.error('Password doesn\'t match')
-                res.send({
+                return res.send({
                     status: 'error',
                     result: 'Password doesn\'t match'
                 })
             }
             if (!existingUser.verified) {
                 console.error('User not verified')
-                res.send({
+                return res.send({
                     status: 'error',
                     result: 'User not verified'
                 })
             }
         }
     } else {
-        res.send({
+        return res.send({
             status: 'bad',
             result: 'The user doesn\'t exist'
         })
@@ -427,15 +408,11 @@ app.post('/getCommentsById', async (req, res) => {
 
     await Publication.findById(publicationId, 'comments').populate({
         path: 'comments',
-        options: {
-            sort: { 'createdAt': -1 }
-        },
         populate: {
             path: 'author',
             select: 'nickname avatar'
         }
     })
-    // .sort({ 'comments.createdAt': -1 })
     .then(data => {
             res.send({
                 result: data

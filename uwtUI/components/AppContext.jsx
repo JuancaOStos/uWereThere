@@ -12,7 +12,7 @@ export default function AppProvider({ children, auth, handleAuth }) {
     const handleAuthData = (value) => setToken(value)
     const [userPublications, setUserPublications] = useState(null)
     const [url, setUrl] = useState('')
-    const handleUrl = (value) => setUrl('http://' + value + ':3000')
+    const handleUrl = (value) => setUrl(value)
     const translateToast = (toastData, t) => {
         const translatedToast = {
             ...toastData,

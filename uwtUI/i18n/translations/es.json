@@ -18,6 +18,10 @@
         "verify_your_account": "Verifica tu cuenta",
         "introduce_the_verification_code_send_to_your_email": "Introduce el código de verificación enviado a tu email"
     },
+    "there_are_no_users": "no hay usuarios",
+    "there_are_no_followers": "no hay seguidores",
+    "there_are_no_followed": "no hay seguidos",
+    "there_are_no_locations": "no hay ubicaciones",
     "location_details": {
         "link_to_maps": "Enlace a Maps",
         "comments": "Comentarios",

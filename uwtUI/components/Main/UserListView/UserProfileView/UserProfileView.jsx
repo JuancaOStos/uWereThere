@@ -9,7 +9,7 @@ import UserItem from "../UserItem/UserItem.jsx";
 import { AntDesign } from '@expo/vector-icons';
 import Toast from "react-native-toast-message";
 import { USER_LOGO, TOAST_MESSAGES } from "../../../../constants.js";
-import { sortElements } from "../../../../utils.js";
+import { sortElements, getAuthData } from "../../../../utils.js";
 
 // TODO: estilar
 // TODO: cambiar FlatList por ScrollView
@@ -30,6 +30,9 @@ export default function UserProfileView({ route }) {
     const [followers, setFollowers] = useState([])
     const [listView, setListView] = useState('publications')
     const { token, url, translateToast } = useContext(AppContext)
+    const [authData, setAuthData] = useState({
+        nickname: ''
+    })
     const [authFriend, setAuthFriend] = useState(false)
     const [sortData, setSortData] = useState({
         sortField: 'createdAt',
@@ -40,6 +43,13 @@ export default function UserProfileView({ route }) {
     const avatar = (userItem.avatar)
         ? userItem.avatar
         : USER_LOGO
+
+    useEffect(() => {
+        ( async () => {
+            const authData = await getAuthData(url, token._id)
+            setAuthData(authData)
+        })()
+    }, [])
 
     const rateLabel = (rate > 0)
         ? rate
@@ -162,6 +172,7 @@ export default function UserProfileView({ route }) {
                     searchName={searchName}
                     locationItem={location}
                     navigationDisabled={true}
+                    fromProfileView={true}
                 />
             )
         })
@@ -296,7 +307,7 @@ export default function UserProfileView({ route }) {
             <View style={{
                 alignSelf: 'flex-start'
             }}>
-                <TouchableOpacity
+                {userItem.nickname !== authData.nickname && <TouchableOpacity
                     style={{
                         backgroundColor: 'lightblue',
                         borderRadius: 10,
@@ -307,7 +318,7 @@ export default function UserProfileView({ route }) {
                     onPress={followButtonFunction}
                 >
                     <Text style={{ fontSize: 20 }}>{followButtonText}</Text>
-                </TouchableOpacity>
+                </TouchableOpacity>}
             </View>
             <View>
                 <View style={{
@@ -380,6 +391,12 @@ export default function UserProfileView({ route }) {
                     </TouchableOpacity>
                 </View>
             </View>
+            {(listView === 'publications' && publications.length === 0)
+                && <Text style={{ alignSelf: 'center', marginTop: 50, fontSize: 20 }}>{t('there_are_no_locations')}</Text>}
+            {(listView === 'followers' && followers.length === 0)
+                && <Text style={{ alignSelf: 'center', marginTop: 50, fontSize: 20 }}>{t('there_are_no_followers')}</Text>}
+            {(listView === 'followed' && followed.length === 0)
+                && <Text style={{ alignSelf: 'center', marginTop: 50, fontSize: 20 }}>{t('there_are_no_followed')}</Text>}
             {listToShow}
         </View>
         </ScrollView>

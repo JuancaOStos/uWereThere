@@ -40,7 +40,7 @@ export default function UserItem({ searchName, userItem, handleNavigation, navig
     }, [])
 
     if (userItem.nickname.toLowerCase().includes(searchName.toLowerCase())
-        && userItem.nickname !== authData.nickname) {
+        && userItem.verified) {
         return(
             <TouchableHighlight
                 activeOpacity={0.6}

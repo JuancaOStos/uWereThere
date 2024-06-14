@@ -101,7 +101,6 @@ export default function Login({ navigation }) {
       <TextInput
         style={styles.input}
         onChangeText={handleUrl}
-        keyboardType='numeric'
         placeholder='Introduce tu dirección IPv4'/>
 
       <Text
@@ -139,7 +138,6 @@ export default function Login({ navigation }) {
       >
         <Text style={{ color: 'green', marginTop: 10, fontSize: 17 }}>{t('buttons.i_forgot_my_password')}</Text>
       </TouchableOpacity>
-      <Text>{errorMessage}</Text>
       <Text>{userEmail}</Text>
     </View>
   );

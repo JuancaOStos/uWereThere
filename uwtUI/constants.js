@@ -6,13 +6,17 @@ const MAILTRAP_PASSWORD = "9d49257b958711"
 const APP_PASSWORD = "pxhx azii sbbn guld"
 const REGEX = {
     EMAIL: /^[^\s@]{5,40}@[^\s@]+\.[^\s@]+$/,
-    PASSWORD: /^[a-zA-Z0-9]{8,20}$/,
-    NICKNAME: /^[a-zA-ZÀ-ÿ0-9]{2,25}$/,
-    TITLE: /^[a-zA-ZÀ-ÿ0-9 ]{3,40}$/,
-    DESCRIPTION: /^[a-zA-ZÀ-ÿ0-9 ]{10,200}$/,
-    COMMENT: /^[a-zA-ZÀ-ÿ0-9 ]{1,200}$/
+    PASSWORD: /^[\p{L}\p{N} ]{8,20}$/u,
+    NICKNAME: /^[\p{L}\p{N} ]{2,25}$/u,
+    TITLE: /^[\p{L}\p{N}\p{P} ]{3,40}$/u,
+    DESCRIPTION: /^[\p{L}\p{N}\p{P} ]{10,200}$/u,
+    COMMENT: /^[\p{L}\p{N}\p{P} ]{1,200}$/u
 }
+{8,20}
+{2,25}
 
+{10,200}
+{1,200}
 const TOAST_STYLES = {
     text1Style: {
         fontWeight: 'bold',
@@ -255,15 +259,15 @@ const TOAST_MESSAGES = {
     },
     CONNECTION_ERROR: {
         type: 'error',
-        text1: 'toast.connection_error.connection_error.connection_error',
-        text2: 'toast.connection_error.connection_error.there_are_problems_with_the_connection',
+        text1: 'toast.connection_error.connection_error',
+        text2: 'toast.connection_error.there_are_problems_with_the_connection',
         text1Style: TOAST_STYLES.text1Style,
         text2Style: TOAST_STYLES.text2Style
     },
     UNEXPECTED_ERROR: {
         type: 'error',
-        text1: 'toast.unexpected_error.unexpected_error.unexpected_error',
-        text2: 'toast.unexpected_error.unexpected_error.there_is_an_unexpected_error',
+        text1: 'toast.unexpected_error.unexpected_error',
+        text2: 'toast.unexpected_error.there_is_an_unexpected_error',
         text1Style: TOAST_STYLES.text1Style,
         text2Style: TOAST_STYLES.text2Style
     }

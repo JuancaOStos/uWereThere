@@ -11,7 +11,7 @@ import { AppContext } from "../../../AppContext";
 // TODO: mostrar total de comentarios
 // TODO: limpiar
 // TODO: documentar
-export default function LocationItem({ searchName, locationItem, handleNavigation, navigationDisabled  }) {
+export default function LocationItem({ searchName, locationItem, handleNavigation, navigationDisabled, fromProfileView  }) {
     const { t } = useTranslation()
     const { url } = useContext(AppContext)
     const authorNickname = (locationItem.author)
@@ -22,6 +22,12 @@ export default function LocationItem({ searchName, locationItem, handleNavigatio
         ? locationItem.author.avatar
         : 'https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png'
     console.info(url + locationItem.author.avatar)
+    console.info(url + locationItem.author.nickname)
+    
+    const titleLabel = (locationItem.title.length > 21)
+        ? locationItem.title.slice(0, 18) + '...'
+        : locationItem.title
+
     if (locationItem.title.toLowerCase().includes(searchName.toLowerCase())) {
         return(
             <TouchableHighlight
@@ -39,20 +45,20 @@ export default function LocationItem({ searchName, locationItem, handleNavigatio
                     borderWidth: 2,
                     borderColor: 'lightblue'
                 }}>
-                    <View style={{
+                    { fromProfileView || <View style={{
                         flexDirection: 'row',
                         alignSelf: 'flex-end',
                         alignItems: 'center',
                     }}>
+                        <Text>{authorNickname}</Text>
                         <Image source={{ uri: url + locationItem.author.avatar }} style={{
                             backgroundColor: 'lightgrey',
                             width: 30,
                             height: 30,
                             borderRadius: 50,
-                            marginRight: 10
+                            marginHorizontal: 10
                         }}/>
-                        <Text>{authorNickname}</Text>
-                    </View>
+                    </View>}
                     <View style={{ flexDirection: 'row' }}>
                         <Image
                             style={{
@@ -63,7 +69,7 @@ export default function LocationItem({ searchName, locationItem, handleNavigatio
                             }}
                             source={{ uri: url + locationItem.pic}}/>
                         <View style={{ marginStart: 25 }}>
-                            <Text>{locationItem.title}</Text>
+                            <Text>{titleLabel}</Text>
                             <View style={{
                                 flexDirection: 'row',
                                 alignItems: 'center'

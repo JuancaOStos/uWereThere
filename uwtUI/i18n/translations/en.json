@@ -18,6 +18,10 @@
       "verify_your_account": "Verify your account",
       "introduce_the_verification_code_send_to_your_email": "Enter the verification code sent to your email"
   },
+  "there_are_no_users": "there are no users",
+  "there_are_no_followers": "there are no followers",
+    "there_are_no_followed": "there are no followed",
+  "there_are_no_locations": "there are no locations",
   "location_details": {
       "link_to_maps": "Link to Maps",
       "comments": "Comments",
@@ -28,7 +32,7 @@
   },
   "new_location": {
       "show_us_what_you_discovered": "Show us what you discovered",
-      "title_between_3_and_40_characters": "Title between 3 and 4 characters",
+      "title_between_3_and_40_characters": "Title between 3 and 40 characters",
       "description_between_10_and_200_characters": "Description between 10 and 200 characters"
   },
   "settings": {

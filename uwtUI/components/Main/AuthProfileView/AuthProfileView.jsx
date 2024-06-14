@@ -212,6 +212,7 @@ export default function AuthProfileView() {
                     searchName={searchName}
                     locationItem={location}
                     navigationDisabled={true}
+                    fromProfileView={true}
                 />
             )
         })
@@ -399,6 +400,12 @@ export default function AuthProfileView() {
                         </View>
                     </TouchableOpacity>
                 </View>
+                {(listView === 'publications' && publications.length === 0)
+                && <Text style={{ alignSelf: 'center', marginTop: 50, fontSize: 20 }}>{t('there_are_no_locations')}</Text>}
+                {(listView === 'followers' && followers.length === 0)
+                    && <Text style={{ alignSelf: 'center', marginTop: 50, fontSize: 20 }}>{t('there_are_no_followers')}</Text>}
+                {(listView === 'followed' && followed.length === 0)
+                    && <Text style={{ alignSelf: 'center', marginTop: 50, fontSize: 20 }}>{t('there_are_no_followed')}</Text>}
                 {listToShow}
             </View>
         </View>

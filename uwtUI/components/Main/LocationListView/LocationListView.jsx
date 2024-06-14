@@ -139,6 +139,7 @@ export default function LocationListView({ navigation }) {
                         </View>
                     </TouchableOpacity>
                 </View>
+                {(locations.length === 0) && <Text style={{ alignSelf: 'center', marginTop: 50, fontSize: 20 }}>{t('there_are_no_locations')}</Text>}
                 <FlatList
                     data={sortedLocations}
                     renderItem={({ item: location }) => (
@@ -147,6 +148,7 @@ export default function LocationListView({ navigation }) {
                             locationItem={location}
                             handleNavigation={handleNavigation}
                             navigationDisabled={false}
+                            fromProfileView={false}
                         />
                     )}
                 />

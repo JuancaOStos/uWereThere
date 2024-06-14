@@ -143,18 +143,14 @@ export default function LocationDetails({ route }) {
                         }}
                         disabled={(!locationItem.title)}
                     >
-                        <View style={{ flexDirection: 'row' }}>
+                        <View style={{ flexDirection: 'row', alignSelf: 'center' }}>
                             <View style={{ alignSelf: 'center', alignItems: 'flex-start' }}>
                                 <MaterialCommunityIcons name="google-maps" size={40} color="black" />
                             </View>
                             <Text style={{ alignSelf: 'center', marginRight: 10 }}>{locationItem.title}</Text>
-                            <View>
-                                <Text>lat:{locationItem.location.latitude}</Text>
-                                <Text>lon:{locationItem.location.longitude}</Text>
-                            </View>
                         </View>
                     </TouchableOpacity>
-                    <Text style={styles.bodyText}>{t('location_details.comments')} ({locationItem.comments.length})</Text>
+                    <Text style={styles.bodyText}>{t('location_details.comments')} ({comments.length})</Text>
                     <View style={{
                         flexDirection: 'row',
                         alignItems: 'center',
@@ -251,7 +247,6 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         paddingVertical: 5,
         paddingHorizontal: 10,
-        width: 350,
         borderRadius: 20,
         backgroundColor: '#8BEF7F'
     }

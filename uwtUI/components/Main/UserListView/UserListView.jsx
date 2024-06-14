@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from "react";
-import { View, TextInput, Text, Button, TouchableOpacity, StyleSheet, TouchableHighlight, FlatList } from "react-native";
+import { View, TextInput, Text, Button, TouchableOpacity, StyleSheet, ActivityIndicator, FlatList } from "react-native";
 import axios from "axios";
 import { url } from '../../../constants.js'
 import { useTranslation } from "react-i18next";
@@ -25,6 +25,7 @@ export default function UserListView({ navigation }) {
         sortField: 'createdAt',
         sortDirection: 'desc'
     })
+    const [loading, setLoading] = useState(false)
     const handleSearchName = (value) => setSearchName(value)
     const handleUsers = (value) => setUsers(value)
     const handleNavigation = (userItem) => {
@@ -32,8 +33,12 @@ export default function UserListView({ navigation }) {
     }
     
     const getAllUsers = async() => {
+        setLoading(true)
         const usersData = await axios.get(`${url}/getAllUsers`)
-            .then(res => res.data.result)
+            .then(res => {
+                setLoading(false)
+                return res.data.result
+            })
         console.log('Users data', usersData)
         console.log(usersData)
         setUsers(usersData)
@@ -124,6 +129,7 @@ export default function UserListView({ navigation }) {
                         </View>
                     </TouchableOpacity>
                 </View>
+                {(users.length === 0) && <Text style={{ alignSelf: 'center', marginTop: 50, fontSize: 20 }}>{t('there_are_no_users')}</Text>}
                 <FlatList 
                     data={sortedUsers}
                     renderItem={({ item: user }) => (
